@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Simule em segundos quanto poupa com o IMT Jovem em 2026: IMT, Imposto do Selo e prestação do crédito habitação.">
+<meta property="og:title" content="Simulador IMT Jovem 2026">
+<meta property="og:description" content="Tem até 35 anos e vai comprar casa? Veja quanto poupa no IMT e no Imposto do Selo.">
+<script>
+/* Configuração: altere estes dados para a sua marca. */
+window.SIMULADOR_CONFIG = {
+  modo: "site",
+  exemploMarca: false,
+  consultor: {
+    nome: "O Seu Nome",
+    cargo: "Consultor(a) imobiliário(a)",
+    agencia: "",
+    whatsapp: "",          /* Ex.: "912345678" */
+    foto: "",              /* Link para uma foto quadrada (opcional) */
+    cor: ""                /* Ex.: "#1F4BA5" */
+  },
+  webhookUrl: "",          /* Link da Google Apps Script que guarda os contactos numa Google Sheet */
+  linkPartilha: "",        /* Vazio = usa o endereço desta página */
+  aceitarParametrosUrl: true /* Permite links personalizados: ?nome=...&wa=...&cor=... */
+};
+</script>
+</head>
+<body>
+<title>Simulador IMT Jovem</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: azulejo-patterned header band, then a two-column workbench (inputs | live result) over full-width chart, mortgage, lead and share panels. */
+:root {
+  --paper: #F3F6FB;
+  --surface: #FFFFFF;
+  --ink: #14213D;
+  --muted: #56627C;
+  --line: #DAE1EE;
+  --cobalt: #1F4BA5;
+  --cobalt-ink: #FFFFFF;
+  --cobalt-soft: #E4EBF8;
+  --telha: #C0603A;
+  --save: #0E7A53;
+  --save-soft: #E1F3EA;
+  --warn: #9A5A00;
+  --warn-soft: #FBEED6;
+  --off-soft: #ECEEF3;
+  --shadow: 0 1px 2px rgba(20,33,61,.06), 0 8px 24px rgba(20,33,61,.06);
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0D1322; --surface: #151D31; --ink: #E7ECF6; --muted: #9AA6C0; --line: #27324B;
+    --cobalt: #5A82D8; --cobalt-ink: #0D1322; --cobalt-soft: #1B2846; --telha: #C9693F;
+    --save: #4CC795; --save-soft: #11302A; --warn: #E3A44A; --warn-soft: #33270F; --off-soft: #1D2539;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0D1322; --surface: #151D31; --ink: #E7ECF6; --muted: #9AA6C0; --line: #27324B;
+  --cobalt: #5A82D8; --cobalt-ink: #0D1322; --cobalt-soft: #1B2846; --telha: #C9693F;
+  --save: #4CC795; --save-soft: #11302A; --warn: #E3A44A; --warn-soft: #33270F; --off-soft: #1D2539;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 15px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; }
+.wrap { width: 100%; max-width: 1120px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+.num, .cmp, .bars, .money input { font-variant-numeric: tabular-nums; }
+a { color: var(--cobalt); }
+:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 2px; border-radius: 6px; }
+
+/* Header band with azulejo tile pattern */
+.band { background: var(--cobalt-soft); position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+.band::before {
+  content: ""; position: absolute; inset: 0; opacity: .55; pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 9px, var(--cobalt) 9.5px, var(--cobalt) 10.5px, transparent 11px) 0 0 / 44px 44px,
+    conic-gradient(from 45deg at 50% 50%, var(--cobalt) 0 6%, transparent 0 25%, var(--cobalt) 0 31%, transparent 0 50%, var(--cobalt) 0 56%, transparent 0 75%, var(--cobalt) 0 81%, transparent 0) 22px 22px / 44px 44px;
+  -webkit-mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
+          mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
+}
+.band-in { position: relative; padding-block: 22px 30px; display: grid; gap: 14px; }
+.brand { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--cobalt); color: var(--cobalt-ink); display: grid; place-items: center; font: 700 16px var(--f-display); overflow: hidden; flex: none; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.brand-txt { display: grid; line-height: 1.25; min-width: 0; }
+.brand-txt strong { font-weight: 700; }
+.brand-txt span { color: var(--muted); font-size: 13px; }
+.tag { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--warn); background: var(--warn-soft); padding: 3px 8px; border-radius: 99px; }
+.brand-actions { margin-left: auto; display: flex; gap: 8px; }
+.eyebrow { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: clamp(30px, 5.4vw, 52px); line-height: 1.04; font-weight: 700; max-width: 16ch; }
+h1 em { font-style: normal; color: var(--cobalt); }
+.lede { margin: 0; max-width: 58ch; color: var(--muted); font-size: 16px; }
+
+/* Workbench */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; padding-block: 22px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; box-shadow: var(--shadow); min-width: 0; }
+.h2 { font-size: 21px; font-weight: 700; }
+.stack { display: grid; gap: 20px; }
+.field { display: grid; gap: 8px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.field > label, .field > legend, .lbl { font-weight: 600; font-size: 14px; padding: 0; }
+.field em { font-style: normal; color: var(--muted); font-weight: 400; }
+.hint { color: var(--muted); font-size: 13px; margin: 0; }
+input[type=text], input[type=number], input[type=email], input[type=tel] {
+  width: 100%; font: 500 16px var(--f-body); color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; min-width: 0;
+}
+input:focus { border-color: var(--cobalt); outline: none; box-shadow: 0 0 0 3px var(--cobalt-soft); }
+.money { position: relative; }
+.money input { padding-right: 34px; }
+.money span { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; pointer-events: none; }
+.big-input input { font: 700 26px var(--f-display); padding: 12px 40px 12px 14px; letter-spacing: -.01em; }
+.big-input span { font-size: 20px; }
+input[type=range] { width: 100%; accent-color: var(--cobalt); margin: 2px 0 0; }
+.range-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 600 13px var(--f-body); color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 99px; padding: 6px 12px; cursor: pointer; }
+.chip:hover { border-color: var(--cobalt); }
+.chip[aria-pressed="true"] { background: var(--cobalt); color: var(--cobalt-ink); border-color: var(--cobalt); }
+
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--paper); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 3px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { text-align: center; padding: 9px 8px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--muted); transition: background .2s, color .2s; }
+.seg input:checked + label { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.seg input:focus-visible + label { outline: 3px solid var(--cobalt); }
+
+.buyers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.stepper { display: grid; grid-template-columns: 42px minmax(0, 1fr) 42px; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.stepper input { border: 0; background: transparent; text-align: center; font-weight: 700; font-size: 18px; padding: 9px 0; -moz-appearance: textfield; }
+.stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper input:focus { box-shadow: none; }
+.stepper button { border: 0; background: none; font: 600 20px var(--f-body); color: var(--cobalt); cursor: pointer; height: 100%; border-radius: 9px; }
+.stepper button:hover { background: var(--cobalt-soft); }
+.age-badge { font-size: 12px; font-weight: 600; }
+.age-badge.ok { color: var(--save); }
+.age-badge.no { color: var(--muted); }
+
+.switches { display: grid; gap: 10px; }
+.switch { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: start; cursor: pointer; font-size: 14px; }
+.switch input { position: absolute; opacity: 0; }
+.switch .track { width: 44px; height: 26px; border-radius: 99px; background: var(--line); position: relative; transition: background .2s; margin-top: 1px; }
+.switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s; }
+.switch input:checked + .track { background: var(--save); }
+.switch input:checked + .track::after { transform: translateX(18px); }
+.switch input:focus-visible + .track { outline: 3px solid var(--cobalt); outline-offset: 2px; }
+
+/* Result card */
+.result { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+@media (max-width: 900px) { .result { position: static; } }
+.status { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; padding: 6px 12px 6px 8px; border-radius: 99px; }
+.status svg { width: 18px; height: 18px; flex: none; }
+.status.good { background: var(--save-soft); color: var(--save); }
+.status.warn { background: var(--warn-soft); color: var(--warn); }
+.status.off { background: var(--off-soft); color: var(--muted); }
+.save-label { margin: 18px 0 0; color: var(--muted); font-weight: 600; font-size: 14px; }
+.save { margin: 0; font: 700 clamp(44px, 7vw, 68px)/1 var(--f-display); letter-spacing: -.03em; color: var(--save); font-variant-numeric: tabular-nums; }
+.save.zero { color: var(--muted); }
+.save-sub { margin: 8px 0 0; color: var(--muted); max-width: 46ch; }
+.pulse { animation: pulse .5s ease; }
+@keyframes pulse { 0% { transform: scale(1); } 40% { transform: scale(1.03); } 100% { transform: scale(1); } }
+
+.bars { display: grid; gap: 14px; margin-top: 22px; }
+.bar-row { display: grid; gap: 6px; }
+.bar-head { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
+.bar-head b { font-weight: 700; }
+.bar-track { height: 14px; background: var(--paper); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; width: 0; border-radius: 0 4px 4px 0; transition: width .6s cubic-bezier(.2,.8,.2,1); min-width: 2px; }
+.bar-fill.sem { background: var(--telha); }
+.bar-fill.com { background: var(--cobalt); }
+.bar-note { font-size: 12px; color: var(--muted); }
+
+.scale { margin-top: 24px; }
+.scale-bar { position: relative; display: flex; height: 10px; border-radius: 99px; overflow: visible; gap: 2px; }
+.scale-bar > div { height: 100%; }
+.scale-bar .z1 { background: var(--save); border-radius: 99px 0 0 99px; opacity: .85; }
+.scale-bar .z2 { background: var(--warn); opacity: .75; }
+.scale-bar .z3 { background: var(--line); border-radius: 0 99px 99px 0; }
+.scale-marker { position: absolute; top: 50%; width: 22px; height: 22px; margin-left: -11px; transform: translateY(-50%); border-radius: 50%; background: var(--surface); border: 4px solid var(--ink); transition: left .5s cubic-bezier(.2,.8,.2,1); box-shadow: var(--shadow); }
+.scale-labels { position: relative; height: 34px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.scale-labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; text-align: center; line-height: 1.25; }
+.scale-labels span:first-child { transform: none; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 700 15px var(--f-body); border-radius: 11px; padding: 12px 16px; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn.primary { background: var(--cobalt); color: var(--cobalt-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.wa { background: #1F8F4E; color: #FFFFFF; }
+.btn.wa:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--cobalt); }
+.btn.small { padding: 8px 12px; font-size: 13px; }
+.btn.grow { flex: 1 1 200px; }
+.note { background: var(--warn-soft); color: var(--ink); border-radius: 10px; padding: 14px; margin-top: 16px; font-size: 14px; }
+
+/* Chart */
+.section { padding-block: 4px 22px; }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px 20px; margin-bottom: 14px; }
+.sec-head p { margin: 4px 0 0; color: var(--muted); max-width: 62ch; }
+.chart-wrap { position: relative; }
+.chart-wrap svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.chart-wrap .grid line { stroke: var(--line); stroke-width: 1; }
+.chart-wrap text { fill: var(--muted); font: 500 11px var(--f-body); }
+.chart-wrap .zone-label { font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--paper); border-radius: 10px; padding: 8px 10px; font-size: 13px; line-height: 1.35; white-space: nowrap; transform: translate(-50%, calc(-100% - 14px)); box-shadow: var(--shadow); font-variant-numeric: tabular-nums; }
+.tip b { font-weight: 700; }
+.chart-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; font-size: 13px; color: var(--muted); align-items: center; }
+.key { display: inline-flex; align-items: center; gap: 6px; }
+.key i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.table-scroll { overflow-x: auto; margin-top: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+tfoot td { font-weight: 700; border-bottom: 0; }
+td.good { color: var(--save); font-weight: 700; }
+
+/* Mortgage */
+.mort { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; }
+@media (max-width: 760px) { .mort { grid-template-columns: minmax(0, 1fr); } }
+.mort-inputs { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); align-content: start; }
+.mort-inputs .full { grid-column: 1 / -1; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; align-content: start; }
+.kpi { background: var(--paper); border-radius: 12px; padding: 14px; display: grid; gap: 4px; min-width: 0; }
+.kpi span { font-size: 13px; color: var(--muted); }
+.kpi b { font: 700 24px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
+.kpi.hero { grid-column: 1 / -1; background: var(--save-soft); }
+.kpi.hero b { color: var(--save); font-size: 30px; }
+
+/* Lead + report */
+.lead-panel { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; }
+@media (max-width: 760px) { .lead-panel { grid-template-columns: minmax(0, 1fr); } }
+.lead-txt p { color: var(--muted); margin: 8px 0 0; }
+.lead-txt ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.lead-txt li { display: flex; gap: 8px; align-items: start; }
+.lead-txt li svg { width: 18px; height: 18px; color: var(--save); flex: none; margin-top: 2px; }
+.lead-form { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.lead-form .full { grid-column: 1 / -1; }
+.consent { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; font-size: 13px; color: var(--muted); align-items: start; }
+.consent input { width: 18px; height: 18px; accent-color: var(--cobalt); margin: 1px 0 0; }
+.form-msg { font-size: 14px; margin: 0; }
+.form-msg.err { color: var(--telha); font-weight: 600; }
+.form-msg.ok { color: var(--save); font-weight: 600; }
+.report { margin-top: 18px; display: grid; gap: 18px; }
+.rep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 0; }
+.rep-grid div { background: var(--paper); border-radius: 10px; padding: 12px; }
+.rep-grid dt { font-size: 12px; color: var(--muted); }
+.rep-grid dd { margin: 2px 0 0; font-weight: 700; }
+.report h3 { font-size: 17px; }
+.report ul { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; }
+
+/* Share */
+.share-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .share-grid { grid-template-columns: minmax(0, 1fr); } }
+.link-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.link-row input { font-size: 14px; }
+.qr-box { display: grid; justify-items: center; gap: 8px; background: #FFFFFF; border-radius: 12px; padding: 14px; border: 1px solid var(--line); }
+.qr-box #qr img, .qr-box #qr canvas { display: block; max-width: 100%; height: auto; }
+.qr-box p { margin: 0; color: #56627C; font-size: 12px; text-align: center; }
+.gen { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top: 8px; }
+.gen .full { grid-column: 1 / -1; }
+details.gen-wrap { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
+details.gen-wrap summary { cursor: pointer; font-weight: 700; }
+input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); padding: 4px; }
+
+.foot { padding-block: 10px 40px; color: var(--muted); font-size: 13px; display: grid; gap: 6px; }
+.foot p { margin: 0; max-width: 90ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media print {
+  .band::before, #sim, .result .actions, #chartSec, #mortSec, .lead-panel, #shareSec, .brand-actions, #printBtn { display: none !important; }
+  .layout { display: block; }
+  .panel { box-shadow: none; }
+  body { background: #FFFFFF; }
+}
+</style>
+
+<header class="band">
+  <div class="wrap band-in">
+    <div class="brand">
+      <div class="avatar" id="avatar" aria-hidden="true">JF</div>
+      <div class="brand-txt"><strong id="cNome">Joana Ferreira</strong><span id="cCargo">Consultora imobiliária</span></div>
+      <span class="tag" id="tagExemplo">Marca de exemplo</span>
+      <div class="brand-actions">
+        <a class="btn ghost small" href="#partilhar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+          Partilhar
+        </a>
+      </div>
+    </div>
+    <p class="eyebrow">Simulação 2026 · Habitação própria e permanente</p>
+    <h1>Quanto poupa com o <em>IMT Jovem</em>?</h1>
+    <p class="lede">Para quem tem até 35 anos e compra a primeira casa para viver. Mexa nos valores e veja na hora o IMT e o Imposto do Selo, com e sem isenção.</p>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <form class="panel stack" id="sim" novalidate>
+    <h2 class="h2">Dados da compra</h2>
+
+    <div class="field">
+      <label for="valor">Valor de compra do imóvel</label>
+      <div class="money big-input"><input id="valor" type="text" inputmode="numeric" autocomplete="off" value="280 000"><span>€</span></div>
+      <input id="valorRange" type="range" min="50000" max="1000000" step="5000" value="280000" aria-label="Valor do imóvel">
+      <div class="range-scale"><span>50 mil €</span><span>1 milhão €</span></div>
+      <div class="chips" id="presets" aria-label="Valores rápidos">
+        <button type="button" class="chip" data-v="200000">200 mil</button>
+        <button type="button" class="chip" data-v="280000">280 mil</button>
+        <button type="button" class="chip" data-v="330000">330 mil</button>
+        <button type="button" class="chip" data-v="450000">450 mil</button>
+        <button type="button" class="chip" data-v="650000">650 mil</button>
+      </div>
+    </div>
+
+    <fieldset class="field">
+      <legend>Onde fica o imóvel?</legend>
+      <div class="seg">
+        <input type="radio" name="local" id="locC" value="c" checked><label for="locC">Continente</label>
+        <input type="radio" name="local" id="locRA" value="ra"><label for="locRA">Açores ou Madeira</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend>Quantas pessoas compram?</legend>
+      <div class="seg">
+        <input type="radio" name="n" id="n1" value="1" checked><label for="n1">Uma pessoa</label>
+        <input type="radio" name="n" id="n2" value="2"><label for="n2">Duas pessoas</label>
+      </div>
+    </fieldset>
+
+    <div class="buyers">
+      <div class="field">
+        <label for="idade1">Idade <span id="lbl1">do comprador</span></label>
+        <div class="stepper"><button type="button" data-step="idade1" data-d="-1" aria-label="Menos um ano">−</button><input id="idade1" type="number" min="18" max="99" value="29" inputmode="numeric"><button type="button" data-step="idade1" data-d="1" aria-label="Mais um ano">+</button></div>
+        <span class="age-badge" id="badge1"></span>
+      </div>
+      <div class="field" id="b2" hidden>
+        <label for="idade2">Idade do comprador 2</label>
+        <div class="stepper"><button type="button" data-step="idade2" data-d="-1" aria-label="Menos um ano">−</button><input id="idade2" type="number" min="18" max="99" value="38" inputmode="numeric"><button type="button" data-step="idade2" data-d="1" aria-label="Mais um ano">+</button></div>
+        <span class="age-badge" id="badge2"></span>
+      </div>
+      <div class="field" id="qWrap" hidden style="grid-column: 1 / -1">
+        <label for="quota1">Parte de cada um no imóvel</label>
+        <input id="quota1" type="range" min="5" max="95" step="5" value="50">
+        <div class="range-scale num"><span id="q1lbl">Comprador 1: 50%</span><span id="q2lbl">Comprador 2: 50%</span></div>
+      </div>
+    </div>
+
+    <fieldset class="field">
+      <legend>Confirme os requisitos</legend>
+      <div class="switches">
+        <label class="switch"><input type="checkbox" id="rHpp" checked><span class="track"></span><span>A casa vai ser a habitação própria e permanente (para viver)</span></label>
+        <label class="switch"><input type="checkbox" id="r3" checked><span class="track"></span><span>Quem tem até 35 anos não é, nem foi nos últimos 3 anos, dono de uma habitação</span></label>
+        <label class="switch"><input type="checkbox" id="rIrs" checked><span class="track"></span><span>Quem tem até 35 anos não é dependente de ninguém no IRS</span></label>
+      </div>
+    </fieldset>
+  </form>
+
+  <aside class="result" aria-live="polite">
+    <div class="panel" id="card">
+      <span class="status good" id="status"></span>
+      <div id="numbers">
+        <p class="save-label">Poupança estimada com o IMT Jovem</p>
+        <p class="save" id="poupanca">0 €</p>
+        <p class="save-sub" id="saveSub"></p>
+
+        <div class="bars" role="img" aria-label="Comparação dos impostos com e sem IMT Jovem" id="bars">
+          <div class="bar-row">
+            <div class="bar-head"><span>Sem IMT Jovem</span><b id="semTotal">0 €</b></div>
+            <div class="bar-track"><div class="bar-fill sem" id="barSem"></div></div>
+            <span class="bar-note" id="semNote"></span>
+          </div>
+          <div class="bar-row">
+            <div class="bar-head"><span>Com IMT Jovem</span><b id="comTotal">0 €</b></div>
+            <div class="bar-track"><div class="bar-fill com" id="barCom"></div></div>
+            <span class="bar-note" id="comNote"></span>
+          </div>
+        </div>
+
+        <div class="scale" aria-hidden="true">
+          <div class="scale-bar" id="scaleBar"><div class="z1" id="z1"></div><div class="z2" id="z2"></div><div class="z3" id="z3"></div><span class="scale-marker" id="marker"></span></div>
+          <div class="scale-labels" id="scaleLabels"></div>
+        </div>
+      </div>
+      <div class="note" id="notHpp" hidden>O IMT Jovem só se aplica a <b>habitação própria e permanente</b>. Para uma casa de férias ou para arrendar, as taxas são outras e não há isenção.</div>
+
+      <div class="actions">
+        <a class="btn wa grow" id="waBtn" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>
+          <span id="waLabel">Falar com a Joana</span>
+        </a>
+        <a class="btn ghost grow" href="#relatorio">Receber relatório completo</a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<section class="wrap section" id="chartSec">
+  <div class="panel">
+    <div class="sec-head">
+      <div>
+        <h2 class="h2">Poupança conforme o valor da casa</h2>
+        <p>Passe o dedo ou o rato pelo gráfico. Toque num ponto para simular esse valor.</p>
+      </div>
+      <button type="button" class="btn ghost small" id="tblToggle" aria-expanded="false">Ver em tabela</button>
+    </div>
+    <div class="chart-wrap" id="chartWrap">
+      <svg id="chart" role="img" aria-label="Gráfico da poupança do IMT Jovem em função do valor do imóvel"></svg>
+      <div class="tip" id="tip" hidden></div>
+    </div>
+    <div class="chart-foot">
+      <span class="key"><i style="background: var(--save-soft); border: 1px solid var(--save)"></i>Isenção total</span>
+      <span class="key"><i style="background: var(--warn-soft); border: 1px solid var(--warn)"></i>Isenção parcial</span>
+      <span class="key"><i style="background: var(--off-soft); border: 1px solid var(--line)"></i>Sem isenção</span>
+      <span id="cliffNote"></span>
+    </div>
+    <div class="table-scroll" id="tblWrap" hidden>
+      <table>
+        <thead><tr><th>Valor do imóvel</th><th>Sem IMT Jovem</th><th>Com IMT Jovem</th><th>Poupança</th></tr></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section" id="mortSec">
+  <div class="panel">
+    <div class="sec-head">
+      <div>
+        <h2 class="h2">E a prestação da casa?</h2>
+        <p>Uma estimativa rápida do crédito habitação, para comparar com o que poupa no IMT.</p>
+      </div>
+    </div>
+    <div class="mort">
+      <div class="mort-inputs">
+        <div class="field full">
+          <label for="fin">Parte financiada pelo banco: <span id="finLbl" class="num">90%</span></label>
+          <input id="fin" type="range" min="0" max="100" step="5" value="90">
+          <p class="hint">Com a garantia pública para jovens, alguns bancos financiam até 100%.</p>
+        </div>
+        <div class="field">
+          <label for="tan">Taxa de juro (TAN)</label>
+          <div class="money"><input id="tan" type="number" min="0" max="15" step="0.1" value="3.0" inputmode="decimal"><span>%</span></div>
+        </div>
+        <div class="field">
+          <label for="prazo">Prazo</label>
+          <div class="money"><input id="prazo" type="number" min="5" max="40" step="1" value="40" inputmode="numeric"><span>anos</span></div>
+        </div>
+        <p class="hint full">A taxa de 3,0% é só um exemplo. Peça a sua ao banco.</p>
+      </div>
+      <div class="kpis">
+        <div class="kpi hero"><span>A poupança do IMT Jovem paga cerca de</span><b id="kpiMeses">0 prestações</b></div>
+        <div class="kpi"><span>Prestação estimada por mês</span><b id="kpiPrest">0 €</b></div>
+        <div class="kpi"><span>Valor do crédito</span><b id="kpiCred">0 €</b></div>
+        <div class="kpi"><span>Entrada a pagar</span><b id="kpiEntrada">0 €</b></div>
+        <div class="kpi"><span>Imposto do Selo do crédito (0,6%)</span><b id="kpiIsCred">0 €</b></div>
+      </div>
+    </div>
+    <p class="hint" style="margin-top: 14px">A prestação não inclui seguros nem comissões bancárias. O Imposto do Selo sobre o crédito não está coberto pelo IMT Jovem.</p>
+  </div>
+</section>
+
+<section class="wrap section" id="relatorio">
+  <div class="panel lead-panel">
+    <div class="lead-txt">
+      <h2 class="h2">Receba o relatório completo</h2>
+      <p>Fica com a sua simulação guardada e com o que precisa de saber antes da escritura.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Detalhe do IMT e do Imposto do Selo</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Requisitos a confirmar com as Finanças</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Como não perder a isenção depois da compra</li>
+      </ul>
+    </div>
+    <form class="lead-form" id="leadForm" novalidate>
+      <div class="field full"><label for="lNome">Nome</label><input id="lNome" type="text" autocomplete="name" placeholder="O seu nome"></div>
+      <div class="field"><label for="lTel">Telemóvel</label><input id="lTel" type="tel" autocomplete="tel" inputmode="tel" placeholder="912 345 678"></div>
+      <div class="field"><label for="lEmail">Email <em>(opcional)</em></label><input id="lEmail" type="email" autocomplete="email" placeholder="nome@email.com"></div>
+      <label class="consent full"><input type="checkbox" id="lConsent"><span id="consentTxt">Aceito ser contactado(a) por Joana Ferreira sobre esta simulação. Os meus dados não são partilhados com terceiros.</span></label>
+      <div class="full"><button type="submit" class="btn primary" style="width: 100%">Ver o meu relatório</button></div>
+      <p class="form-msg full" id="formMsg" role="status"></p>
+    </form>
+  </div>
+  <article class="panel report" id="report" hidden></article>
+</section>
+
+<section class="wrap section" id="partilhar">
+  <div class="panel" id="shareSec">
+    <div class="sec-head">
+      <div>
+        <h2 class="h2">Partilhar o simulador</h2>
+        <p>Envie a quem está a pensar comprar casa, ou ponha o código QR num anúncio, num cartão ou na montra.</p>
+      </div>
+    </div>
+    <div class="share-grid">
+      <div class="stack" style="gap: 14px">
+        <div class="field">
+          <label for="shareLink">Link do simulador</label>
+          <div class="link-row"><input id="shareLink" type="text" readonly><button type="button" class="btn primary small" id="copyBtn">Copiar link</button></div>
+          <p class="hint" id="copyMsg" role="status"></p>
+        </div>
+        <div class="actions" style="margin-top: 0">
+          <a class="btn wa small" id="shareWa" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+          <a class="btn ghost small" id="shareFb" href="#" target="_blank" rel="noopener">Partilhar no Facebook</a>
+          <a class="btn ghost small" id="shareLi" href="#" target="_blank" rel="noopener">Partilhar no LinkedIn</a>
+          <button type="button" class="btn ghost small" id="copyResult">Copiar o meu resultado</button>
+        </div>
+        <details class="gen-wrap" id="genWrap">
+          <summary>Sou consultor(a): criar o meu link com a minha marca</summary>
+          <p class="hint" style="margin-top: 8px">Escreva os seus dados e receba um link só seu. Quem simular fala diretamente consigo no WhatsApp.</p>
+          <div class="gen">
+            <div class="field"><label for="gNome">Nome</label><input id="gNome" type="text" placeholder="Ex.: Joana Ferreira"></div>
+            <div class="field"><label for="gWa">WhatsApp</label><input id="gWa" type="tel" inputmode="tel" placeholder="912 345 678"></div>
+            <div class="field"><label for="gAg">Agência <em>(opcional)</em></label><input id="gAg" type="text" placeholder="Nome da agência"></div>
+            <div class="field"><label for="gCor">Cor da marca</label><input id="gCor" type="color" value="#1F4BA5"></div>
+            <div class="field full"><label for="gLink">O seu link</label><div class="link-row"><input id="gLink" type="text" readonly placeholder="Preencha o nome e o WhatsApp"><button type="button" class="btn primary small" id="gCopy">Copiar</button></div><p class="hint" id="gMsg" role="status"></p></div>
+          </div>
+        </details>
+      </div>
+      <div class="qr-box" id="qrBox">
+        <div id="qr" aria-label="Código QR do simulador"></div>
+        <p>Aponte a câmara do telemóvel para abrir o simulador</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap foot">
+  <p><b>Simulação indicativa.</b> Usa as tabelas do IMT para 2026 (escalões atualizados em 2% pelo Orçamento do Estado), com isenção total até 330 539 € e parcial até 660 982 € no Continente (valores 25% mais altos nos Açores e na Madeira). Com dois compradores, a isenção aplica-se só à parte de quem cumpre os requisitos.</p>
+  <p>Não substitui a liquidação feita pela Autoridade Tributária. Confirme sempre no Portal das Finanças antes da escritura.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var DEFAULTS = {
+    modo: "demo",
+    exemploMarca: true,
+    consultor: { nome: "Joana Ferreira", cargo: "Consultora imobiliária", agencia: "Imobiliária Exemplo", whatsapp: "", foto: "", cor: "" },
+    webhookUrl: "",
+    linkPartilha: "https://claude.ai/artifact/AEiUAdJoMVnL1VeUNoELtn",
+    aceitarParametrosUrl: true
+  };
+
+  function merge(a, b) {
+    var o = {}, k;
+    for (k in a) o[k] = a[k];
+    for (k in b) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k])) o[k] = merge(a[k] || {}, b[k]);
+      else if (b[k] !== undefined) o[k] = b[k];
+    }
+    return o;
+  }
+  var CFG = merge(DEFAULTS, window.SIMULADOR_CONFIG || {});
+  var SITE = CFG.modo === "site";
+
+  if (SITE && CFG.aceitarParametrosUrl) {
+    try {
+      var qp = new URLSearchParams(location.search);
+      if (qp.get("nome")) { CFG.consultor.nome = qp.get("nome").slice(0, 60); CFG.exemploMarca = false; CFG.consultor.cargo = "Consultor(a) imobiliário(a)"; }
+      if (qp.get("wa")) CFG.consultor.whatsapp = qp.get("wa").replace(/\D/g, "").slice(0, 15);
+      if (qp.get("agencia")) CFG.consultor.agencia = qp.get("agencia").slice(0, 60);
+      if (qp.get("cargo")) CFG.consultor.cargo = qp.get("cargo").slice(0, 60);
+      if (/^[0-9a-fA-F]{6}$/.test(qp.get("cor") || "")) CFG.consultor.cor = "#" + qp.get("cor");
+    } catch (e) {}
+  }
+
+  // IMT 2026, habitação própria e permanente, Continente (Regiões Autónomas = limites x 1,25)
+  var T = {
+    isencao: 106346,
+    escaloes: [
+      { ate: 145470, taxa: 0.02, abater: 2126.92 },
+      { ate: 198347, taxa: 0.05, abater: 6491.02 },
+      { ate: 330539, taxa: 0.07, abater: 10457.96 },
+      { ate: 660982, taxa: 0.08, abater: 13763.35 }
+    ],
+    unica: [ { ate: 1150853, taxa: 0.06 }, { ate: Infinity, taxa: 0.075 } ],
+    jovemTotal: 330539,
+    jovemParcial: 660982,
+    selo: 0.008,
+    seloCredito: 0.006
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt2 = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" });
+  var fmt0 = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+  var fmtN = new Intl.NumberFormat("pt-PT", { maximumFractionDigits: 0 });
+  function eur(x) { return fmt2.format(x); }
+  function eur0(x) { return fmt0.format(Math.round(x)); }
+  function mil(x) { return x >= 1000000 ? (fmtN.format(x / 1000000) + " M€") : (fmtN.format(Math.round(x / 1000)) + " mil €"); }
+  function r2(x) { return Math.round(x * 100) / 100; }
+  function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
+  function parseEuro(s) { var d = String(s).split(",")[0].replace(/\D/g, ""); return d ? parseInt(d, 10) : 0; }
+  function spaced(n) { return n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") : ""; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var reduceMotion = false;
+  try { reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+
+  function imtNormal(v, k) {
+    if (v <= T.isencao * k) return 0;
+    for (var i = 0; i < T.escaloes.length; i++) {
+      var e = T.escaloes[i];
+      if (v <= e.ate * k) return v * e.taxa - e.abater * k;
+    }
+    for (var j = 0; j < T.unica.length; j++) if (v <= T.unica[j].ate * k) return v * T.unica[j].taxa;
+    return 0;
+  }
+  function imtJovem(v, k) {
+    var L = T.jovemTotal * k, P = T.jovemParcial * k;
+    if (v <= L) return { imt: 0, is: 0, zona: "total" };
+    if (v <= P) { var ex = v - L; return { imt: ex * 0.08, is: ex * T.selo, zona: "parcial" }; }
+    return { imt: imtNormal(v, k), is: v * T.selo, zona: "nenhuma" };
+  }
+  function taxesFor(v, k, share) {
+    var n = { imt: imtNormal(v, k), is: v * T.selo };
+    var j = imtJovem(v, k);
+    var c = { imt: share * j.imt + (1 - share) * n.imt, is: share * j.is + (1 - share) * n.is };
+    n.imt = r2(n.imt); n.is = r2(n.is); c.imt = r2(c.imt); c.is = r2(c.is);
+    n.total = r2(n.imt + n.is); c.total = r2(c.imt + c.is);
+    return { normal: n, com: c, zona: j.zona, poupanca: r2(n.total - c.total) };
+  }
+
+  function read() {
+    var two = document.querySelector("input[name=n]:checked").value === "2";
+    return {
+      v: parseEuro($("valor").value),
+      k: document.querySelector("input[name=local]:checked").value === "ra" ? 1.25 : 1,
+      ra: document.querySelector("input[name=local]:checked").value === "ra",
+      n: two ? 2 : 1,
+      a1: parseInt($("idade1").value, 10) || 0,
+      a2: parseInt($("idade2").value, 10) || 0,
+      q1: clamp(parseInt($("quota1").value, 10) || 50, 5, 95) / 100,
+      hpp: $("rHpp").checked, r3: $("r3").checked, irs: $("rIrs").checked
+    };
+  }
+  function compute(f) {
+    var buyers = f.n === 1 ? [{ idade: f.a1, q: 1 }] : [{ idade: f.a1, q: f.q1 }, { idade: f.a2, q: 1 - f.q1 }];
+    var young = buyers.filter(function (b) { return b.idade >= 18 && b.idade <= 35; });
+    var req = f.r3 && f.irs;
+    var share = req ? r2(young.reduce(function (s, b) { return s + b.q; }, 0)) : 0;
+    var t = taxesFor(f.v, f.k, share);
+    return { f: f, buyers: buyers, young: young.length, req: req, share: share, normal: t.normal, com: t.com, zona: t.zona, poupanca: t.poupanca, L: T.jovemTotal * f.k, P: T.jovemParcial * f.k };
+  }
+
+  var ICON = {
+    good: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>',
+    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>',
+    off: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 9 6 6M15 9l-6 6"/></svg>'
+  };
+
+  function statusOf(c) {
+    var f = c.f, pct = Math.round(c.share * 100);
+    if (!f.hpp) return { tone: "off", txt: "Sem isenção: não é habitação própria", sub: "" };
+    if (!f.v) return { tone: "off", txt: "Escreva o valor do imóvel", sub: "" };
+    if (!c.young) return { tone: "off", txt: "Sem isenção: ninguém tem até 35 anos", sub: "O IMT Jovem é só para compradores com 35 anos ou menos à data da escritura." };
+    if (!c.req) return { tone: "off", txt: "Sem isenção: requisitos por cumprir", sub: "Confirme os requisitos acima. Sem eles, paga o IMT e o Imposto do Selo normais." };
+    if (c.zona === "nenhuma") return { tone: "off", txt: "Sem isenção: valor acima de " + eur0(c.P), sub: "Acima deste valor perde toda a isenção e paga IMT a taxa única." };
+    var shareTxt = c.share < 1 ? " A isenção aplica-se só à parte de quem tem até 35 anos (" + pct + "% do imóvel)." : "";
+    if (c.zona === "total") return { tone: c.share < 1 ? "warn" : "good", txt: c.share < 1 ? "Isenção sobre " + pct + "% do imóvel" : "Isenção total", sub: (c.share < 1 ? "" : "Não paga IMT nem Imposto do Selo sobre a compra.") + shareTxt };
+    return { tone: "warn", txt: c.share < 1 ? "Isenção parcial sobre " + pct + "% do imóvel" : "Isenção parcial", sub: "Paga só sobre os " + eur0(c.f.v - c.L) + " acima de " + eur0(c.L) + "." + shareTxt };
+  }
+
+  var anim = {};
+  function animateMoney(el, to, digits) {
+    var from = parseFloat(el.getAttribute("data-v") || "0");
+    el.setAttribute("data-v", String(to));
+    var fmt = digits ? eur : eur0;
+    if (reduceMotion || Math.abs(to - from) < 1) { el.textContent = fmt(to); return; }
+    var id = el.id, start = null, dur = 650;
+    if (anim[id]) cancelAnimationFrame(anim[id]);
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(from + (to - from) * e);
+      if (p < 1) anim[id] = requestAnimationFrame(step);
+    }
+    anim[id] = requestAnimationFrame(step);
+  }
+
+  var last = null;
+  function render() {
+    var f = read();
+    var c = compute(f);
+    last = c;
+    var st = statusOf(c);
+
+    var s = $("status");
+    s.className = "status " + st.tone;
+    s.innerHTML = ICON[st.tone] + "<span></span>";
+    s.lastChild.textContent = st.txt;
+
+    $("numbers").hidden = !f.hpp;
+    $("notHpp").hidden = f.hpp;
+
+    var p = $("poupanca");
+    var prev = parseFloat(p.getAttribute("data-v") || "0");
+    animateMoney(p, c.poupanca, true);
+    p.classList.toggle("zero", c.poupanca <= 0);
+    if (Math.abs(prev - c.poupanca) > 1 && !reduceMotion) { p.classList.remove("pulse"); void p.offsetWidth; p.classList.add("pulse"); }
+    $("saveSub").textContent = st.sub || (c.poupanca <= 0 ? "Pagaria o mesmo com ou sem IMT Jovem." : "");
+
+    animateMoney($("semTotal"), c.normal.total, true);
+    animateMoney($("comTotal"), c.com.total, true);
+    var max = Math.max(c.normal.total, 1);
+    $("barSem").style.width = (c.normal.total / max * 100) + "%";
+    $("barCom").style.width = (c.com.total / max * 100) + "%";
+    $("semNote").textContent = "IMT " + eur(c.normal.imt) + " + Imposto do Selo " + eur(c.normal.is);
+    $("comNote").textContent = "IMT " + eur(c.com.imt) + " + Imposto do Selo " + eur(c.com.is);
+
+    var sMax = c.P * 1.3;
+    $("z1").style.flex = String(c.L / sMax);
+    $("z2").style.flex = String((c.P - c.L) / sMax);
+    $("z3").style.flex = String((sMax - c.P) / sMax);
+    $("marker").style.left = clamp(f.v / sMax * 100, 0, 100) + "%";
+    $("scaleLabels").innerHTML =
+      '<span style="left:0">0 €</span>' +
+      '<span style="left:' + (c.L / sMax * 100) + '%">' + mil(c.L) + '<br>fim da isenção total</span>' +
+      '<span style="left:' + Math.min(c.P / sMax * 100, 88) + '%">' + mil(c.P) + '<br>fim da isenção</span>';
+
+    renderBadges(f);
+    renderWa(c);
+    renderMortgage(c);
+    drawChart(c);
+    renderTable(c);
+    syncPresets(f.v);
+  }
+
+  function renderBadges(f) {
+    [["badge1", f.a1], ["badge2", f.a2]].forEach(function (b) {
+      var el = $(b[0]), ok = b[1] >= 18 && b[1] <= 35;
+      el.className = "age-badge " + (ok ? "ok" : "no");
+      el.textContent = ok ? "Pode ter IMT Jovem" : (b[1] > 35 ? "Acima de 35 anos" : "Idade mínima: 18 anos");
+    });
+    $("lbl1").textContent = f.n === 2 ? "do comprador 1" : "do comprador";
+    $("b2").hidden = f.n !== 2;
+    $("qWrap").hidden = f.n !== 2;
+    var q = Math.round(f.q1 * 100);
+    $("q1lbl").textContent = "Comprador 1: " + q + "%";
+    $("q2lbl").textContent = "Comprador 2: " + (100 - q) + "%";
+  }
+
+  function firstName() { return (CFG.consultor.nome || "").trim().split(/\s+/)[0] || "consultor"; }
+  function resultText(c) {
+    return "Simulei o IMT Jovem: casa de " + eur0(c.f.v) + (c.f.ra ? " (Açores/Madeira)" : "") + " e poupança estimada de " + eur0(c.poupanca) + ".";
+  }
+  function renderWa(c) {
+    var num = (CFG.consultor.whatsapp || "").replace(/\D/g, "");
+    var btn = $("waBtn");
+    if (!num) {
+      var link = shareUrl();
+      btn.href = "https://wa.me/?text=" + encodeURIComponent(resultText(c) + (link ? " Simula aqui: " + link : ""));
+      $("waLabel").textContent = "Enviar resultado por WhatsApp";
+      return;
+    }
+    if (num.length === 9) num = "351" + num;
+    var msg = "Olá " + firstName() + "! " + resultText(c) + " Gostava de falar consigo sobre a compra.";
+    btn.href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
+    $("waLabel").textContent = "Falar com " + firstName() + " no WhatsApp";
+  }
+
+  function pmt(cap, tanPct, anos) {
+    var n = anos * 12, i = tanPct / 100 / 12;
+    if (cap <= 0 || n <= 0) return 0;
+    if (i === 0) return cap / n;
+    return cap * i / (1 - Math.pow(1 + i, -n));
+  }
+  function renderMortgage(c) {
+    var fin = clamp(parseInt($("fin").value, 10) || 0, 0, 100);
+    var tan = clamp(parseFloat(String($("tan").value).replace(",", ".")) || 0, 0, 15);
+    var prazo = clamp(parseInt($("prazo").value, 10) || 40, 5, 40);
+    $("finLbl").textContent = fin + "%";
+    var cred = Math.round(c.f.v * fin / 100);
+    var prest = pmt(cred, tan, prazo);
+    animateMoney($("kpiPrest"), prest, true);
+    animateMoney($("kpiCred"), cred, false);
+    animateMoney($("kpiEntrada"), c.f.v - cred, false);
+    animateMoney($("kpiIsCred"), r2(cred * T.seloCredito), true);
+    var meses = prest > 0 ? Math.floor(c.poupanca / prest) : 0;
+    $("kpiMeses").textContent = prest > 0 ? (meses === 1 ? "1 prestação" : fmtN.format(meses) + " prestações") : "—";
+    c.mort = { fin: fin, tan: tan, prazo: prazo, cred: cred, prest: r2(prest), meses: meses, isCred: r2(cred * T.seloCredito) };
+  }
+
+  /* Chart */
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var chartState = null;
+  function el(name, attrs, parent) {
+    var e = document.createElementNS(SVGNS, name);
+    for (var a in attrs) e.setAttribute(a, attrs[a]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function niceMax(x) { var step = 5000; return Math.max(step, Math.ceil(x / step) * step); }
+  function drawChart(c) {
+    var wrap = $("chartWrap"), svg = $("chart");
+    var W = Math.max(300, Math.round(wrap.clientWidth || 640));
+    var narrow = W < 520;
+    var H = narrow ? 230 : 280;
+    var m = { l: narrow ? 44 : 56, r: 14, t: 30, b: 34 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var k = c.f.k, L = c.L, P = c.P;
+    var share = c.req && c.young ? c.share : 1;
+    var xMax = Math.ceil(P * 1.3 / 100000) * 100000;
+    var xs = [], steps = 220;
+    for (var i = 0; i <= steps; i++) xs.push(xMax * i / steps);
+    xs.push(L, P, P + 1);
+    xs.sort(function (a, b) { return a - b; });
+    var pts = xs.map(function (x) { return [x, taxesFor(x, k, share).poupanca]; });
+    var yMax = niceMax(Math.max.apply(null, pts.map(function (p) { return p[1]; })) * 1.08);
+    function X(v) { return m.l + v / xMax * iw; }
+    function Y(v) { return m.t + ih - v / yMax * ih; }
+
+    var zones = [
+      [0, L, "var(--save-soft)", "Isenção total", "var(--save)"],
+      [L, P, "var(--warn-soft)", narrow ? "Parcial" : "Isenção parcial", "var(--warn)"],
+      [P, xMax, "var(--off-soft)", narrow ? "Sem" : "Sem isenção", "var(--muted)"]
+    ];
+    zones.forEach(function (z) {
+      el("rect", { x: X(z[0]), y: m.t, width: Math.max(0, X(z[1]) - X(z[0])), height: ih, fill: z[2] }, svg);
+      var t = el("text", { x: (X(z[0]) + X(z[1])) / 2, y: m.t - 10, "text-anchor": "middle", "class": "zone-label", style: "fill:" + z[4] }, svg);
+      t.textContent = z[3];
+    });
+
+    var g = el("g", { "class": "grid" }, svg);
+    for (var yi = 0; yi <= 4; yi++) {
+      var yv = yMax * yi / 4;
+      el("line", { x1: m.l, x2: m.l + iw, y1: Y(yv), y2: Y(yv), "stroke-dasharray": yi === 0 ? "" : "2 4" }, g);
+      var yt = el("text", { x: m.l - 8, y: Y(yv) + 4, "text-anchor": "end" }, svg);
+      yt.textContent = yv === 0 ? "0" : fmtN.format(yv / 1000) + " mil";
+    }
+    var xStep = narrow ? 200000 : 100000;
+    for (var xv = 0; xv <= xMax; xv += xStep) {
+      var xt = el("text", { x: X(xv), y: H - 10, "text-anchor": xv === 0 ? "start" : (xv === xMax ? "end" : "middle") }, svg);
+      xt.textContent = xv === 0 ? "0 €" : mil(xv);
+    }
+
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1); }).join(" ");
+    el("path", { d: d + " L" + X(xMax) + " " + Y(0) + " L" + X(0) + " " + Y(0) + " Z", fill: "var(--cobalt)", "fill-opacity": "0.12", stroke: "none" }, svg);
+    el("path", { d: d, fill: "none", stroke: "var(--cobalt)", "stroke-width": 2.5, "stroke-linejoin": "round" }, svg);
+
+    var cv = clamp(c.f.v, 0, xMax), cs = taxesFor(cv, k, share).poupanca;
+    el("line", { x1: X(cv), x2: X(cv), y1: m.t, y2: m.t + ih, stroke: "var(--ink)", "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.5 }, svg);
+    el("circle", { cx: X(cv), cy: Y(cs), r: 7, fill: "var(--cobalt)", stroke: "var(--surface)", "stroke-width": 2.5 }, svg);
+    var lab = el("text", { x: clamp(X(cv), m.l + 40, m.l + iw - 40), y: Math.max(m.t + 14, Y(cs) - 14), "text-anchor": "middle", style: "fill: var(--ink); font-weight: 700; font-size: 12px" }, svg);
+    lab.textContent = "A sua casa";
+
+    var hl = el("line", { x1: 0, x2: 0, y1: m.t, y2: m.t + ih, stroke: "var(--ink)", "stroke-width": 1, opacity: 0 }, svg);
+    var hd = el("circle", { cx: 0, cy: 0, r: 6, fill: "var(--surface)", stroke: "var(--cobalt)", "stroke-width": 2.5, opacity: 0 }, svg);
+    var hit = el("rect", { x: m.l, y: m.t, width: iw, height: ih, fill: "transparent", style: "cursor: crosshair" }, svg);
+
+    chartState = { X: X, Y: Y, m: m, iw: iw, W: W, xMax: xMax, k: k, share: share, hl: hl, hd: hd };
+    function at(evt) {
+      var r = svg.getBoundingClientRect();
+      var px = (evt.clientX - r.left) * (W / r.width);
+      var v = clamp((px - m.l) / iw * xMax, 0, xMax);
+      return Math.round(v / 5000) * 5000;
+    }
+    function show(evt) {
+      var v = at(evt), t = taxesFor(v, k, share);
+      hl.setAttribute("x1", X(v)); hl.setAttribute("x2", X(v)); hl.setAttribute("opacity", 0.35);
+      hd.setAttribute("cx", X(v)); hd.setAttribute("cy", Y(t.poupanca)); hd.setAttribute("opacity", 1);
+      var tip = $("tip"), r = svg.getBoundingClientRect(), scale = r.width / W;
+      tip.hidden = false;
+      tip.innerHTML = "Casa de <b></b><br>Poupança: <b></b>";
+      tip.children[0].textContent = eur0(v);
+      tip.children[2].textContent = eur0(t.poupanca);
+      var left = clamp(X(v) * scale, 80, r.width - 80);
+      tip.style.left = left + "px";
+      tip.style.top = (Y(t.poupanca) * scale) + "px";
+    }
+    function hide() { $("tip").hidden = true; hl.setAttribute("opacity", 0); hd.setAttribute("opacity", 0); }
+    hit.addEventListener("pointermove", show);
+    hit.addEventListener("pointerdown", show);
+    hit.addEventListener("pointerleave", hide);
+    hit.addEventListener("click", function (evt) { setValor(at(evt)); hide(); });
+
+    $("cliffNote").textContent = "Atenção: a partir de " + eur0(P) + " perde toda a isenção." +
+      (c.req && c.young ? "" : " O gráfico mostra a poupança de quem cumpre os requisitos.");
+  }
+
+  function renderTable(c) {
+    var k = c.f.k, share = c.req && c.young ? c.share : 1;
+    var vals = [150000, 200000, 250000, 300000, Math.round(c.L), 400000, 500000, 600000, Math.round(c.P), 750000].map(function (v) { return Math.round(v * (v === Math.round(c.L) || v === Math.round(c.P) ? 1 : k)); });
+    vals = vals.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+    $("tblBody").innerHTML = vals.map(function (v) {
+      var t = taxesFor(v, k, share);
+      return "<tr><td>" + eur0(v) + "</td><td>" + eur(t.normal.total) + "</td><td>" + eur(t.com.total) + "</td><td class=\"good\">" + eur(t.poupanca) + "</td></tr>";
+    }).join("");
+  }
+
+  /* Inputs */
+  function setValor(v) {
+    v = clamp(Math.round(v), 0, 99999999);
+    $("valor").value = spaced(v);
+    $("valorRange").value = String(clamp(v, 50000, 1000000));
+    render();
+  }
+  function syncPresets(v) {
+    Array.prototype.forEach.call(document.querySelectorAll("#presets .chip"), function (b) {
+      b.setAttribute("aria-pressed", String(parseInt(b.getAttribute("data-v"), 10) === v));
+    });
+  }
+  $("valor").addEventListener("input", function () {
+    var v = parseEuro(this.value);
+    $("valorRange").value = String(clamp(v, 50000, 1000000));
+    render();
+  });
+  $("valor").addEventListener("blur", function () { this.value = spaced(parseEuro(this.value)); });
+  $("valorRange").addEventListener("input", function () { setValor(parseInt(this.value, 10)); });
+  $("presets").addEventListener("click", function (e) {
+    var b = e.target.closest(".chip");
+    if (b) setValor(parseInt(b.getAttribute("data-v"), 10));
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-step]"), function (b) {
+    b.addEventListener("click", function () {
+      var inp = $(b.getAttribute("data-step"));
+      inp.value = String(clamp((parseInt(inp.value, 10) || 30) + parseInt(b.getAttribute("data-d"), 10), 18, 99));
+      render();
+    });
+  });
+  $("sim").addEventListener("input", function (e) { if (e.target.id !== "valor" && e.target.id !== "valorRange") render(); });
+  $("sim").addEventListener("change", render);
+  $("sim").addEventListener("submit", function (e) { e.preventDefault(); });
+  ["fin", "tan", "prazo"].forEach(function (id) { $(id).addEventListener("input", function () { renderMortgage(last); }); });
+
+  $("tblToggle").addEventListener("click", function () {
+    var open = $("tblWrap").hidden;
+    $("tblWrap").hidden = !open;
+    this.setAttribute("aria-expanded", String(open));
+    this.textContent = open ? "Esconder tabela" : "Ver em tabela";
+  });
+
+  var ro;
+  try { ro = new ResizeObserver(function () { if (last) drawChart(last); }); ro.observe($("chartWrap")); }
+  catch (e) { window.addEventListener("resize", function () { if (last) drawChart(last); }); }
+
+  /* Lead + report */
+  function buyersTxt(c) {
+    if (c.f.n === 1) return "1 comprador, " + c.f.a1 + " anos";
+    var q = Math.round(c.f.q1 * 100);
+    return "2 compradores: " + c.f.a1 + " anos (" + q + "%) e " + c.f.a2 + " anos (" + (100 - q) + "%)";
+  }
+  function buildReport(nome, c) {
+    var st = statusOf(c);
+    var hoje = new Date().toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" });
+    var num = (CFG.consultor.whatsapp || "").replace(/\D/g, "");
+    var contacto = num ? "<p>Fale com <b>" + esc(CFG.consultor.nome) + "</b> pelo WhatsApp <b>+" + esc(num.length === 9 ? "351 " + num : num) + "</b> para tirar dúvidas e marcar visitas.</p>" : "<p>Fale com <b>" + esc(CFG.consultor.nome) + "</b> para tirar dúvidas e marcar visitas.</p>";
+    var m = c.mort || {};
+    return '' +
+      '<div><p class="eyebrow">Relatório IMT Jovem · ' + esc(hoje) + '</p><h2 class="h2" style="margin-top:6px">Simulação de ' + esc(nome) + '</h2></div>' +
+      '<dl class="rep-grid">' +
+        '<div><dt>Valor do imóvel</dt><dd>' + eur0(c.f.v) + '</dd></div>' +
+        '<div><dt>Localização</dt><dd>' + (c.f.ra ? "Açores ou Madeira" : "Continente") + '</dd></div>' +
+        '<div><dt>Compradores</dt><dd>' + esc(buyersTxt(c)) + '</dd></div>' +
+        '<div><dt>Resultado</dt><dd>' + esc(st.txt) + '</dd></div>' +
+      '</dl>' +
+      '<div class="table-scroll"><table><thead><tr><th></th><th>Sem IMT Jovem</th><th>Com IMT Jovem</th></tr></thead><tbody>' +
+        '<tr><td>IMT</td><td>' + eur(c.normal.imt) + '</td><td>' + eur(c.com.imt) + '</td></tr>' +
+        '<tr><td>Imposto do Selo (0,8%)</td><td>' + eur(c.normal.is) + '</td><td>' + eur(c.com.is) + '</td></tr>' +
+        '<tr><td>Total</td><td>' + eur(c.normal.total) + '</td><td>' + eur(c.com.total) + '</td></tr>' +
+      '</tbody><tfoot><tr><td>Poupança</td><td></td><td class="good">' + eur(c.poupanca) + '</td></tr></tfoot></table></div>' +
+      (m.cred ? '<p class="hint">Crédito de ' + eur0(m.cred) + ' a ' + m.prazo + ' anos com TAN de ' + String(m.tan).replace(".", ",") + '%: prestação estimada de ' + eur(m.prest) + ' por mês, sem seguros. Imposto do Selo do crédito: ' + eur(m.isCred) + ' (não está coberto pelo IMT Jovem).</p>' : '') +
+      '<div><h3>Requisitos a confirmar</h3><ul>' +
+        '<li>Ter 35 anos ou menos na data da escritura.</li>' +
+        '<li>Ser a primeira compra de habitação própria e permanente.</li>' +
+        '<li>Não ser, nem ter sido nos últimos 3 anos, dono de uma habitação.</li>' +
+        '<li>Não ser dependente de outra pessoa para efeitos de IRS.</li>' +
+      '</ul></div>' +
+      '<div><h3>Para não perder a isenção</h3><ul>' +
+        '<li>Passar a viver na casa nos 6 meses seguintes à compra.</li>' +
+        '<li>Não dar outro uso à casa nos 6 anos seguintes, por exemplo arrendá-la.</li>' +
+      '</ul></div>' +
+      '<div><h3>Também pode interessar</h3><p style="margin:8px 0 0">Os jovens até 35 anos podem ter acesso à garantia pública do Estado no crédito habitação, que ajuda a financiar até 100% do valor da casa. As condições confirmam-se com o banco.</p></div>' +
+      '<div><h3>Próximo passo</h3>' + contacto + '</div>' +
+      '<p class="hint">Simulação indicativa com as tabelas do IMT de 2026. Não substitui a liquidação da Autoridade Tributária.</p>' +
+      (SITE ? '<div><button type="button" class="btn primary" id="printBtn">Guardar em PDF</button></div>' : '');
+  }
+
+  $("leadForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = $("formMsg");
+    var nome = $("lNome").value.trim();
+    var tel = $("lTel").value.replace(/\D/g, "");
+    var email = $("lEmail").value.trim();
+    msg.className = "form-msg full err";
+    if (!nome) { msg.textContent = "Escreva o seu nome."; $("lNome").focus(); return; }
+    if (tel.length < 9) { msg.textContent = "Escreva um número de telemóvel com 9 dígitos."; $("lTel").focus(); return; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = "O email não parece completo. Corrija-o ou deixe o campo vazio."; $("lEmail").focus(); return; }
+    if (!$("lConsent").checked) { msg.textContent = "Para ver o relatório, aceite ser contactado(a)."; return; }
+
+    var c = last;
+    var rep = $("report");
+    rep.innerHTML = buildReport(nome, c);
+    rep.hidden = false;
+    var pb = $("printBtn");
+    if (pb) pb.addEventListener("click", function () { window.print(); });
+
+    if (SITE && CFG.webhookUrl) {
+      var payload = {
+        data: new Date().toISOString(), nome: nome, telemovel: tel, email: email,
+        valor: c.f.v, localizacao: c.f.ra ? "Açores/Madeira" : "Continente", compradores: buyersTxt(c),
+        resultado: statusOf(c).txt, poupanca: c.poupanca, imt_com: c.com.imt, selo_com: c.com.is,
+        consultor: CFG.consultor.nome, origem: location.href
+      };
+      try {
+        fetch(CFG.webhookUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }).catch(function () {});
+      } catch (err) {}
+    }
+    msg.className = "form-msg full ok";
+    msg.textContent = SITE ? "Relatório pronto. Está logo abaixo." : "Relatório pronto, logo abaixo. Nesta demonstração os dados não são enviados para lado nenhum.";
+    rep.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  });
+
+  /* Share */
+  function shareUrl() {
+    if (CFG.linkPartilha) return CFG.linkPartilha;
+    if (SITE) return location.href.split("#")[0];
+    return "";
+  }
+  function baseSite() { return SITE ? location.origin + location.pathname : (CFG.siteUrl || ""); }
+  function copy(text, input, msgEl, okTxt) {
+    function fallback() { input.focus(); input.select(); msgEl.textContent = "Selecionado. Copie com Ctrl+C ou com o menu do telemóvel."; }
+    try {
+      navigator.clipboard.writeText(text).then(function () { msgEl.textContent = okTxt; }, fallback);
+    } catch (e) { fallback(); }
+  }
+  function setupShare() {
+    var url = shareUrl();
+    var shareSec = $("partilhar");
+    $("shareLink").value = url || "O link aparece aqui quando o simulador estiver publicado.";
+    $("copyBtn").disabled = !url;
+    var txt = "Tens até 35 anos e vais comprar casa? Vê quanto poupas com o IMT Jovem: ";
+    $("shareWa").href = "https://wa.me/?text=" + encodeURIComponent(txt + url);
+    $("shareFb").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
+    $("shareLi").href = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(url);
+    ["shareWa", "shareFb", "shareLi"].forEach(function (id) { $(id).hidden = !url; });
+    if (url && window.QRCode) {
+      $("qr").innerHTML = "";
+      try { new QRCode($("qr"), { text: url, width: 176, height: 176, colorDark: "#14213D", colorLight: "#FFFFFF", correctLevel: QRCode.CorrectLevel.M }); }
+      catch (e) { $("qrBox").hidden = true; }
+    } else { $("qrBox").hidden = true; }
+    shareSec.hidden = false;
+  }
+  $("copyBtn").addEventListener("click", function () { copy($("shareLink").value, $("shareLink"), $("copyMsg"), "Link copiado."); });
+  $("copyResult").addEventListener("click", function () {
+    var t = resultText(last) + (shareUrl() ? " Simula aqui: " + shareUrl() : "");
+    copy(t, $("shareLink"), $("copyMsg"), "Resultado copiado. Cole-o numa mensagem.");
+  });
+
+  function genLink() {
+    var base = baseSite();
+    var nome = $("gNome").value.trim(), wa = $("gWa").value.replace(/\D/g, "");
+    if (!base) { $("gLink").value = ""; $("gMsg").textContent = "Os links personalizados funcionam na versão do simulador alojada no seu site."; $("gCopy").disabled = true; return; }
+    if (!nome || wa.length < 9) { $("gLink").value = ""; $("gCopy").disabled = true; $("gMsg").textContent = ""; return; }
+    var p = new URLSearchParams();
+    p.set("nome", nome); p.set("wa", wa.length === 9 ? "351" + wa : wa);
+    if ($("gAg").value.trim()) p.set("agencia", $("gAg").value.trim());
+    p.set("cor", $("gCor").value.replace("#", ""));
+    $("gLink").value = base + "?" + p.toString();
+    $("gCopy").disabled = false;
+    $("gMsg").textContent = "Abra o link para ver o simulador com a sua marca.";
+  }
+  ["gNome", "gWa", "gAg", "gCor"].forEach(function (id) { $(id).addEventListener("input", genLink); });
+  $("gCopy").addEventListener("click", function () { copy($("gLink").value, $("gLink"), $("gMsg"), "Link copiado. Use-o nos seus anúncios e no Instagram."); });
+
+  /* Brand */
+  function applyBrand() {
+    var cn = CFG.consultor;
+    $("cNome").textContent = cn.nome;
+    $("cCargo").textContent = cn.agencia ? cn.cargo + " · " + cn.agencia : cn.cargo;
+    $("tagExemplo").hidden = !CFG.exemploMarca;
+    var av = $("avatar");
+    if (cn.foto) { av.innerHTML = ""; var img = new Image(); img.alt = ""; img.src = cn.foto; av.appendChild(img); }
+    else av.textContent = cn.nome.split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase();
+    $("consentTxt").textContent = "Aceito ser contactado(a) por " + cn.nome + " sobre esta simulação. Os meus dados não são partilhados com terceiros.";
+    if (cn.cor && /^#[0-9a-fA-F]{6}$/.test(cn.cor)) {
+      document.documentElement.style.setProperty("--cobalt", cn.cor);
+      $("gCor").value = cn.cor;
+    }
+  }
+
+  applyBrand();
+  setupShare();
+  genLink();
+  render();
+})();
+</script>
+
+</body>
+</html>
