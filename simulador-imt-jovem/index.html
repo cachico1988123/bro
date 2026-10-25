@@ -12,12 +12,12 @@ window.SIMULADOR_CONFIG = {
   modo: "site",
   exemploMarca: false,
   consultor: {
-    nome: "O Seu Nome",
+    nome: "",              /* Vazio = só a marca VT. Os links ?nome=... mostram o consultor */
     cargo: "Consultor(a) imobiliário(a)",
     agencia: "",
-    whatsapp: "",          /* Ex.: "912345678" */
+    whatsapp: "",          /* WhatsApp da VT ou do consultor. Ex.: "912345678" */
     foto: "",              /* Link para uma foto quadrada (opcional) */
-    cor: ""                /* Ex.: "#1F4BA5" */
+    cor: ""                /* Vazio = laranja da VT. Ex.: "#0F6E6E" */
   },
   webhookUrl: "",          /* Link da Google Apps Script que guarda os contactos numa Google Sheet */
   linkPartilha: "",        /* Vazio = usa o endereço desta página */
@@ -30,282 +30,327 @@ window.SIMULADOR_CONFIG = {
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@500;600;700&display=swap">
 <style>
-/* Layout: azulejo-patterned header band, then a two-column workbench (inputs | live result) over full-width chart, mortgage, lead and share panels. */
+/* Layout: VT landing-page identity. Dark hero band with orange pointer light and line drawing, marquee strip, then a white workbench (inputs | dark result card), chart, mortgage, lead, share. */
 :root {
-  --paper: #F3F6FB;
-  --surface: #FFFFFF;
-  --ink: #14213D;
-  --muted: #56627C;
-  --line: #DAE1EE;
-  --cobalt: #1F4BA5;
-  --cobalt-ink: #FFFFFF;
-  --cobalt-soft: #E4EBF8;
-  --telha: #C0603A;
-  --save: #0E7A53;
-  --save-soft: #E1F3EA;
-  --warn: #9A5A00;
-  --warn-soft: #FBEED6;
-  --off-soft: #ECEEF3;
-  --shadow: 0 1px 2px rgba(20,33,61,.06), 0 8px 24px rgba(20,33,61,.06);
-  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --f-body: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --r: 14px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0D1322; --surface: #151D31; --ink: #E7ECF6; --muted: #9AA6C0; --line: #27324B;
-    --cobalt: #5A82D8; --cobalt-ink: #0D1322; --cobalt-soft: #1B2846; --telha: #C9693F;
-    --save: #4CC795; --save-soft: #11302A; --warn: #E3A44A; --warn-soft: #33270F; --off-soft: #1D2539;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #0D1322; --surface: #151D31; --ink: #E7ECF6; --muted: #9AA6C0; --line: #27324B;
-  --cobalt: #5A82D8; --cobalt-ink: #0D1322; --cobalt-soft: #1B2846; --telha: #C9693F;
-  --save: #4CC795; --save-soft: #11302A; --warn: #E3A44A; --warn-soft: #33270F; --off-soft: #1D2539;
-  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
-  color-scheme: dark;
+  --tinta: #1A1A1A;
+  --tinta-2: #232323;
+  --branco: #FFFFFF;
+  --pedra: #F5F5F5;
+  --pedra-2: #FAFAFA;
+  --laranja: #FF7A00;
+  --laranja-claro: #FF9A40;
+  --laranja-esc: #B95800;
+  --laranja-soft: #FFF1E5;
+  --amarelo: #FFC83D;
+  --texto: #1A1A1A;
+  --texto-suave: #4D4D4D;
+  --claro: #FAFAFA;
+  --claro-suave: #BDBDBD;
+  --linha: #DCDCDE;
+  --verde: #0E7A43;
+  --verde-soft: #E3F4EA;
+  --ambar: #8A6100;
+  --ambar-soft: #FFF4D6;
+  --cinza-soft: #F0F0F0;
+  --mark-com: #D96400;
+  --mark-sem: #8C8C8C;
+  --accent: var(--laranja);
+  --f-titulo: "Jost", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --f-texto: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --ease: cubic-bezier(.2,.7,.1,1);
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { margin: 0; background: var(--paper); color: var(--ink); font: 400 15px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--branco); color: var(--texto); font: 400 16px/1.6 var(--f-texto); -webkit-font-smoothing: antialiased; }
 .wrap { width: 100%; max-width: 1120px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.01em; }
-.num, .cmp, .bars, .money input { font-variant-numeric: tabular-nums; }
-a { color: var(--cobalt); }
-:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 2px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--f-titulo); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: -.015em; line-height: 1.1; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--laranja); outline-offset: 3px; }
+.num, table, .bars, .money input, .kpi b, .save { font-variant-numeric: tabular-nums; }
+mark, .destaque { color: inherit; background: linear-gradient(var(--amarelo), var(--amarelo)) 0 92% / 100% .16em no-repeat; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 
-/* Header band with azulejo tile pattern */
-.band { background: var(--cobalt-soft); position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-.band::before {
-  content: ""; position: absolute; inset: 0; opacity: .55; pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 50%, transparent 9px, var(--cobalt) 9.5px, var(--cobalt) 10.5px, transparent 11px) 0 0 / 44px 44px,
-    conic-gradient(from 45deg at 50% 50%, var(--cobalt) 0 6%, transparent 0 25%, var(--cobalt) 0 31%, transparent 0 50%, var(--cobalt) 0 56%, transparent 0 75%, var(--cobalt) 0 81%, transparent 0) 22px 22px / 44px 44px;
-  -webkit-mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
-          mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
-}
-.band-in { position: relative; padding-block: 22px 30px; display: grid; gap: 14px; }
-.brand { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--cobalt); color: var(--cobalt-ink); display: grid; place-items: center; font: 700 16px var(--f-display); overflow: hidden; flex: none; }
+/* Topo + hero */
+.topo { background: var(--tinta); color: var(--claro); position: relative; z-index: 3; }
+.topo .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
+.marca { font: 600 22px/1 var(--f-titulo); letter-spacing: -.01em; color: var(--claro); text-decoration: none; min-width: 0; }
+.topo-link { font-size: 15px; font-weight: 500; color: var(--laranja-claro); white-space: nowrap; text-decoration: none; padding-bottom: 3px; background: linear-gradient(currentColor, currentColor) right bottom / 100% 1px no-repeat; transition: background-size .4s var(--ease); }
+.topo-link:hover { background-size: 0 1px; }
+
+.hero { background: var(--tinta); color: var(--claro); position: relative; overflow: hidden; padding-block: clamp(28px, 6vw, 72px) clamp(56px, 9vw, 104px); }
+.luz { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(560px circle at var(--mx, 72%) var(--my, 45%), rgba(255,122,0,.17), transparent 62%); }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 30% 40%, transparent 55%, rgba(0,0,0,.45) 100%); }
+.hero .wrap { position: relative; z-index: 2; display: grid; gap: 22px; }
+.hero-txt { max-width: 640px; display: grid; gap: 20px; }
+.hero h1 { font-size: clamp(38px, 5.6vw, 66px); line-height: 1.06; letter-spacing: -.02em; color: var(--claro); }
+.lead { margin: 0; font-size: clamp(16px, 1.6vw, 19px); color: var(--claro-suave); max-width: 48ch; }
+.consultor { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--laranja); color: var(--tinta); display: grid; place-items: center; font: 600 16px var(--f-titulo); overflow: hidden; flex: none; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
-.brand-txt { display: grid; line-height: 1.25; min-width: 0; }
-.brand-txt strong { font-weight: 700; }
-.brand-txt span { color: var(--muted); font-size: 13px; }
-.tag { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--warn); background: var(--warn-soft); padding: 3px 8px; border-radius: 99px; }
-.brand-actions { margin-left: auto; display: flex; gap: 8px; }
-.eyebrow { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-h1 { font-size: clamp(30px, 5.4vw, 52px); line-height: 1.04; font-weight: 700; max-width: 16ch; }
-h1 em { font-style: normal; color: var(--cobalt); }
-.lede { margin: 0; max-width: 58ch; color: var(--muted); font-size: 16px; }
+.c-txt { display: grid; line-height: 1.25; min-width: 0; }
+.c-txt strong { font-weight: 600; color: var(--claro); }
+.c-txt span { color: var(--claro-suave); font-size: 14px; }
+.tag { font: 600 11px var(--f-titulo); letter-spacing: .08em; text-transform: uppercase; color: var(--tinta); background: var(--amarelo); padding: 3px 8px; border-radius: 3px; }
+.plano { position: absolute; z-index: 1; right: max(-40px, calc((100vw - 1120px) / 2 - 20px)); top: 50%; transform: translateY(-50%); width: min(40vw, 470px); color: var(--laranja); pointer-events: none; }
+.plano svg { width: 100%; height: auto; overflow: visible; transform: translate3d(var(--px, 0px), var(--py, 0px), 0); transition: transform .9s var(--ease); }
+.plano text { font: 500 12px var(--f-texto); fill: var(--laranja); opacity: 0; animation: aparecer .8s ease 2.4s forwards; }
+.draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: desenhar 2.6s var(--ease) .4s forwards; }
+.onda { opacity: 0; transform-box: fill-box; transform-origin: center; animation: onda 3.4s ease-out 3s infinite; }
+@keyframes desenhar { to { stroke-dashoffset: 0; } }
+@keyframes aparecer { to { opacity: .8; } }
+@keyframes onda { 0% { transform: scale(.3); opacity: .8; } 100% { transform: scale(1); opacity: 0; } }
+@media (max-width: 880px) { .plano { width: 120%; right: -50%; top: auto; bottom: -12%; transform: none; opacity: .14; } }
+
+.faixa { background: var(--tinta-2); color: var(--laranja-claro); overflow: hidden; white-space: nowrap; border-top: 1px solid #2E2E2E; padding: 16px 0; }
+.trilho { display: inline-flex; animation: faixa 40s linear infinite; }
+.faixa:hover .trilho { animation-play-state: paused; }
+.faixa span { display: inline-flex; align-items: center; font: 500 clamp(17px, 2vw, 22px)/1 var(--f-titulo); letter-spacing: -.01em; }
+.faixa span::after { content: ""; width: 7px; height: 7px; background: var(--laranja); transform: rotate(45deg); margin: 0 clamp(24px, 4vw, 48px); }
+@keyframes faixa { to { transform: translateX(-50%); } }
 
 /* Workbench */
-.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; padding-block: 22px; align-items: start; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; padding-block: clamp(28px, 5vw, 56px) 24px; align-items: start; }
 @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; box-shadow: var(--shadow); min-width: 0; }
-.h2 { font-size: 21px; font-weight: 700; }
-.stack { display: grid; gap: 20px; }
+.panel { background: var(--branco); border: 1px solid var(--linha); border-radius: 7px; padding: clamp(20px, 3vw, 28px); min-width: 0; }
+.h2 { font-size: clamp(24px, 2.6vw, 30px); }
+.stack { display: grid; gap: 22px; }
 .field { display: grid; gap: 8px; border: 0; padding: 0; margin: 0; min-width: 0; }
-.field > label, .field > legend, .lbl { font-weight: 600; font-size: 14px; padding: 0; }
-.field em { font-style: normal; color: var(--muted); font-weight: 400; }
-.hint { color: var(--muted); font-size: 13px; margin: 0; }
+.field > label, .field > legend { font-weight: 600; font-size: 15px; padding: 0; line-height: 1.3; }
+.field em { font-style: normal; color: var(--texto-suave); font-weight: 400; }
+.field:focus-within > label { color: var(--laranja-esc); }
+.hint { color: var(--texto-suave); font-size: 14px; margin: 0; }
 input[type=text], input[type=number], input[type=email], input[type=tel] {
-  width: 100%; font: 500 16px var(--f-body); color: var(--ink); background: var(--paper);
-  border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; min-width: 0;
+  width: 100%; font: 400 16px var(--f-texto); color: var(--texto); background: var(--branco);
+  border: 1px solid #B5B0A6; border-radius: 3px; padding: 12px 14px; min-width: 0; appearance: none; -webkit-appearance: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
 }
-input:focus { border-color: var(--cobalt); outline: none; box-shadow: 0 0 0 3px var(--cobalt-soft); }
+input:focus { border-color: var(--laranja); outline: none; box-shadow: 0 0 0 3px rgba(255,122,0,.22); }
 .money { position: relative; }
-.money input { padding-right: 34px; }
-.money span { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; pointer-events: none; }
-.big-input input { font: 700 26px var(--f-display); padding: 12px 40px 12px 14px; letter-spacing: -.01em; }
-.big-input span { font-size: 20px; }
-input[type=range] { width: 100%; accent-color: var(--cobalt); margin: 2px 0 0; }
-.range-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.money input { padding-right: 46px; }
+.money span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--texto-suave); font-weight: 500; pointer-events: none; }
+.big-input input { font: 600 28px var(--f-titulo); padding: 12px 44px 12px 14px; letter-spacing: -.01em; }
+.big-input span { font-size: 22px; }
+input[type=range] { width: 100%; accent-color: var(--laranja); margin: 2px 0 0; }
+.range-scale { display: flex; justify-content: space-between; font-size: 13px; color: var(--texto-suave); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { font: 600 13px var(--f-body); color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 99px; padding: 6px 12px; cursor: pointer; }
-.chip:hover { border-color: var(--cobalt); }
-.chip[aria-pressed="true"] { background: var(--cobalt); color: var(--cobalt-ink); border-color: var(--cobalt); }
+.chip { font: 500 14px var(--f-titulo); color: var(--texto); background: var(--branco); border: 1px solid var(--linha); border-radius: 7px; padding: 6px 13px; cursor: pointer; transition: border-color .2s, background .2s; }
+.chip:hover { border-color: var(--laranja); }
+.chip[aria-pressed="true"] { background: var(--tinta); color: var(--claro); border-color: var(--tinta); }
 
-.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--paper); border: 1px solid var(--line); border-radius: 11px; padding: 3px; gap: 3px; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--pedra); border: 1px solid var(--linha); border-radius: 7px; padding: 3px; gap: 3px; }
 .seg input { position: absolute; opacity: 0; pointer-events: none; }
-.seg label { text-align: center; padding: 9px 8px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--muted); transition: background .2s, color .2s; }
-.seg input:checked + label { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
-.seg input:focus-visible + label { outline: 3px solid var(--cobalt); }
+.seg label { text-align: center; padding: 9px 8px; border-radius: 5px; font: 500 15px var(--f-titulo); cursor: pointer; color: var(--texto-suave); transition: background .2s, color .2s; }
+.seg input:checked + label { background: var(--tinta); color: var(--claro); }
+.seg input:focus-visible + label { outline: 2px solid var(--laranja); outline-offset: 2px; }
 
 .buyers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
-.stepper { display: grid; grid-template-columns: 42px minmax(0, 1fr) 42px; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
-.stepper input { border: 0; background: transparent; text-align: center; font-weight: 700; font-size: 18px; padding: 9px 0; -moz-appearance: textfield; }
+.stepper { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; border: 1px solid #B5B0A6; border-radius: 3px; background: var(--branco); }
+.stepper input { border: 0; text-align: center; font: 600 20px var(--f-titulo); padding: 9px 0; -moz-appearance: textfield; }
 .stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .stepper input:focus { box-shadow: none; }
-.stepper button { border: 0; background: none; font: 600 20px var(--f-body); color: var(--cobalt); cursor: pointer; height: 100%; border-radius: 9px; }
-.stepper button:hover { background: var(--cobalt-soft); }
-.age-badge { font-size: 12px; font-weight: 600; }
-.age-badge.ok { color: var(--save); }
-.age-badge.no { color: var(--muted); }
+.stepper:focus-within { border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(255,122,0,.22); }
+.stepper button { border: 0; background: none; font: 500 22px var(--f-titulo); color: var(--laranja-esc); cursor: pointer; height: 100%; }
+.stepper button:hover { background: var(--laranja-soft); }
+.age-badge { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+.age-badge::before { content: ""; width: 7px; height: 7px; transform: rotate(45deg); background: currentColor; }
+.age-badge.ok { color: var(--verde); }
+.age-badge.no { color: var(--texto-suave); }
 
-.switches { display: grid; gap: 10px; }
-.switch { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: start; cursor: pointer; font-size: 14px; }
+.switches { display: grid; gap: 12px; }
+.switch { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: start; cursor: pointer; font-size: 15px; }
 .switch input { position: absolute; opacity: 0; }
-.switch .track { width: 44px; height: 26px; border-radius: 99px; background: var(--line); position: relative; transition: background .2s; margin-top: 1px; }
-.switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s; }
-.switch input:checked + .track { background: var(--save); }
+.switch .track { width: 44px; height: 26px; border-radius: 99px; background: #CFCFD2; position: relative; transition: background .2s; margin-top: 1px; }
+.switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--branco); box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .25s var(--ease); }
+.switch input:checked + .track { background: var(--laranja); }
 .switch input:checked + .track::after { transform: translateX(18px); }
-.switch input:focus-visible + .track { outline: 3px solid var(--cobalt); outline-offset: 2px; }
+.switch input:focus-visible + .track { outline: 2px solid var(--laranja); outline-offset: 2px; }
 
-/* Result card */
+/* Result card (dark, like the landing's dark sections) */
 .result { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
 @media (max-width: 900px) { .result { position: static; } }
-.status { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; padding: 6px 12px 6px 8px; border-radius: 99px; }
+.inverso { background: var(--tinta); color: var(--claro); border-color: var(--tinta); position: relative; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,.55); }
+.inverso::before { content: ""; position: absolute; width: 520px; height: 520px; right: -220px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(255,122,0,.2), transparent 65%); pointer-events: none; }
+.inverso > * { position: relative; }
+.status { display: inline-flex; align-items: center; gap: 8px; font: 600 14px var(--f-titulo); padding: 6px 12px 6px 9px; border-radius: 5px; }
 .status svg { width: 18px; height: 18px; flex: none; }
-.status.good { background: var(--save-soft); color: var(--save); }
-.status.warn { background: var(--warn-soft); color: var(--warn); }
-.status.off { background: var(--off-soft); color: var(--muted); }
-.save-label { margin: 18px 0 0; color: var(--muted); font-weight: 600; font-size: 14px; }
-.save { margin: 0; font: 700 clamp(44px, 7vw, 68px)/1 var(--f-display); letter-spacing: -.03em; color: var(--save); font-variant-numeric: tabular-nums; }
-.save.zero { color: var(--muted); }
-.save-sub { margin: 8px 0 0; color: var(--muted); max-width: 46ch; }
+.status.good { background: rgba(63,181,127,.16); color: #74D6A9; }
+.status.warn { background: rgba(255,200,61,.16); color: var(--amarelo); }
+.status.off { background: #2A2A2A; color: var(--claro-suave); }
+.save-label { margin: 18px 0 4px; color: var(--claro-suave); font-weight: 500; font-size: 15px; }
+.save { margin: 0; font: 600 clamp(46px, 7vw, 72px)/1.05 var(--f-titulo); letter-spacing: -.03em; color: var(--claro); display: inline; background: linear-gradient(var(--amarelo), var(--amarelo)) 0 94% / 100% .1em no-repeat; }
+.save.zero { color: var(--claro-suave); background-size: 0 .1em; }
+.save-wrap { margin: 0; }
+.save-sub { margin: 12px 0 0; color: var(--claro-suave); max-width: 46ch; }
 .pulse { animation: pulse .5s ease; }
-@keyframes pulse { 0% { transform: scale(1); } 40% { transform: scale(1.03); } 100% { transform: scale(1); } }
+@keyframes pulse { 0% { opacity: .55; } 100% { opacity: 1; } }
 
-.bars { display: grid; gap: 14px; margin-top: 22px; }
+.bars { display: grid; gap: 14px; margin-top: 24px; }
 .bar-row { display: grid; gap: 6px; }
-.bar-head { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
-.bar-head b { font-weight: 700; }
-.bar-track { height: 14px; background: var(--paper); border-radius: 4px; overflow: hidden; }
-.bar-fill { height: 100%; width: 0; border-radius: 0 4px 4px 0; transition: width .6s cubic-bezier(.2,.8,.2,1); min-width: 2px; }
-.bar-fill.sem { background: var(--telha); }
-.bar-fill.com { background: var(--cobalt); }
-.bar-note { font-size: 12px; color: var(--muted); }
+.bar-head { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; }
+.bar-head b { font: 600 16px var(--f-titulo); }
+.bar-track { height: 14px; background: #2A2A2A; border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; width: 0; border-radius: 0 4px 4px 0; transition: width .7s var(--ease); min-width: 2px; }
+.bar-fill.sem { background: #8C8C8C; }
+.bar-fill.com { background: var(--laranja); }
+.bar-note { font-size: 13px; color: var(--claro-suave); }
 
-.scale { margin-top: 24px; }
-.scale-bar { position: relative; display: flex; height: 10px; border-radius: 99px; overflow: visible; gap: 2px; }
+.scale { margin-top: 26px; }
+.scale-bar { position: relative; display: flex; height: 8px; gap: 2px; }
 .scale-bar > div { height: 100%; }
-.scale-bar .z1 { background: var(--save); border-radius: 99px 0 0 99px; opacity: .85; }
-.scale-bar .z2 { background: var(--warn); opacity: .75; }
-.scale-bar .z3 { background: var(--line); border-radius: 0 99px 99px 0; }
-.scale-marker { position: absolute; top: 50%; width: 22px; height: 22px; margin-left: -11px; transform: translateY(-50%); border-radius: 50%; background: var(--surface); border: 4px solid var(--ink); transition: left .5s cubic-bezier(.2,.8,.2,1); box-shadow: var(--shadow); }
-.scale-labels { position: relative; height: 34px; font-size: 12px; color: var(--muted); margin-top: 6px; }
-.scale-labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; text-align: center; line-height: 1.25; }
+.scale-bar .z1 { background: #3FB57F; border-radius: 3px 0 0 3px; }
+.scale-bar .z2 { background: var(--amarelo); }
+.scale-bar .z3 { background: #3A3A3A; border-radius: 0 3px 3px 0; }
+.scale-marker { position: absolute; top: 50%; width: 18px; height: 18px; margin-left: -9px; transform: translateY(-50%) rotate(45deg); background: var(--laranja); border: 3px solid var(--tinta); transition: left .55s var(--ease); }
+.scale-labels { position: relative; height: 36px; font-size: 12px; color: var(--claro-suave); margin-top: 8px; }
+.scale-labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; text-align: center; line-height: 1.3; }
 .scale-labels span:first-child { transform: none; }
 
-.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 700 15px var(--f-body); border-radius: 11px; padding: 12px 16px; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; isolation: isolate; font: 500 16px/1.2 var(--f-titulo); border-radius: 7px; padding: 15px 20px; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: transform .25s var(--ease), box-shadow .3s ease, background-color .2s ease; }
 .btn svg { width: 18px; height: 18px; flex: none; }
-.btn.primary { background: var(--cobalt); color: var(--cobalt-ink); }
-.btn.primary:hover { filter: brightness(1.08); }
-.btn.wa { background: #1F8F4E; color: #FFFFFF; }
-.btn.wa:hover { filter: brightness(1.08); }
-.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
-.btn.ghost:hover { border-color: var(--cobalt); }
-.btn.small { padding: 8px 12px; font-size: 13px; }
+.btn.primary { background: var(--laranja); color: var(--tinta); }
+.btn.primary::after { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent); transform: skewX(-20deg); transition: left .8s var(--ease); }
+.btn.primary:hover { background: var(--laranja-claro); transform: translateY(-2px); box-shadow: 0 16px 32px -14px rgba(255,122,0,.75); }
+.btn.primary:hover::after { left: 130%; }
+.btn.wa { background: #1F9D55; color: #FFFFFF; }
+.btn.wa:hover { transform: translateY(-2px); background: #22AE5E; }
+.btn.ghost { background: transparent; color: inherit; border-color: currentColor; }
+.btn.ghost:hover { border-color: var(--laranja); color: var(--laranja-claro); }
+.panel:not(.inverso) .btn.ghost { color: var(--texto); border-color: var(--linha); }
+.panel:not(.inverso) .btn.ghost:hover { border-color: var(--laranja); color: var(--laranja-esc); }
+.btn.small { padding: 10px 14px; font-size: 15px; }
 .btn.grow { flex: 1 1 200px; }
-.note { background: var(--warn-soft); color: var(--ink); border-radius: 10px; padding: 14px; margin-top: 16px; font-size: 14px; }
+.note { background: #2A2A2A; color: var(--claro); border-radius: 5px; padding: 14px; margin-top: 16px; font-size: 15px; }
 
-/* Chart */
-.section { padding-block: 4px 22px; }
-.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px 20px; margin-bottom: 14px; }
-.sec-head p { margin: 4px 0 0; color: var(--muted); max-width: 62ch; }
+/* Sections */
+.section { padding-block: 0 24px; }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px 20px; margin-bottom: 16px; }
+.sec-head p { margin: 6px 0 0; color: var(--texto-suave); max-width: 62ch; }
 .chart-wrap { position: relative; }
 .chart-wrap svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
-.chart-wrap .grid line { stroke: var(--line); stroke-width: 1; }
-.chart-wrap text { fill: var(--muted); font: 500 11px var(--f-body); }
-.chart-wrap .zone-label { font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
-.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--paper); border-radius: 10px; padding: 8px 10px; font-size: 13px; line-height: 1.35; white-space: nowrap; transform: translate(-50%, calc(-100% - 14px)); box-shadow: var(--shadow); font-variant-numeric: tabular-nums; }
-.tip b { font-weight: 700; }
-.chart-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; font-size: 13px; color: var(--muted); align-items: center; }
-.key { display: inline-flex; align-items: center; gap: 6px; }
-.key i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-.table-scroll { overflow-x: auto; margin-top: 12px; }
-table { border-collapse: collapse; width: 100%; font-size: 14px; }
-th, td { text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.chart-wrap .grid line { stroke: var(--linha); stroke-width: 1; }
+.chart-wrap text { fill: var(--texto-suave); font: 500 11px var(--f-texto); }
+.chart-wrap .zone-label { font: 600 12px var(--f-titulo); letter-spacing: .02em; }
+.tip { position: absolute; pointer-events: none; background: var(--tinta); color: var(--claro); border-radius: 5px; padding: 8px 11px; font-size: 13px; line-height: 1.4; white-space: nowrap; transform: translate(-50%, calc(-100% - 14px)); box-shadow: 0 12px 24px -10px rgba(0,0,0,.4); font-variant-numeric: tabular-nums; }
+.tip b { font-weight: 600; color: var(--laranja-claro); }
+.chart-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: 14px; color: var(--texto-suave); align-items: center; }
+.key { display: inline-flex; align-items: center; gap: 7px; }
+.key i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.table-scroll { overflow-x: auto; margin-top: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: right; padding: 9px 10px; border-bottom: 1px solid var(--linha); white-space: nowrap; }
 th:first-child, td:first-child { text-align: left; }
-thead th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+thead th { font: 600 12px var(--f-titulo); text-transform: uppercase; letter-spacing: .06em; color: var(--texto-suave); }
 tfoot td { font-weight: 700; border-bottom: 0; }
-td.good { color: var(--save); font-weight: 700; }
+td.good { color: var(--verde); font-weight: 600; }
 
-/* Mortgage */
-.mort { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; }
+.mort { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
 @media (max-width: 760px) { .mort { grid-template-columns: minmax(0, 1fr); } }
 .mort-inputs { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); align-content: start; }
 .mort-inputs .full { grid-column: 1 / -1; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; align-content: start; }
-.kpi { background: var(--paper); border-radius: 12px; padding: 14px; display: grid; gap: 4px; min-width: 0; }
-.kpi span { font-size: 13px; color: var(--muted); }
-.kpi b { font: 700 24px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
-.kpi.hero { grid-column: 1 / -1; background: var(--save-soft); }
-.kpi.hero b { color: var(--save); font-size: 30px; }
+.kpi { background: var(--pedra); border-radius: 7px; padding: 14px 16px; display: grid; gap: 4px; min-width: 0; }
+.kpi span { font-size: 14px; color: var(--texto-suave); }
+.kpi b { font: 600 24px/1.1 var(--f-titulo); letter-spacing: -.01em; }
+.kpi.hero-kpi { grid-column: 1 / -1; background: var(--tinta); }
+.kpi.hero-kpi span { color: var(--claro-suave); }
+.kpi.hero-kpi b { color: var(--claro); font-size: 32px; justify-self: start; background: linear-gradient(var(--amarelo), var(--amarelo)) 0 94% / 100% .12em no-repeat; }
 
-/* Lead + report */
-.lead-panel { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; }
+.lead-panel { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 56px); }
 @media (max-width: 760px) { .lead-panel { grid-template-columns: minmax(0, 1fr); } }
-.lead-txt p { color: var(--muted); margin: 8px 0 0; }
-.lead-txt ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.lead-txt li { display: flex; gap: 8px; align-items: start; }
-.lead-txt li svg { width: 18px; height: 18px; color: var(--save); flex: none; margin-top: 2px; }
-.lead-form { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.lead-txt p { color: var(--texto-suave); margin: 10px 0 0; }
+.lista { margin: 16px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--linha); }
+.lista li { padding: 13px 0; border-bottom: 1px solid var(--linha); display: flex; gap: 14px; align-items: baseline; }
+.lista li::before { content: ""; width: 7px; height: 7px; flex: none; background: var(--laranja); transform: rotate(45deg) translateY(-2px); }
+.lead-form { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
 .lead-form .full { grid-column: 1 / -1; }
-.consent { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; font-size: 13px; color: var(--muted); align-items: start; }
-.consent input { width: 18px; height: 18px; accent-color: var(--cobalt); margin: 1px 0 0; }
-.form-msg { font-size: 14px; margin: 0; }
-.form-msg.err { color: var(--telha); font-weight: 600; }
-.form-msg.ok { color: var(--save); font-weight: 600; }
-.report { margin-top: 18px; display: grid; gap: 18px; }
+.consent { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px; font-size: 14px; color: var(--texto-suave); align-items: start; }
+.consent input { width: 20px; height: 20px; accent-color: var(--tinta); margin: 1px 0 0; }
+.form-msg { font-size: 15px; margin: 0; min-height: 1.4em; }
+.form-msg.err { color: #A23B2A; font-weight: 600; }
+.form-msg.ok { color: var(--verde); font-weight: 600; }
+.report { margin-top: 18px; display: grid; gap: 20px; }
 .rep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 0; }
-.rep-grid div { background: var(--paper); border-radius: 10px; padding: 12px; }
-.rep-grid dt { font-size: 12px; color: var(--muted); }
-.rep-grid dd { margin: 2px 0 0; font-weight: 700; }
-.report h3 { font-size: 17px; }
-.report ul { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; }
+.rep-grid div { background: var(--pedra); border-radius: 7px; padding: 12px 14px; }
+.rep-grid dt { font-size: 13px; color: var(--texto-suave); }
+.rep-grid dd { margin: 2px 0 0; font-weight: 600; }
+.report h3 { font-size: 20px; }
+.report ul { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.report ul li { display: flex; gap: 12px; align-items: baseline; }
+.report ul li::before { content: ""; width: 7px; height: 7px; flex: none; background: var(--laranja); transform: rotate(45deg) translateY(-2px); }
+.eyebrow { margin: 0; font: 600 13px var(--f-titulo); letter-spacing: .08em; text-transform: uppercase; color: var(--laranja-esc); }
 
-/* Share */
-.share-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 24px; align-items: start; }
+.share-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 28px; align-items: start; }
 @media (max-width: 760px) { .share-grid { grid-template-columns: minmax(0, 1fr); } }
 .link-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .link-row input { font-size: 14px; }
-.qr-box { display: grid; justify-items: center; gap: 8px; background: #FFFFFF; border-radius: 12px; padding: 14px; border: 1px solid var(--line); }
+.qr-box { display: grid; justify-items: center; gap: 10px; background: var(--branco); border-radius: 7px; padding: 16px; border: 1px solid var(--linha); }
 .qr-box #qr img, .qr-box #qr canvas { display: block; max-width: 100%; height: auto; }
-.qr-box p { margin: 0; color: #56627C; font-size: 12px; text-align: center; }
-.gen { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top: 8px; }
+.qr-box p { margin: 0; color: var(--texto-suave); font-size: 13px; text-align: center; }
+.gen { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top: 10px; }
 .gen .full { grid-column: 1 / -1; }
-details.gen-wrap { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
-details.gen-wrap summary { cursor: pointer; font-weight: 700; }
-input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); padding: 4px; }
+details.gen-wrap { border-top: 1px solid var(--linha); margin-top: 20px; padding-top: 16px; }
+details.gen-wrap summary { cursor: pointer; font: 600 17px var(--f-titulo); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+details.gen-wrap summary::-webkit-details-marker { display: none; }
+details.gen-wrap summary::after { content: "+"; color: var(--laranja-esc); font-weight: 400; font-size: 22px; line-height: 1; transition: transform .35s var(--ease); }
+details.gen-wrap[open] summary::after { transform: rotate(45deg); }
+input[type=color] { width: 100%; height: 46px; border: 1px solid #B5B0A6; border-radius: 3px; background: var(--branco); padding: 4px; }
 
-.foot { padding-block: 10px 40px; color: var(--muted); font-size: 13px; display: grid; gap: 6px; }
-.foot p { margin: 0; max-width: 90ch; }
+.rodape { background: var(--tinta); color: var(--claro-suave); font-size: 14px; margin-top: 24px; }
+.rodape .wrap { display: grid; gap: 10px; padding-block: 32px calc(32px + env(safe-area-inset-bottom, 0px)); }
+.rodape p { margin: 0; max-width: 92ch; }
+.rodape .marca { font-size: 20px; }
+.rodape-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 6px; }
+.rodape a { color: var(--laranja-claro); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .draw { stroke-dashoffset: 0; }
+  .plano text { opacity: .8; }
+  .onda { display: none; }
 }
 @media print {
-  .band::before, #sim, .result .actions, #chartSec, #mortSec, .lead-panel, #shareSec, .brand-actions, #printBtn { display: none !important; }
+  .topo, .hero, .faixa, #sim, .result .actions, #chartSec, #mortSec, .lead-panel, #partilhar, #printBtn, .rodape { display: none !important; }
   .layout { display: block; }
-  .panel { box-shadow: none; }
-  body { background: #FFFFFF; }
+  .inverso { background: #FFFFFF; color: #1A1A1A; box-shadow: none; }
 }
 </style>
 
-<header class="band">
-  <div class="wrap band-in">
-    <div class="brand">
-      <div class="avatar" id="avatar" aria-hidden="true">JF</div>
-      <div class="brand-txt"><strong id="cNome">Joana Ferreira</strong><span id="cCargo">Consultora imobiliária</span></div>
-      <span class="tag" id="tagExemplo">Marca de exemplo</span>
-      <div class="brand-actions">
-        <a class="btn ghost small" href="#partilhar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
-          Partilhar
-        </a>
-      </div>
-    </div>
-    <p class="eyebrow">Simulação 2026 · Habitação própria e permanente</p>
-    <h1>Quanto poupa com o <em>IMT Jovem</em>?</h1>
-    <p class="lede">Para quem tem até 35 anos e compra a primeira casa para viver. Mexa nos valores e veja na hora o IMT e o Imposto do Selo, com e sem isenção.</p>
+<div class="topo">
+  <div class="wrap">
+    <span class="marca" id="topoMarca">VT Gestores de Tráfego</span>
+    <a class="topo-link" href="#partilhar">Partilhar simulador</a>
   </div>
-</header>
+</div>
+
+<section class="hero" id="hero" aria-labelledby="titulo">
+  <div class="luz" aria-hidden="true"></div>
+  <div class="plano" aria-hidden="true"><svg viewBox="0 0 420 340" fill="none" stroke="currentColor" stroke-width="1.4">
+    <path class="draw" pathLength="1" stroke-width=".7" d="M0 290h420M30 0v340M390 0v340M0 40h420"/>
+    <path class="draw" pathLength="1" stroke-width="2" d="M90 290V170L210 80l120 90v120"/>
+    <path class="draw" pathLength="1" stroke-width="1.4" d="M60 192 210 80l150 112"/>
+    <path class="draw" pathLength="1" d="M180 290v-70h60v70M115 200h40v36h-40zM265 200h40v36h-40z"/>
+    <circle class="draw" pathLength="1" cx="210" cy="140" r="14"/>
+    <circle class="onda" cx="210" cy="190" r="150" stroke-width="1.1"/>
+    <path class="draw" pathLength="1" stroke-width=".7" stroke-dasharray="2 4" d="M60 310h300"/>
+    <text x="150" y="328">até 330 539 € sem IMT</text>
+    <text x="300" y="60">primeira casa</text>
+  </svg></div>
+  <div class="wrap">
+    <div class="hero-txt">
+      <div class="consultor" id="consultorCard">
+        <div class="avatar" id="avatar" aria-hidden="true">JF</div>
+        <div class="c-txt"><strong id="cNome">Joana Ferreira</strong><span id="cCargo">Consultora imobiliária</span></div>
+        <span class="tag" id="tagExemplo">Marca de exemplo</span>
+      </div>
+      <h1 id="titulo">Quanto poupa com o <mark>IMT Jovem</mark>?</h1>
+      <p class="lead">Para quem tem até 35 anos e compra a primeira casa para viver. Mexa nos valores e veja na hora o IMT e o Imposto do Selo, com e sem isenção.</p>
+    </div>
+  </div>
+</section>
+<div class="faixa" aria-hidden="true"><div class="trilho"><span>IMT Jovem 2026</span><span>Até 35 anos</span><span>Isenção até 330 539 €</span><span>Imposto do Selo</span><span>Primeira habitação</span><span>Garantia pública</span><span>IMT Jovem 2026</span><span>Até 35 anos</span><span>Isenção até 330 539 €</span><span>Imposto do Selo</span><span>Primeira habitação</span><span>Garantia pública</span></div></div>
 
 <main class="wrap layout">
   <form class="panel stack" id="sim" novalidate>
@@ -370,14 +415,14 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
   </form>
 
   <aside class="result" aria-live="polite">
-    <div class="panel" id="card">
+    <div class="panel inverso" id="card">
       <span class="status good" id="status"></span>
       <div id="numbers">
         <p class="save-label">Poupança estimada com o IMT Jovem</p>
-        <p class="save" id="poupanca">0 €</p>
+        <p class="save-wrap"><span class="save" id="poupanca">0 €</span></p>
         <p class="save-sub" id="saveSub"></p>
 
-        <div class="bars" role="img" aria-label="Comparação dos impostos com e sem IMT Jovem" id="bars">
+        <div class="bars" role="img" aria-label="Comparação dos impostos com e sem IMT Jovem">
           <div class="bar-row">
             <div class="bar-head"><span>Sem IMT Jovem</span><b id="semTotal">0 €</b></div>
             <div class="bar-track"><div class="bar-fill sem" id="barSem"></div></div>
@@ -391,7 +436,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
         </div>
 
         <div class="scale" aria-hidden="true">
-          <div class="scale-bar" id="scaleBar"><div class="z1" id="z1"></div><div class="z2" id="z2"></div><div class="z3" id="z3"></div><span class="scale-marker" id="marker"></span></div>
+          <div class="scale-bar"><div class="z1" id="z1"></div><div class="z2" id="z2"></div><div class="z3" id="z3"></div><span class="scale-marker" id="marker"></span></div>
           <div class="scale-labels" id="scaleLabels"></div>
         </div>
       </div>
@@ -400,9 +445,9 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
       <div class="actions">
         <a class="btn wa grow" id="waBtn" href="#" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>
-          <span id="waLabel">Falar com a Joana</span>
+          <span id="waLabel">Falar no WhatsApp</span>
         </a>
-        <a class="btn ghost grow" href="#relatorio">Receber relatório completo</a>
+        <a class="btn primary grow" href="#relatorio">Receber relatório completo</a>
       </div>
     </div>
   </aside>
@@ -422,9 +467,9 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
       <div class="tip" id="tip" hidden></div>
     </div>
     <div class="chart-foot">
-      <span class="key"><i style="background: var(--save-soft); border: 1px solid var(--save)"></i>Isenção total</span>
-      <span class="key"><i style="background: var(--warn-soft); border: 1px solid var(--warn)"></i>Isenção parcial</span>
-      <span class="key"><i style="background: var(--off-soft); border: 1px solid var(--line)"></i>Sem isenção</span>
+      <span class="key"><i style="background: var(--verde-soft); border: 1px solid var(--verde)"></i>Isenção total</span>
+      <span class="key"><i style="background: var(--ambar-soft); border: 1px solid var(--ambar)"></i>Isenção parcial</span>
+      <span class="key"><i style="background: var(--cinza-soft); border: 1px solid var(--linha)"></i>Sem isenção</span>
       <span id="cliffNote"></span>
     </div>
     <div class="table-scroll" id="tblWrap" hidden>
@@ -462,14 +507,14 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
         <p class="hint full">A taxa de 3,0% é só um exemplo. Peça a sua ao banco.</p>
       </div>
       <div class="kpis">
-        <div class="kpi hero"><span>A poupança do IMT Jovem paga cerca de</span><b id="kpiMeses">0 prestações</b></div>
+        <div class="kpi hero-kpi"><span>A poupança do IMT Jovem paga cerca de</span><b id="kpiMeses">0 prestações</b></div>
         <div class="kpi"><span>Prestação estimada por mês</span><b id="kpiPrest">0 €</b></div>
         <div class="kpi"><span>Valor do crédito</span><b id="kpiCred">0 €</b></div>
         <div class="kpi"><span>Entrada a pagar</span><b id="kpiEntrada">0 €</b></div>
         <div class="kpi"><span>Imposto do Selo do crédito (0,6%)</span><b id="kpiIsCred">0 €</b></div>
       </div>
     </div>
-    <p class="hint" style="margin-top: 14px">A prestação não inclui seguros nem comissões bancárias. O Imposto do Selo sobre o crédito não está coberto pelo IMT Jovem.</p>
+    <p class="hint" style="margin-top: 16px">A prestação não inclui seguros nem comissões bancárias. O Imposto do Selo sobre o crédito não está coberto pelo IMT Jovem.</p>
   </div>
 </section>
 
@@ -478,17 +523,17 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     <div class="lead-txt">
       <h2 class="h2">Receba o relatório completo</h2>
       <p>Fica com a sua simulação guardada e com o que precisa de saber antes da escritura.</p>
-      <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Detalhe do IMT e do Imposto do Selo</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Requisitos a confirmar com as Finanças</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Como não perder a isenção depois da compra</li>
+      <ul class="lista">
+        <li>Detalhe do IMT e do Imposto do Selo</li>
+        <li>Requisitos a confirmar com as Finanças</li>
+        <li>Como não perder a isenção depois da compra</li>
       </ul>
     </div>
     <form class="lead-form" id="leadForm" novalidate>
       <div class="field full"><label for="lNome">Nome</label><input id="lNome" type="text" autocomplete="name" placeholder="O seu nome"></div>
       <div class="field"><label for="lTel">Telemóvel</label><input id="lTel" type="tel" autocomplete="tel" inputmode="tel" placeholder="912 345 678"></div>
       <div class="field"><label for="lEmail">Email <em>(opcional)</em></label><input id="lEmail" type="email" autocomplete="email" placeholder="nome@email.com"></div>
-      <label class="consent full"><input type="checkbox" id="lConsent"><span id="consentTxt">Aceito ser contactado(a) por Joana Ferreira sobre esta simulação. Os meus dados não são partilhados com terceiros.</span></label>
+      <label class="consent full"><input type="checkbox" id="lConsent"><span id="consentTxt">Aceito ser contactado(a) sobre esta simulação. Os meus dados não são partilhados com terceiros.</span></label>
       <div class="full"><button type="submit" class="btn primary" style="width: 100%">Ver o meu relatório</button></div>
       <p class="form-msg full" id="formMsg" role="status"></p>
     </form>
@@ -505,7 +550,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
       </div>
     </div>
     <div class="share-grid">
-      <div class="stack" style="gap: 14px">
+      <div class="stack" style="gap: 16px">
         <div class="field">
           <label for="shareLink">Link do simulador</label>
           <div class="link-row"><input id="shareLink" type="text" readonly><button type="button" class="btn primary small" id="copyBtn">Copiar link</button></div>
@@ -513,8 +558,8 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
         </div>
         <div class="actions" style="margin-top: 0">
           <a class="btn wa small" id="shareWa" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
-          <a class="btn ghost small" id="shareFb" href="#" target="_blank" rel="noopener">Partilhar no Facebook</a>
-          <a class="btn ghost small" id="shareLi" href="#" target="_blank" rel="noopener">Partilhar no LinkedIn</a>
+          <a class="btn ghost small" id="shareFb" href="#" target="_blank" rel="noopener">Facebook</a>
+          <a class="btn ghost small" id="shareLi" href="#" target="_blank" rel="noopener">LinkedIn</a>
           <button type="button" class="btn ghost small" id="copyResult">Copiar o meu resultado</button>
         </div>
         <details class="gen-wrap" id="genWrap">
@@ -524,7 +569,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
             <div class="field"><label for="gNome">Nome</label><input id="gNome" type="text" placeholder="Ex.: Joana Ferreira"></div>
             <div class="field"><label for="gWa">WhatsApp</label><input id="gWa" type="tel" inputmode="tel" placeholder="912 345 678"></div>
             <div class="field"><label for="gAg">Agência <em>(opcional)</em></label><input id="gAg" type="text" placeholder="Nome da agência"></div>
-            <div class="field"><label for="gCor">Cor da marca</label><input id="gCor" type="color" value="#1F4BA5"></div>
+            <div class="field"><label for="gCor">Cor da marca</label><input id="gCor" type="color" value="#FF7A00"></div>
             <div class="field full"><label for="gLink">O seu link</label><div class="link-row"><input id="gLink" type="text" readonly placeholder="Preencha o nome e o WhatsApp"><button type="button" class="btn primary small" id="gCopy">Copiar</button></div><p class="hint" id="gMsg" role="status"></p></div>
           </div>
         </details>
@@ -537,9 +582,12 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
   </div>
 </section>
 
-<footer class="wrap foot">
-  <p><b>Simulação indicativa.</b> Usa as tabelas do IMT para 2026 (escalões atualizados em 2% pelo Orçamento do Estado), com isenção total até 330 539 € e parcial até 660 982 € no Continente (valores 25% mais altos nos Açores e na Madeira). Com dois compradores, a isenção aplica-se só à parte de quem cumpre os requisitos.</p>
-  <p>Não substitui a liquidação feita pela Autoridade Tributária. Confirme sempre no Portal das Finanças antes da escritura.</p>
+<footer class="rodape">
+  <div class="wrap">
+    <div class="rodape-top"><span class="marca">VT Gestores de Tráfego</span><span>Simulador criado pela VT Gestores de Tráfego</span></div>
+    <p><b>Simulação indicativa.</b> Usa as tabelas do IMT para 2026 (escalões atualizados em 2% pelo Orçamento do Estado), com isenção total até 330 539 € e parcial até 660 982 € no Continente (valores 25% mais altos nos Açores e na Madeira). Com dois compradores, a isenção aplica-se só à parte de quem cumpre os requisitos.</p>
+    <p>Não substitui a liquidação feita pela Autoridade Tributária. Confirme sempre no Portal das Finanças antes da escritura.</p>
+  </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -550,6 +598,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
   var DEFAULTS = {
     modo: "demo",
     exemploMarca: true,
+    marcaTopo: "VT Gestores de Tráfego",
     consultor: { nome: "Joana Ferreira", cargo: "Consultora imobiliária", agencia: "Imobiliária Exemplo", whatsapp: "", foto: "", cor: "" },
     webhookUrl: "",
     linkPartilha: "https://claude.ai/artifact/AEiUAdJoMVnL1VeUNoELtn",
@@ -567,11 +616,12 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
   }
   var CFG = merge(DEFAULTS, window.SIMULADOR_CONFIG || {});
   var SITE = CFG.modo === "site";
+  var personalizado = false;
 
   if (SITE && CFG.aceitarParametrosUrl) {
     try {
       var qp = new URLSearchParams(location.search);
-      if (qp.get("nome")) { CFG.consultor.nome = qp.get("nome").slice(0, 60); CFG.exemploMarca = false; CFG.consultor.cargo = "Consultor(a) imobiliário(a)"; }
+      if (qp.get("nome")) { CFG.consultor.nome = qp.get("nome").slice(0, 60); CFG.exemploMarca = false; CFG.consultor.cargo = "Consultor(a) imobiliário(a)"; CFG.consultor.agencia = ""; personalizado = true; }
       if (qp.get("wa")) CFG.consultor.whatsapp = qp.get("wa").replace(/\D/g, "").slice(0, 15);
       if (qp.get("agencia")) CFG.consultor.agencia = qp.get("agencia").slice(0, 60);
       if (qp.get("cargo")) CFG.consultor.cargo = qp.get("cargo").slice(0, 60);
@@ -636,13 +686,10 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
 
   function read() {
     var two = document.querySelector("input[name=n]:checked").value === "2";
+    var ra = document.querySelector("input[name=local]:checked").value === "ra";
     return {
-      v: parseEuro($("valor").value),
-      k: document.querySelector("input[name=local]:checked").value === "ra" ? 1.25 : 1,
-      ra: document.querySelector("input[name=local]:checked").value === "ra",
-      n: two ? 2 : 1,
-      a1: parseInt($("idade1").value, 10) || 0,
-      a2: parseInt($("idade2").value, 10) || 0,
+      v: parseEuro($("valor").value), k: ra ? 1.25 : 1, ra: ra, n: two ? 2 : 1,
+      a1: parseInt($("idade1").value, 10) || 0, a2: parseInt($("idade2").value, 10) || 0,
       q1: clamp(parseInt($("quota1").value, 10) || 50, 5, 95) / 100,
       hpp: $("rHpp").checked, r3: $("r3").checked, irs: $("rIrs").checked
     };
@@ -667,7 +714,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     if (!f.hpp) return { tone: "off", txt: "Sem isenção: não é habitação própria", sub: "" };
     if (!f.v) return { tone: "off", txt: "Escreva o valor do imóvel", sub: "" };
     if (!c.young) return { tone: "off", txt: "Sem isenção: ninguém tem até 35 anos", sub: "O IMT Jovem é só para compradores com 35 anos ou menos à data da escritura." };
-    if (!c.req) return { tone: "off", txt: "Sem isenção: requisitos por cumprir", sub: "Confirme os requisitos acima. Sem eles, paga o IMT e o Imposto do Selo normais." };
+    if (!c.req) return { tone: "off", txt: "Sem isenção: requisitos por cumprir", sub: "Confirme os requisitos. Sem eles, paga o IMT e o Imposto do Selo normais." };
     if (c.zona === "nenhuma") return { tone: "off", txt: "Sem isenção: valor acima de " + eur0(c.P), sub: "Acima deste valor perde toda a isenção e paga IMT a taxa única." };
     var shareTxt = c.share < 1 ? " A isenção aplica-se só à parte de quem tem até 35 anos (" + pct + "% do imóvel)." : "";
     if (c.zona === "total") return { tone: c.share < 1 ? "warn" : "good", txt: c.share < 1 ? "Isenção sobre " + pct + "% do imóvel" : "Isenção total", sub: (c.share < 1 ? "" : "Não paga IMT nem Imposto do Selo sobre a compra.") + shareTxt };
@@ -753,7 +800,8 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     $("q2lbl").textContent = "Comprador 2: " + (100 - q) + "%";
   }
 
-  function firstName() { return (CFG.consultor.nome || "").trim().split(/\s+/)[0] || "consultor"; }
+  function contactoNome() { return (CFG.consultor.nome || "").trim() || CFG.marcaTopo; }
+  function firstName() { return contactoNome().split(/\s+/)[0]; }
   function resultText(c) {
     return "Simulei o IMT Jovem: casa de " + eur0(c.f.v) + (c.f.ra ? " (Açores/Madeira)" : "") + " e poupança estimada de " + eur0(c.poupanca) + ".";
   }
@@ -796,7 +844,6 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
 
   /* Chart */
   var SVGNS = "http://www.w3.org/2000/svg";
-  var chartState = null;
   function el(name, attrs, parent) {
     var e = document.createElementNS(SVGNS, name);
     for (var a in attrs) e.setAttribute(a, attrs[a]);
@@ -827,9 +874,9 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     function Y(v) { return m.t + ih - v / yMax * ih; }
 
     var zones = [
-      [0, L, "var(--save-soft)", "Isenção total", "var(--save)"],
-      [L, P, "var(--warn-soft)", narrow ? "Parcial" : "Isenção parcial", "var(--warn)"],
-      [P, xMax, "var(--off-soft)", narrow ? "Sem" : "Sem isenção", "var(--muted)"]
+      [0, L, "var(--verde-soft)", "Isenção total", "var(--verde)"],
+      [L, P, "var(--ambar-soft)", narrow ? "Parcial" : "Isenção parcial", "var(--ambar)"],
+      [P, xMax, "var(--cinza-soft)", narrow ? "Sem" : "Sem isenção", "var(--texto-suave)"]
     ];
     zones.forEach(function (z) {
       el("rect", { x: X(z[0]), y: m.t, width: Math.max(0, X(z[1]) - X(z[0])), height: ih, fill: z[2] }, svg);
@@ -851,20 +898,19 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     }
 
     var d = pts.map(function (p, i) { return (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1); }).join(" ");
-    el("path", { d: d + " L" + X(xMax) + " " + Y(0) + " L" + X(0) + " " + Y(0) + " Z", fill: "var(--cobalt)", "fill-opacity": "0.12", stroke: "none" }, svg);
-    el("path", { d: d, fill: "none", stroke: "var(--cobalt)", "stroke-width": 2.5, "stroke-linejoin": "round" }, svg);
+    el("path", { d: d + " L" + X(xMax) + " " + Y(0) + " L" + X(0) + " " + Y(0) + " Z", fill: "var(--mark-com)", "fill-opacity": "0.12", stroke: "none" }, svg);
+    el("path", { d: d, fill: "none", stroke: "var(--mark-com)", "stroke-width": 2.5, "stroke-linejoin": "round" }, svg);
 
     var cv = clamp(c.f.v, 0, xMax), cs = taxesFor(cv, k, share).poupanca;
-    el("line", { x1: X(cv), x2: X(cv), y1: m.t, y2: m.t + ih, stroke: "var(--ink)", "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.5 }, svg);
-    el("circle", { cx: X(cv), cy: Y(cs), r: 7, fill: "var(--cobalt)", stroke: "var(--surface)", "stroke-width": 2.5 }, svg);
-    var lab = el("text", { x: clamp(X(cv), m.l + 40, m.l + iw - 40), y: Math.max(m.t + 14, Y(cs) - 14), "text-anchor": "middle", style: "fill: var(--ink); font-weight: 700; font-size: 12px" }, svg);
+    el("line", { x1: X(cv), x2: X(cv), y1: m.t, y2: m.t + ih, stroke: "var(--tinta)", "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.45 }, svg);
+    el("rect", { x: X(cv) - 7, y: Y(cs) - 7, width: 14, height: 14, fill: "var(--laranja)", stroke: "var(--branco)", "stroke-width": 2.5, transform: "rotate(45 " + X(cv) + " " + Y(cs) + ")" }, svg);
+    var lab = el("text", { x: clamp(X(cv), m.l + 40, m.l + iw - 40), y: Math.max(m.t + 14, Y(cs) - 16), "text-anchor": "middle", style: "fill: var(--tinta); font-weight: 600; font-size: 12px" }, svg);
     lab.textContent = "A sua casa";
 
-    var hl = el("line", { x1: 0, x2: 0, y1: m.t, y2: m.t + ih, stroke: "var(--ink)", "stroke-width": 1, opacity: 0 }, svg);
-    var hd = el("circle", { cx: 0, cy: 0, r: 6, fill: "var(--surface)", stroke: "var(--cobalt)", "stroke-width": 2.5, opacity: 0 }, svg);
+    var hl = el("line", { x1: 0, x2: 0, y1: m.t, y2: m.t + ih, stroke: "var(--tinta)", "stroke-width": 1, opacity: 0 }, svg);
+    var hd = el("circle", { cx: 0, cy: 0, r: 6, fill: "var(--branco)", stroke: "var(--mark-com)", "stroke-width": 2.5, opacity: 0 }, svg);
     var hit = el("rect", { x: m.l, y: m.t, width: iw, height: ih, fill: "transparent", style: "cursor: crosshair" }, svg);
 
-    chartState = { X: X, Y: Y, m: m, iw: iw, W: W, xMax: xMax, k: k, share: share, hl: hl, hd: hd };
     function at(evt) {
       var r = svg.getBoundingClientRect();
       var px = (evt.clientX - r.left) * (W / r.width);
@@ -873,15 +919,14 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     }
     function show(evt) {
       var v = at(evt), t = taxesFor(v, k, share);
-      hl.setAttribute("x1", X(v)); hl.setAttribute("x2", X(v)); hl.setAttribute("opacity", 0.35);
+      hl.setAttribute("x1", X(v)); hl.setAttribute("x2", X(v)); hl.setAttribute("opacity", 0.3);
       hd.setAttribute("cx", X(v)); hd.setAttribute("cy", Y(t.poupanca)); hd.setAttribute("opacity", 1);
       var tip = $("tip"), r = svg.getBoundingClientRect(), scale = r.width / W;
       tip.hidden = false;
       tip.innerHTML = "Casa de <b></b><br>Poupança: <b></b>";
       tip.children[0].textContent = eur0(v);
       tip.children[2].textContent = eur0(t.poupanca);
-      var left = clamp(X(v) * scale, 80, r.width - 80);
-      tip.style.left = left + "px";
+      tip.style.left = clamp(X(v) * scale, 80, r.width - 80) + "px";
       tip.style.top = (Y(t.poupanca) * scale) + "px";
     }
     function hide() { $("tip").hidden = true; hl.setAttribute("opacity", 0); hd.setAttribute("opacity", 0); }
@@ -896,7 +941,8 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
 
   function renderTable(c) {
     var k = c.f.k, share = c.req && c.young ? c.share : 1;
-    var vals = [150000, 200000, 250000, 300000, Math.round(c.L), 400000, 500000, 600000, Math.round(c.P), 750000].map(function (v) { return Math.round(v * (v === Math.round(c.L) || v === Math.round(c.P) ? 1 : k)); });
+    var L = Math.round(c.L), P = Math.round(c.P);
+    var vals = [150000, 200000, 250000, 300000, 400000, 500000, 600000, 750000].map(function (v) { return Math.round(v * k); }).concat([L, P]);
     vals = vals.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
     $("tblBody").innerHTML = vals.map(function (v) {
       var t = taxesFor(v, k, share);
@@ -917,8 +963,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     });
   }
   $("valor").addEventListener("input", function () {
-    var v = parseEuro(this.value);
-    $("valorRange").value = String(clamp(v, 50000, 1000000));
+    $("valorRange").value = String(clamp(parseEuro(this.value), 50000, 1000000));
     render();
   });
   $("valor").addEventListener("blur", function () { this.value = spaced(parseEuro(this.value)); });
@@ -946,9 +991,25 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     this.textContent = open ? "Esconder tabela" : "Ver em tabela";
   });
 
-  var ro;
-  try { ro = new ResizeObserver(function () { if (last) drawChart(last); }); ro.observe($("chartWrap")); }
+  try { new ResizeObserver(function () { if (last) drawChart(last); }).observe($("chartWrap")); }
   catch (e) { window.addEventListener("resize", function () { if (last) drawChart(last); }); }
+
+  /* Hero light that follows the pointer (desktop only) */
+  var hero = $("hero"), desenho = document.querySelector(".plano svg");
+  try {
+    if (!reduceMotion && window.matchMedia("(pointer: fine)").matches) {
+      hero.addEventListener("pointermove", function (e) {
+        var r = hero.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        hero.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+        hero.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+        if (desenho) {
+          desenho.style.setProperty("--px", ((x - 0.5) * -24).toFixed(1) + "px");
+          desenho.style.setProperty("--py", ((y - 0.5) * -16).toFixed(1) + "px");
+        }
+      }, { passive: true });
+    }
+  } catch (e) {}
 
   /* Lead + report */
   function buyersTxt(c) {
@@ -960,7 +1021,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     var st = statusOf(c);
     var hoje = new Date().toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" });
     var num = (CFG.consultor.whatsapp || "").replace(/\D/g, "");
-    var contacto = num ? "<p>Fale com <b>" + esc(CFG.consultor.nome) + "</b> pelo WhatsApp <b>+" + esc(num.length === 9 ? "351 " + num : num) + "</b> para tirar dúvidas e marcar visitas.</p>" : "<p>Fale com <b>" + esc(CFG.consultor.nome) + "</b> para tirar dúvidas e marcar visitas.</p>";
+    var contacto = num ? "<p style=\"margin:8px 0 0\">Fale com <b>" + esc(contactoNome()) + "</b> pelo WhatsApp <b>+" + esc(num.length === 9 ? "351 " + num : num) + "</b> para tirar dúvidas e marcar visitas.</p>" : "<p style=\"margin:8px 0 0\">Fale com <b>" + esc(contactoNome()) + "</b> para tirar dúvidas e marcar visitas.</p>";
     var m = c.mort || {};
     return '' +
       '<div><p class="eyebrow">Relatório IMT Jovem · ' + esc(hoje) + '</p><h2 class="h2" style="margin-top:6px">Simulação de ' + esc(nome) + '</h2></div>' +
@@ -1016,11 +1077,12 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
         data: new Date().toISOString(), nome: nome, telemovel: tel, email: email,
         valor: c.f.v, localizacao: c.f.ra ? "Açores/Madeira" : "Continente", compradores: buyersTxt(c),
         resultado: statusOf(c).txt, poupanca: c.poupanca, imt_com: c.com.imt, selo_com: c.com.is,
-        consultor: CFG.consultor.nome, origem: location.href
+        consultor: contactoNome(), origem: location.href
       };
       try {
         fetch(CFG.webhookUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }).catch(function () {});
       } catch (err) {}
+      try { if (typeof fbq === "function") fbq("track", "Lead", { content_name: "Simulador IMT Jovem" }); } catch (err) {}
     }
     msg.className = "form-msg full ok";
     msg.textContent = SITE ? "Relatório pronto. Está logo abaixo." : "Relatório pronto, logo abaixo. Nesta demonstração os dados não são enviados para lado nenhum.";
@@ -1036,13 +1098,11 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
   function baseSite() { return SITE ? location.origin + location.pathname : (CFG.siteUrl || ""); }
   function copy(text, input, msgEl, okTxt) {
     function fallback() { input.focus(); input.select(); msgEl.textContent = "Selecionado. Copie com Ctrl+C ou com o menu do telemóvel."; }
-    try {
-      navigator.clipboard.writeText(text).then(function () { msgEl.textContent = okTxt; }, fallback);
-    } catch (e) { fallback(); }
+    try { navigator.clipboard.writeText(text).then(function () { msgEl.textContent = okTxt; }, fallback); }
+    catch (e) { fallback(); }
   }
   function setupShare() {
     var url = shareUrl();
-    var shareSec = $("partilhar");
     $("shareLink").value = url || "O link aparece aqui quando o simulador estiver publicado.";
     $("copyBtn").disabled = !url;
     var txt = "Tens até 35 anos e vais comprar casa? Vê quanto poupas com o IMT Jovem: ";
@@ -1052,10 +1112,9 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     ["shareWa", "shareFb", "shareLi"].forEach(function (id) { $(id).hidden = !url; });
     if (url && window.QRCode) {
       $("qr").innerHTML = "";
-      try { new QRCode($("qr"), { text: url, width: 176, height: 176, colorDark: "#14213D", colorLight: "#FFFFFF", correctLevel: QRCode.CorrectLevel.M }); }
+      try { new QRCode($("qr"), { text: url, width: 176, height: 176, colorDark: "#1A1A1A", colorLight: "#FFFFFF", correctLevel: QRCode.CorrectLevel.M }); }
       catch (e) { $("qrBox").hidden = true; }
     } else { $("qrBox").hidden = true; }
-    shareSec.hidden = false;
   }
   $("copyBtn").addEventListener("click", function () { copy($("shareLink").value, $("shareLink"), $("copyMsg"), "Link copiado."); });
   $("copyResult").addEventListener("click", function () {
@@ -1071,7 +1130,7 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
     var p = new URLSearchParams();
     p.set("nome", nome); p.set("wa", wa.length === 9 ? "351" + wa : wa);
     if ($("gAg").value.trim()) p.set("agencia", $("gAg").value.trim());
-    p.set("cor", $("gCor").value.replace("#", ""));
+    if ($("gCor").value.toUpperCase() !== "#FF7A00") p.set("cor", $("gCor").value.replace("#", ""));
     $("gLink").value = base + "?" + p.toString();
     $("gCopy").disabled = false;
     $("gMsg").textContent = "Abra o link para ver o simulador com a sua marca.";
@@ -1082,15 +1141,18 @@ input[type=color] { width: 100%; height: 44px; border: 1px solid var(--line); bo
   /* Brand */
   function applyBrand() {
     var cn = CFG.consultor;
+    $("topoMarca").textContent = personalizado ? (cn.agencia || cn.nome) : CFG.marcaTopo;
+    $("consultorCard").hidden = !cn.nome;
     $("cNome").textContent = cn.nome;
     $("cCargo").textContent = cn.agencia ? cn.cargo + " · " + cn.agencia : cn.cargo;
     $("tagExemplo").hidden = !CFG.exemploMarca;
     var av = $("avatar");
     if (cn.foto) { av.innerHTML = ""; var img = new Image(); img.alt = ""; img.src = cn.foto; av.appendChild(img); }
-    else av.textContent = cn.nome.split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase();
-    $("consentTxt").textContent = "Aceito ser contactado(a) por " + cn.nome + " sobre esta simulação. Os meus dados não são partilhados com terceiros.";
+    else av.textContent = (cn.nome || "VT").split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase();
+    $("consentTxt").textContent = "Aceito ser contactado(a) por " + contactoNome() + " sobre esta simulação. Os meus dados não são partilhados com terceiros.";
     if (cn.cor && /^#[0-9a-fA-F]{6}$/.test(cn.cor)) {
-      document.documentElement.style.setProperty("--cobalt", cn.cor);
+      document.documentElement.style.setProperty("--laranja", cn.cor);
+      document.documentElement.style.setProperty("--mark-com", cn.cor);
       $("gCor").value = cn.cor;
     }
   }
