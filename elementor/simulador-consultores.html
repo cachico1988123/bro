@@ -1,0 +1,924 @@
+<!--
+  VT Gestores de Tráfego | Simulador IMT Jovem (área de consultores)
+  COMO USAR NO ELEMENTOR:
+  1. Páginas > Adicionar nova. Título: "Simulador IMT Jovem". Endereço sugerido: /simulador-consultores
+  2. Em "Publicar > Visibilidade" escolhe "Protegida por senha" e define a senha.
+  3. Editar com Elementor > Definições da página (roda dentada) > Esquema: "Elementor Canvas".
+  4. Adiciona um contentor com largura "Largura total", preenchimento 0 e espaço entre elementos 0.
+  5. Arrasta um widget "HTML" para dentro e cola TODO este ficheiro.
+  6. No Yoast ou no Rank Math, marca a página como "Não indexar". Não a ponhas no menu.
+  7. No Joinchat, exclui esta página.
+  Os efeitos e o botão "Guardar em PDF" só funcionam por completo na pré-visualização ou na página publicada.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+#vtsim{width:100vw!important;max-width:100vw!important;margin-left:calc(50% - 50vw)!important;margin-right:calc(50% - 50vw)!important}
+html,body{overflow-x:clip}
+#vtsim{--tinta:#1A1A1A;--tinta-2:#232323;--branco:#FFFFFF;--pedra:#F5F5F5;--laranja:#FF7A00;--laranja-claro:#FF9A40;--laranja-esc:#B95800;--laranja-soft:#FFF1E5;--amarelo:#FFC83D;--texto:#1A1A1A;--texto-suave:#4D4D4D;--claro:#FAFAFA;--claro-suave:#BDBDBD;--linha:#DCDCDE;--verde:#0E7A43;--verde-soft:#E3F4EA;--ambar:#8A6100;--ambar-soft:#FFF4D6;--cinza-soft:#F0F0F0;--mark-com:#D96400;--titulo:'Jost',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.7,.1,1);position:relative;font-family:var(--sans);font-size:16px;line-height:1.6;font-weight:400;color:var(--texto);background:var(--branco);text-align:left;overflow-x:clip;-webkit-font-smoothing:antialiased;color-scheme:light}
+#vtsim *,#vtsim *::before,#vtsim *::after{box-sizing:border-box;margin:0;padding:0}
+#vtsim [hidden]{display:none!important}
+#vtsim h1,#vtsim h2,#vtsim h3,#vtsim p,#vtsim li,#vtsim label,#vtsim legend,#vtsim dt,#vtsim dd,#vtsim th,#vtsim td,#vtsim summary{font-family:inherit;letter-spacing:normal;text-transform:none;color:inherit;font-style:normal;border:0;background:none}
+#vtsim h1,#vtsim h2,#vtsim h3{font-family:var(--titulo);font-weight:600;line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
+#vtsim ul,#vtsim ol{list-style:none}
+#vtsim a{color:inherit;text-decoration:none;box-shadow:none}
+#vtsim svg{display:block;max-width:100%}
+#vtsim button{font-family:var(--titulo);text-transform:none;letter-spacing:normal;line-height:1.2;box-shadow:none;min-height:0;min-width:0;border-radius:0;background:none;border:0;color:inherit;cursor:pointer}
+#vtsim input,#vtsim textarea{font-family:var(--sans);text-transform:none;letter-spacing:normal;box-shadow:none;min-height:0;height:auto;margin:0;outline:none}
+#vtsim fieldset{border:0;min-width:0}
+#vtsim :focus-visible{outline:2px solid var(--laranja);outline-offset:3px}
+#vtsim mark{color:inherit;background:linear-gradient(var(--amarelo),var(--amarelo)) 0 92%/100% .16em no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0}
+#vtsim .vs-wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,5vw,48px)}
+#vtsim .vs-num,#vtsim table,#vtsim .vs-kpi b,#vtsim .vs-save,#vtsim .vs-bar-head b{font-variant-numeric:tabular-nums}
+
+/* Topo e hero */
+#vtsim .vs-topo{background:var(--tinta);color:var(--claro);padding-top:env(safe-area-inset-top,0px)}
+#vtsim .vs-topo .vs-wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:20px;padding-bottom:20px}
+#vtsim .vs-marca{font-family:var(--titulo);font-weight:600;font-size:22px;line-height:1;letter-spacing:-.01em;color:var(--claro)}
+#vtsim .vs-area{font-family:var(--titulo);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta);background:var(--amarelo);padding:4px 9px;border-radius:3px;white-space:nowrap}
+#vtsim .vs-hero{background:var(--tinta);color:var(--claro);position:relative;overflow:hidden;padding:clamp(28px,6vw,72px) 0 clamp(56px,9vw,104px)}
+#vtsim .vs-luz{position:absolute;inset:0;pointer-events:none;background:radial-gradient(560px circle at var(--mx,72%) var(--my,45%),rgba(255,122,0,.17),transparent 62%)}
+#vtsim .vs-hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 30% 40%,transparent 55%,rgba(0,0,0,.45) 100%)}
+#vtsim .vs-hero .vs-wrap{position:relative;z-index:2}
+#vtsim .vs-hero-txt{max-width:640px;display:grid;gap:20px}
+#vtsim .vs-hero h1{font-size:clamp(38px,5.6vw,66px);line-height:1.06;letter-spacing:-.02em;color:var(--claro)}
+#vtsim .vs-lead{font-size:clamp(16px,1.6vw,19px);color:var(--claro-suave);max-width:50ch}
+#vtsim .vs-plano{position:absolute;z-index:1;right:max(-40px,calc((100vw - 1120px)/2 - 20px));top:50%;transform:translateY(-50%);width:min(40vw,470px);color:var(--laranja);pointer-events:none}
+#vtsim .vs-plano svg{width:100%;height:auto;overflow:visible;transform:translate3d(var(--px,0px),var(--py,0px),0);transition:transform .9s var(--ease)}
+#vtsim .vs-plano text{font:500 12px var(--sans);fill:var(--laranja);opacity:0;animation:vs-aparecer .8s ease 2.4s forwards}
+#vtsim .vs-draw{stroke-dasharray:1;stroke-dashoffset:1;animation:vs-desenhar 2.6s var(--ease) .4s forwards}
+#vtsim .vs-onda{opacity:0;transform-box:fill-box;transform-origin:center;animation:vs-onda 3.4s ease-out 3s infinite}
+@keyframes vs-desenhar{to{stroke-dashoffset:0}}
+@keyframes vs-aparecer{to{opacity:.8}}
+@keyframes vs-onda{0%{transform:scale(.3);opacity:.8}100%{transform:scale(1);opacity:0}}
+@media (max-width:880px){#vtsim .vs-plano{width:120%;right:-50%;top:auto;bottom:-12%;transform:none;opacity:.14}}
+#vtsim .vs-faixa{background:var(--tinta-2);color:var(--laranja-claro);overflow:hidden;white-space:nowrap;border-top:1px solid #2E2E2E;padding:16px 0}
+#vtsim .vs-trilho{display:inline-flex;animation:vs-faixa 40s linear infinite}
+#vtsim .vs-faixa:hover .vs-trilho{animation-play-state:paused}
+#vtsim .vs-faixa span{display:inline-flex;align-items:center;font-family:var(--titulo);font-weight:500;font-size:clamp(17px,2vw,22px);line-height:1;letter-spacing:-.01em}
+#vtsim .vs-faixa span::after{content:"";width:7px;height:7px;background:var(--laranja);transform:rotate(45deg);margin:0 clamp(24px,4vw,48px)}
+@keyframes vs-faixa{to{transform:translateX(-50%)}}
+
+/* Bancada */
+#vtsim .vs-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;padding-top:clamp(28px,5vw,56px);padding-bottom:24px;align-items:start}
+@media (max-width:900px){#vtsim .vs-layout{grid-template-columns:minmax(0,1fr)}}
+#vtsim .vs-panel{background:var(--branco);border:1px solid var(--linha);border-radius:7px;padding:clamp(20px,3vw,28px);min-width:0}
+#vtsim .vs-h2{font-size:clamp(24px,2.6vw,30px)}
+#vtsim .vs-stack{display:grid;gap:22px}
+#vtsim .vs-field{display:grid;gap:8px;min-width:0}
+#vtsim .vs-field>label,#vtsim .vs-field>legend{font-weight:600;font-size:15px;line-height:1.3;color:var(--texto)}
+#vtsim .vs-field em{font-style:normal;color:var(--texto-suave);font-weight:400}
+#vtsim .vs-field:focus-within>label{color:var(--laranja-esc)}
+#vtsim .vs-hint{color:var(--texto-suave);font-size:14px}
+#vtsim .vs-input{display:block;width:100%;font-size:16px;font-weight:400;line-height:1.3;color:var(--texto);background:var(--branco);border:1px solid #B5B0A6;border-radius:3px;padding:12px 14px;min-width:0;appearance:none;-webkit-appearance:none;transition:border-color .2s ease,box-shadow .2s ease}
+#vtsim .vs-input:focus{border-color:var(--laranja);box-shadow:0 0 0 3px rgba(255,122,0,.22)}
+#vtsim textarea.vs-input{resize:vertical;min-height:190px;font-size:15px;line-height:1.5}
+#vtsim .vs-money{position:relative}
+#vtsim .vs-money .vs-input{padding-right:52px}
+#vtsim .vs-money span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--texto-suave);font-weight:500;pointer-events:none}
+#vtsim .vs-big .vs-input{font-family:var(--titulo);font-weight:600;font-size:28px;padding:12px 44px 12px 14px;letter-spacing:-.01em}
+#vtsim .vs-big span{font-size:22px}
+#vtsim input[type=range]{display:block;width:100%;accent-color:var(--laranja);background:transparent;border:0;padding:0;margin:2px 0 0;height:24px}
+#vtsim .vs-range-scale{display:flex;justify-content:space-between;font-size:13px;color:var(--texto-suave)}
+#vtsim .vs-chips{display:flex;flex-wrap:wrap;gap:8px}
+#vtsim .vs-chip{font-family:var(--titulo);font-weight:500;font-size:14px;color:var(--texto);background:var(--branco);border:1px solid var(--linha);border-radius:7px;padding:6px 13px;transition:border-color .2s,background .2s}
+#vtsim .vs-chip:hover{border-color:var(--laranja);background:var(--branco);color:var(--texto)}
+#vtsim .vs-chip[aria-pressed="true"]{background:var(--tinta);color:var(--claro);border-color:var(--tinta)}
+#vtsim .vs-seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--pedra);border:1px solid var(--linha);border-radius:7px;padding:3px;gap:3px}
+#vtsim .vs-seg input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+#vtsim .vs-seg label{text-align:center;padding:9px 8px;border-radius:5px;font-family:var(--titulo);font-weight:500;font-size:15px;cursor:pointer;color:var(--texto-suave);transition:background .2s,color .2s}
+#vtsim .vs-seg input:checked+label{background:var(--tinta);color:var(--claro)}
+#vtsim .vs-seg input:focus-visible+label{outline:2px solid var(--laranja);outline-offset:2px}
+#vtsim .vs-buyers{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+#vtsim .vs-stepper{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;border:1px solid #B5B0A6;border-radius:3px;background:var(--branco)}
+#vtsim .vs-stepper input{border:0;background:transparent;text-align:center;font-family:var(--titulo);font-weight:600;font-size:20px;padding:9px 0;width:100%;-moz-appearance:textfield;appearance:textfield}
+#vtsim .vs-stepper input::-webkit-inner-spin-button,#vtsim .vs-stepper input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+#vtsim .vs-stepper:focus-within{border-color:var(--laranja);box-shadow:0 0 0 3px rgba(255,122,0,.22)}
+#vtsim .vs-stepper button{font-size:22px;font-weight:500;color:var(--laranja-esc);height:100%;padding:0}
+#vtsim .vs-stepper button:hover{background:var(--laranja-soft);color:var(--laranja-esc)}
+#vtsim .vs-age{font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+#vtsim .vs-age::before{content:"";width:7px;height:7px;transform:rotate(45deg);background:currentColor}
+#vtsim .vs-age.ok{color:var(--verde)}
+#vtsim .vs-age.no{color:var(--texto-suave)}
+#vtsim .vs-switches{display:grid;gap:12px}
+#vtsim .vs-switch{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;cursor:pointer;font-size:15px;font-weight:400}
+#vtsim .vs-switch input{position:absolute;opacity:0;width:1px;height:1px}
+#vtsim .vs-track{width:44px;height:26px;border-radius:99px;background:#CFCFD2;position:relative;transition:background .2s;margin-top:1px}
+#vtsim .vs-track::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--branco);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s var(--ease)}
+#vtsim .vs-switch input:checked+.vs-track{background:var(--laranja)}
+#vtsim .vs-switch input:checked+.vs-track::after{transform:translateX(18px)}
+#vtsim .vs-switch input:focus-visible+.vs-track{outline:2px solid var(--laranja);outline-offset:2px}
+
+/* Cartão do resultado */
+#vtsim .vs-result{position:sticky;top:16px}
+@media (max-width:900px){#vtsim .vs-result{position:static}}
+#vtsim .vs-inverso{background:var(--tinta);color:var(--claro);border-color:var(--tinta);position:relative;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.55)}
+#vtsim .vs-inverso::before{content:"";position:absolute;width:520px;height:520px;right:-220px;top:-220px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,.2),transparent 65%);pointer-events:none}
+#vtsim .vs-inverso>*{position:relative}
+#vtsim .vs-status{display:inline-flex;align-items:center;gap:8px;font-family:var(--titulo);font-weight:600;font-size:14px;padding:6px 12px 6px 9px;border-radius:5px}
+#vtsim .vs-status svg{width:18px;height:18px;flex:none}
+#vtsim .vs-status.good{background:rgba(63,181,127,.16);color:#74D6A9}
+#vtsim .vs-status.warn{background:rgba(255,200,61,.16);color:var(--amarelo)}
+#vtsim .vs-status.off{background:#2A2A2A;color:var(--claro-suave)}
+#vtsim .vs-save-label{margin-top:18px;margin-bottom:4px;color:var(--claro-suave);font-weight:500;font-size:15px}
+#vtsim .vs-save{font-family:var(--titulo);font-weight:600;font-size:clamp(46px,7vw,72px);line-height:1.05;letter-spacing:-.03em;color:var(--claro);display:inline;background:linear-gradient(var(--amarelo),var(--amarelo)) 0 94%/100% .1em no-repeat}
+#vtsim .vs-save.zero{color:var(--claro-suave);background-size:0 .1em}
+#vtsim .vs-save-sub{margin-top:12px;color:var(--claro-suave);max-width:46ch}
+#vtsim .vs-bars{display:grid;gap:14px;margin-top:24px}
+#vtsim .vs-bar-row{display:grid;gap:6px}
+#vtsim .vs-bar-head{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+#vtsim .vs-bar-head b{font-family:var(--titulo);font-weight:600;font-size:16px}
+#vtsim .vs-bar-track{height:14px;background:#2A2A2A;border-radius:3px;overflow:hidden}
+#vtsim .vs-bar-fill{height:100%;width:0;border-radius:0 4px 4px 0;transition:width .7s var(--ease);min-width:2px}
+#vtsim .vs-bar-fill.sem{background:#8C8C8C}
+#vtsim .vs-bar-fill.com{background:var(--laranja)}
+#vtsim .vs-bar-note{font-size:13px;color:var(--claro-suave)}
+#vtsim .vs-scale{margin-top:26px}
+#vtsim .vs-scale-bar{position:relative;display:flex;height:8px;gap:2px}
+#vtsim .vs-scale-bar>div{height:100%}
+#vtsim .vs-z1{background:#3FB57F;border-radius:3px 0 0 3px}
+#vtsim .vs-z2{background:var(--amarelo)}
+#vtsim .vs-z3{background:#3A3A3A;border-radius:0 3px 3px 0}
+#vtsim .vs-marker{position:absolute;top:50%;width:18px;height:18px;margin-left:-9px;transform:translateY(-50%) rotate(45deg);background:var(--laranja);border:3px solid var(--tinta);transition:left .55s var(--ease)}
+#vtsim .vs-scale-labels{position:relative;height:36px;font-size:12px;color:var(--claro-suave);margin-top:8px}
+#vtsim .vs-scale-labels span{position:absolute;transform:translateX(-50%);white-space:nowrap;text-align:center;line-height:1.3}
+#vtsim .vs-scale-labels span:first-child{transform:none}
+#vtsim .vs-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+#vtsim .vs-note{background:#2A2A2A;color:var(--claro);border-radius:5px;padding:14px;margin-top:16px;font-size:15px}
+
+/* Botões */
+#vtsim .vs-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;isolation:isolate;font-family:var(--titulo);font-weight:500;font-size:16px;line-height:1.2;border-radius:7px;padding:15px 20px;text-decoration:none;border:1px solid transparent;transition:transform .25s var(--ease),box-shadow .3s ease,background-color .2s ease}
+#vtsim .vs-btn svg{width:18px;height:18px;flex:none}
+#vtsim .vs-btn.primary{background:var(--laranja);color:var(--tinta)}
+#vtsim .vs-btn.primary::after{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .8s var(--ease)}
+#vtsim .vs-btn.primary:hover{background:var(--laranja-claro);color:var(--tinta);transform:translateY(-2px);box-shadow:0 16px 32px -14px rgba(255,122,0,.75)}
+#vtsim .vs-btn.primary:hover::after{left:130%}
+#vtsim .vs-btn.wa{background:#1F9D55;color:#FFFFFF}
+#vtsim .vs-btn.wa:hover{transform:translateY(-2px);background:#22AE5E;color:#FFFFFF}
+#vtsim .vs-btn.ghost{background:transparent;color:var(--texto);border-color:var(--linha)}
+#vtsim .vs-btn.ghost:hover{border-color:var(--laranja);color:var(--laranja-esc);background:transparent}
+#vtsim .vs-inverso .vs-btn.ghost{color:var(--claro);border-color:#4A4A4A}
+#vtsim .vs-inverso .vs-btn.ghost:hover{border-color:var(--laranja);color:var(--laranja-claro)}
+#vtsim .vs-btn.small{padding:10px 14px;font-size:15px}
+#vtsim .vs-btn.grow{flex:1 1 200px}
+
+/* Secções */
+#vtsim .vs-section{padding-bottom:24px}
+#vtsim .vs-sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px 20px;margin-bottom:16px}
+#vtsim .vs-sec-head p{margin-top:6px;color:var(--texto-suave);max-width:62ch}
+#vtsim .vs-chart-wrap{position:relative}
+#vtsim .vs-chart-wrap svg{display:block;width:100%;height:auto;touch-action:pan-y}
+#vtsim .vs-chart-wrap .vs-grid line{stroke:var(--linha);stroke-width:1}
+#vtsim .vs-chart-wrap text{fill:var(--texto-suave);font:500 11px var(--sans)}
+#vtsim .vs-chart-wrap .vs-zone-label{font:600 12px var(--titulo);letter-spacing:.02em}
+#vtsim .vs-tip{position:absolute;pointer-events:none;background:var(--tinta);color:var(--claro);border-radius:5px;padding:8px 11px;font-size:13px;line-height:1.4;white-space:nowrap;transform:translate(-50%,calc(-100% - 14px));box-shadow:0 12px 24px -10px rgba(0,0,0,.4);font-variant-numeric:tabular-nums}
+#vtsim .vs-tip b{font-weight:600;color:var(--laranja-claro)}
+#vtsim .vs-chart-foot{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:14px;color:var(--texto-suave);align-items:center}
+#vtsim .vs-key{display:inline-flex;align-items:center;gap:7px}
+#vtsim .vs-key i{width:12px;height:12px;border-radius:2px;display:inline-block}
+#vtsim .vs-table-scroll{overflow-x:auto;margin-top:14px}
+#vtsim table{border-collapse:collapse;width:100%;font-size:15px;margin:0;border:0}
+#vtsim th,#vtsim td{text-align:right;padding:9px 10px;border:0;border-bottom:1px solid var(--linha);white-space:nowrap;background:none}
+#vtsim th:first-child,#vtsim td:first-child{text-align:left}
+#vtsim thead th{font:600 12px var(--titulo);text-transform:uppercase;letter-spacing:.06em;color:var(--texto-suave)}
+#vtsim tfoot td{font-weight:700;border-bottom:0}
+#vtsim td.good{color:var(--verde);font-weight:600}
+#vtsim .vs-mort{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){#vtsim .vs-mort{grid-template-columns:minmax(0,1fr)}}
+#vtsim .vs-mort-inputs{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));align-content:start}
+#vtsim .vs-full{grid-column:1/-1}
+#vtsim .vs-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-content:start}
+#vtsim .vs-kpi{background:var(--pedra);border-radius:7px;padding:14px 16px;display:grid;gap:4px;min-width:0}
+#vtsim .vs-kpi span{font-size:14px;color:var(--texto-suave)}
+#vtsim .vs-kpi b{font-family:var(--titulo);font-weight:600;font-size:24px;line-height:1.1;letter-spacing:-.01em}
+#vtsim .vs-kpi.hero{grid-column:1/-1;background:var(--tinta)}
+#vtsim .vs-kpi.hero span{color:var(--claro-suave)}
+#vtsim .vs-kpi.hero b{color:var(--claro);font-size:32px;justify-self:start;background:linear-gradient(var(--amarelo),var(--amarelo)) 0 94%/100% .12em no-repeat}
+
+/* Enviar ao cliente */
+#vtsim .vs-send{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,4vw,48px)}
+@media (max-width:820px){#vtsim .vs-send{grid-template-columns:minmax(0,1fr)}}
+#vtsim .vs-form-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+#vtsim .vs-sub-h{font-family:var(--titulo);font-weight:600;font-size:17px;display:flex;align-items:center;gap:10px}
+#vtsim .vs-sub-h::before{content:"";width:7px;height:7px;background:var(--laranja);transform:rotate(45deg)}
+#vtsim .vs-msg{font-size:14px;min-height:1.4em;color:var(--verde);font-weight:600}
+
+/* Relatório (só aparece na impressão / PDF) */
+#vtsim .vs-report{display:none}
+#vtsim .vs-report.vs-preview{display:grid;margin-top:18px}
+#vtsim .vs-report{gap:18px;background:#FFFFFF;color:#1A1A1A;border:1px solid var(--linha);border-radius:7px;padding:28px}
+#vtsim .vs-rep-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--laranja);padding-bottom:14px}
+#vtsim .vs-rep-head h2{font-size:26px}
+#vtsim .vs-rep-cons{text-align:right;font-size:14px;line-height:1.45}
+#vtsim .vs-rep-cons b{font-family:var(--titulo);font-size:16px}
+#vtsim .vs-eyebrow{font-family:var(--titulo);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--laranja-esc)}
+#vtsim .vs-rep-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+#vtsim .vs-rep-grid div{background:var(--pedra);border-radius:7px;padding:10px 12px}
+#vtsim .vs-rep-grid dt{font-size:12px;color:var(--texto-suave)}
+#vtsim .vs-rep-grid dd{font-weight:600}
+#vtsim .vs-report h3{font-size:18px}
+#vtsim .vs-report ul{display:grid;gap:6px;margin-top:8px}
+#vtsim .vs-report ul li{display:flex;gap:12px;align-items:baseline}
+#vtsim .vs-report ul li::before{content:"";width:7px;height:7px;flex:none;background:var(--laranja);transform:rotate(45deg) translateY(-2px)}
+#vtsim .vs-rep-foot{font-size:12px;color:var(--texto-suave);border-top:1px solid var(--linha);padding-top:10px}
+
+#vtsim .vs-rodape{background:var(--tinta);color:var(--claro-suave);font-size:14px;margin-top:24px}
+#vtsim .vs-rodape .vs-wrap{display:grid;gap:10px;padding-top:32px;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+#vtsim .vs-rodape p{max-width:92ch}
+#vtsim .vs-rodape .vs-marca{font-size:20px}
+
+@media (prefers-reduced-motion:reduce){
+  #vtsim *,#vtsim *::before,#vtsim *::after{animation:none!important;transition:none!important}
+  #vtsim .vs-draw{stroke-dashoffset:0}
+  #vtsim .vs-plano text{opacity:.8}
+  #vtsim .vs-onda{display:none}
+}
+@media print{
+  @page{margin:14mm}
+  html,body{background:#FFFFFF!important}
+  body *{visibility:hidden!important}
+  #vtsim .vs-report,#vtsim .vs-report *{visibility:visible!important}
+  #vtsim .vs-report{display:grid!important;position:absolute;left:0;top:0;width:100%;border:0;padding:0}
+  #vtsim{margin:0!important;width:auto!important;max-width:none!important}
+  #vtsim .vs-rep-grid div{background:#F5F5F5!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #vtsim .vs-rep-head{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+
+<div id="vtsim">
+
+<div class="vs-topo">
+  <div class="vs-wrap">
+    <span class="vs-marca">VT Gestores de Tráfego</span>
+    <span class="vs-area">Área de consultores</span>
+  </div>
+</div>
+
+<section class="vs-hero" id="vsHero" aria-labelledby="vsTitulo">
+  <div class="vs-luz" aria-hidden="true"></div>
+  <div class="vs-plano" aria-hidden="true"><svg viewBox="0 0 420 340" fill="none" stroke="currentColor" stroke-width="1.4">
+    <path class="vs-draw" pathLength="1" stroke-width=".7" d="M0 290h420M30 0v340M390 0v340M0 40h420"/>
+    <path class="vs-draw" pathLength="1" stroke-width="2" d="M90 290V170L210 80l120 90v120"/>
+    <path class="vs-draw" pathLength="1" d="M60 192 210 80l150 112"/>
+    <path class="vs-draw" pathLength="1" d="M180 290v-70h60v70M115 200h40v36h-40zM265 200h40v36h-40z"/>
+    <circle class="vs-draw" pathLength="1" cx="210" cy="140" r="14"/>
+    <circle class="vs-onda" cx="210" cy="190" r="150" stroke-width="1.1"/>
+    <path class="vs-draw" pathLength="1" stroke-width=".7" stroke-dasharray="2 4" d="M60 310h300"/>
+    <text x="150" y="328">até 330 539 € sem IMT</text>
+    <text x="300" y="60">primeira casa</text>
+  </svg></div>
+  <div class="vs-wrap">
+    <div class="vs-hero-txt">
+      <h1 id="vsTitulo">Mostre ao seu cliente quanto poupa com o <mark>IMT Jovem</mark>.</h1>
+      <p class="vs-lead">Simulador exclusivo para consultores. Use-o numa reunião ou numa visita e envie o resultado ao cliente por WhatsApp ou em PDF.</p>
+    </div>
+  </div>
+</section>
+<div class="vs-faixa" aria-hidden="true"><div class="vs-trilho"><span>IMT Jovem 2026</span><span>Até 35 anos</span><span>Isenção até 330 539 €</span><span>Imposto do Selo</span><span>Primeira habitação</span><span>Garantia pública</span><span>IMT Jovem 2026</span><span>Até 35 anos</span><span>Isenção até 330 539 €</span><span>Imposto do Selo</span><span>Primeira habitação</span><span>Garantia pública</span></div></div>
+
+<div class="vs-wrap vs-layout">
+  <form class="vs-panel vs-stack" id="vsSim" novalidate>
+    <h2 class="vs-h2">Dados da compra</h2>
+
+    <div class="vs-field">
+      <label for="vsValor">Valor de compra do imóvel</label>
+      <div class="vs-money vs-big"><input class="vs-input" id="vsValor" type="text" inputmode="numeric" autocomplete="off" value="280 000"><span>€</span></div>
+      <input id="vsValorRange" type="range" min="50000" max="1000000" step="5000" value="280000" aria-label="Valor do imóvel">
+      <div class="vs-range-scale"><span>50 mil €</span><span>1 milhão €</span></div>
+      <div class="vs-chips" id="vsPresets" aria-label="Valores rápidos">
+        <button type="button" class="vs-chip" data-v="200000">200 mil</button>
+        <button type="button" class="vs-chip" data-v="280000">280 mil</button>
+        <button type="button" class="vs-chip" data-v="330000">330 mil</button>
+        <button type="button" class="vs-chip" data-v="450000">450 mil</button>
+        <button type="button" class="vs-chip" data-v="650000">650 mil</button>
+      </div>
+    </div>
+
+    <fieldset class="vs-field">
+      <legend>Onde fica o imóvel?</legend>
+      <div class="vs-seg">
+        <input type="radio" name="vsLocal" id="vsLocC" value="c" checked><label for="vsLocC">Continente</label>
+        <input type="radio" name="vsLocal" id="vsLocRA" value="ra"><label for="vsLocRA">Açores ou Madeira</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="vs-field">
+      <legend>Quantas pessoas compram?</legend>
+      <div class="vs-seg">
+        <input type="radio" name="vsN" id="vsN1" value="1" checked><label for="vsN1">Uma pessoa</label>
+        <input type="radio" name="vsN" id="vsN2" value="2"><label for="vsN2">Duas pessoas</label>
+      </div>
+    </fieldset>
+
+    <div class="vs-buyers">
+      <div class="vs-field">
+        <label for="vsIdade1">Idade <span id="vsLbl1">do comprador</span></label>
+        <div class="vs-stepper"><button type="button" data-step="vsIdade1" data-d="-1" aria-label="Menos um ano">−</button><input id="vsIdade1" type="number" min="18" max="99" value="29" inputmode="numeric"><button type="button" data-step="vsIdade1" data-d="1" aria-label="Mais um ano">+</button></div>
+        <span class="vs-age" id="vsBadge1"></span>
+      </div>
+      <div class="vs-field" id="vsB2" hidden>
+        <label for="vsIdade2">Idade do comprador 2</label>
+        <div class="vs-stepper"><button type="button" data-step="vsIdade2" data-d="-1" aria-label="Menos um ano">−</button><input id="vsIdade2" type="number" min="18" max="99" value="38" inputmode="numeric"><button type="button" data-step="vsIdade2" data-d="1" aria-label="Mais um ano">+</button></div>
+        <span class="vs-age" id="vsBadge2"></span>
+      </div>
+      <div class="vs-field vs-full" id="vsQWrap" hidden>
+        <label for="vsQuota1">Parte de cada um no imóvel</label>
+        <input id="vsQuota1" type="range" min="5" max="95" step="5" value="50">
+        <div class="vs-range-scale vs-num"><span id="vsQ1lbl">Comprador 1: 50%</span><span id="vsQ2lbl">Comprador 2: 50%</span></div>
+      </div>
+    </div>
+
+    <fieldset class="vs-field">
+      <legend>Confirme os requisitos</legend>
+      <div class="vs-switches">
+        <label class="vs-switch"><input type="checkbox" id="vsHpp" checked><span class="vs-track"></span><span>A casa vai ser a habitação própria e permanente (para viver)</span></label>
+        <label class="vs-switch"><input type="checkbox" id="vsR3" checked><span class="vs-track"></span><span>Quem tem até 35 anos não é, nem foi nos últimos 3 anos, dono de uma habitação</span></label>
+        <label class="vs-switch"><input type="checkbox" id="vsIrs" checked><span class="vs-track"></span><span>Quem tem até 35 anos não é dependente de ninguém no IRS</span></label>
+      </div>
+    </fieldset>
+  </form>
+
+  <aside class="vs-result" aria-live="polite">
+    <div class="vs-panel vs-inverso">
+      <span class="vs-status good" id="vsStatus"></span>
+      <div id="vsNumbers">
+        <p class="vs-save-label">Poupança estimada com o IMT Jovem</p>
+        <p><span class="vs-save" id="vsPoupanca">0 €</span></p>
+        <p class="vs-save-sub" id="vsSaveSub"></p>
+        <div class="vs-bars" role="img" aria-label="Comparação dos impostos com e sem IMT Jovem">
+          <div class="vs-bar-row">
+            <div class="vs-bar-head"><span>Sem IMT Jovem</span><b id="vsSemTotal">0 €</b></div>
+            <div class="vs-bar-track"><div class="vs-bar-fill sem" id="vsBarSem"></div></div>
+            <span class="vs-bar-note" id="vsSemNote"></span>
+          </div>
+          <div class="vs-bar-row">
+            <div class="vs-bar-head"><span>Com IMT Jovem</span><b id="vsComTotal">0 €</b></div>
+            <div class="vs-bar-track"><div class="vs-bar-fill com" id="vsBarCom"></div></div>
+            <span class="vs-bar-note" id="vsComNote"></span>
+          </div>
+        </div>
+        <div class="vs-scale" aria-hidden="true">
+          <div class="vs-scale-bar"><div class="vs-z1" id="vsZ1"></div><div class="vs-z2" id="vsZ2"></div><div class="vs-z3" id="vsZ3"></div><span class="vs-marker" id="vsMarker"></span></div>
+          <div class="vs-scale-labels" id="vsScaleLabels"></div>
+        </div>
+      </div>
+      <div class="vs-note" id="vsNotHpp" hidden>O IMT Jovem só se aplica a <b>habitação própria e permanente</b>. Para uma casa de férias ou para arrendar, as taxas são outras e não há isenção.</div>
+      <div class="vs-actions">
+        <a class="vs-btn primary grow" href="#vsEnviar" id="vsGoSend">Enviar ao cliente</a>
+        <button type="button" class="vs-btn ghost grow" id="vsPdfTop">Guardar em PDF</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<section class="vs-wrap vs-section">
+  <div class="vs-panel">
+    <div class="vs-sec-head">
+      <div>
+        <h2 class="vs-h2">Poupança conforme o valor da casa</h2>
+        <p>Passe o dedo ou o rato pelo gráfico. Toque num ponto para simular esse valor.</p>
+      </div>
+      <button type="button" class="vs-btn ghost small" id="vsTblToggle" aria-expanded="false">Ver em tabela</button>
+    </div>
+    <div class="vs-chart-wrap" id="vsChartWrap">
+      <svg id="vsChart" role="img" aria-label="Gráfico da poupança do IMT Jovem em função do valor do imóvel"></svg>
+      <div class="vs-tip" id="vsTip" hidden></div>
+    </div>
+    <div class="vs-chart-foot">
+      <span class="vs-key"><i style="background:var(--verde-soft);border:1px solid var(--verde)"></i>Isenção total</span>
+      <span class="vs-key"><i style="background:var(--ambar-soft);border:1px solid var(--ambar)"></i>Isenção parcial</span>
+      <span class="vs-key"><i style="background:var(--cinza-soft);border:1px solid var(--linha)"></i>Sem isenção</span>
+      <span id="vsCliff"></span>
+    </div>
+    <div class="vs-table-scroll" id="vsTblWrap" hidden>
+      <table>
+        <thead><tr><th>Valor do imóvel</th><th>Sem IMT Jovem</th><th>Com IMT Jovem</th><th>Poupança</th></tr></thead>
+        <tbody id="vsTblBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="vs-wrap vs-section">
+  <div class="vs-panel">
+    <div class="vs-sec-head">
+      <div>
+        <h2 class="vs-h2">E a prestação da casa?</h2>
+        <p>Uma estimativa rápida do crédito habitação, para comparar com o que o cliente poupa no IMT.</p>
+      </div>
+    </div>
+    <div class="vs-mort">
+      <div class="vs-mort-inputs">
+        <div class="vs-field vs-full">
+          <label for="vsFin">Parte financiada pelo banco: <span id="vsFinLbl" class="vs-num">90%</span></label>
+          <input id="vsFin" type="range" min="0" max="100" step="5" value="90">
+          <p class="vs-hint">Com a garantia pública para jovens, alguns bancos financiam até 100%.</p>
+        </div>
+        <div class="vs-field">
+          <label for="vsTan">Taxa de juro (TAN)</label>
+          <div class="vs-money"><input class="vs-input" id="vsTan" type="number" min="0" max="15" step="0.1" value="3.0" inputmode="decimal"><span>%</span></div>
+        </div>
+        <div class="vs-field">
+          <label for="vsPrazo">Prazo</label>
+          <div class="vs-money"><input class="vs-input" id="vsPrazo" type="number" min="5" max="40" step="1" value="40" inputmode="numeric"><span>anos</span></div>
+        </div>
+        <p class="vs-hint vs-full">A taxa de 3,0% é só um exemplo. Use a que o banco propôs ao cliente.</p>
+      </div>
+      <div class="vs-kpis">
+        <div class="vs-kpi hero"><span>A poupança do IMT Jovem paga cerca de</span><b id="vsKpiMeses">0 prestações</b></div>
+        <div class="vs-kpi"><span>Prestação estimada por mês</span><b id="vsKpiPrest">0 €</b></div>
+        <div class="vs-kpi"><span>Valor do crédito</span><b id="vsKpiCred">0 €</b></div>
+        <div class="vs-kpi"><span>Entrada a pagar</span><b id="vsKpiEntrada">0 €</b></div>
+        <div class="vs-kpi"><span>Imposto do Selo do crédito (0,6%)</span><b id="vsKpiIsCred">0 €</b></div>
+      </div>
+    </div>
+    <p class="vs-hint" style="margin-top:16px">A prestação não inclui seguros nem comissões bancárias. O Imposto do Selo sobre o crédito não está coberto pelo IMT Jovem.</p>
+  </div>
+</section>
+
+<section class="vs-wrap vs-section" id="vsEnviar">
+  <div class="vs-panel">
+    <div class="vs-sec-head">
+      <div>
+        <h2 class="vs-h2">Enviar ao cliente</h2>
+        <p>O cliente recebe o resultado, não o acesso ao simulador. Pode editar a mensagem antes de enviar.</p>
+      </div>
+    </div>
+    <div class="vs-send">
+      <div class="vs-stack" style="gap:18px">
+        <p class="vs-sub-h">Os seus dados</p>
+        <div class="vs-form-grid">
+          <div class="vs-field"><label for="vsCNome">O seu nome</label><input class="vs-input" id="vsCNome" type="text" autocomplete="name" placeholder="Ex.: Ana Martins"></div>
+          <div class="vs-field"><label for="vsCAg">Agência <em>(opcional)</em></label><input class="vs-input" id="vsCAg" type="text" autocomplete="organization" placeholder="Nome da agência"></div>
+          <div class="vs-field vs-full"><label for="vsCTel">O seu telemóvel <em>(opcional)</em></label><input class="vs-input" id="vsCTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="912 345 678"></div>
+        </div>
+        <p class="vs-hint">Ficam guardados só neste dispositivo, para não ter de os escrever de novo.</p>
+        <p class="vs-sub-h">Cliente</p>
+        <div class="vs-form-grid">
+          <div class="vs-field"><label for="vsCliNome">Nome do cliente <em>(opcional)</em></label><input class="vs-input" id="vsCliNome" type="text" placeholder="Ex.: Rita"></div>
+          <div class="vs-field"><label for="vsCliTel">Telemóvel do cliente <em>(opcional)</em></label><input class="vs-input" id="vsCliTel" type="tel" inputmode="tel" placeholder="912 345 678"></div>
+        </div>
+      </div>
+      <div class="vs-stack" style="gap:12px">
+        <div class="vs-field">
+          <label for="vsMsgTxt">Mensagem para o cliente</label>
+          <textarea class="vs-input" id="vsMsgTxt" rows="9"></textarea>
+        </div>
+        <div class="vs-actions" style="margin-top:0">
+          <a class="vs-btn wa grow" id="vsWa" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>
+            Enviar por WhatsApp
+          </a>
+          <button type="button" class="vs-btn ghost" id="vsCopy">Copiar mensagem</button>
+          <button type="button" class="vs-btn primary" id="vsPdf">Guardar em PDF</button>
+        </div>
+        <p class="vs-msg" id="vsMsg" role="status"></p>
+        <button type="button" class="vs-btn ghost small" id="vsReset" hidden style="justify-self:start">Atualizar mensagem com a simulação</button>
+      </div>
+    </div>
+    <article class="vs-report" id="vsReport" aria-label="Relatório para o cliente"></article>
+  </div>
+</section>
+
+<div class="vs-rodape">
+  <div class="vs-wrap">
+    <span class="vs-marca">VT Gestores de Tráfego</span>
+    <p><b>Simulação indicativa.</b> Usa as tabelas do IMT para 2026 (escalões atualizados em 2% pelo Orçamento do Estado), com isenção total até 330 539 € e parcial até 660 982 € no Continente (valores 25% mais altos nos Açores e na Madeira). Com dois compradores, a isenção aplica-se só à parte de quem cumpre os requisitos. Não substitui a liquidação feita pela Autoridade Tributária.</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.getElementById("vtsim");
+  if (!root || root.getAttribute("data-vs-init")) return;
+  root.setAttribute("data-vs-init", "1");
+
+  var PREVIEW = !!window.VTSIM_PREVIEW;
+
+  // IMT 2026, habitação própria e permanente, Continente (Regiões Autónomas = limites x 1,25)
+  var T = {
+    isencao: 106346,
+    escaloes: [
+      { ate: 145470, taxa: 0.02, abater: 2126.92 },
+      { ate: 198347, taxa: 0.05, abater: 6491.02 },
+      { ate: 330539, taxa: 0.07, abater: 10457.96 },
+      { ate: 660982, taxa: 0.08, abater: 13763.35 }
+    ],
+    unica: [ { ate: 1150853, taxa: 0.06 }, { ate: Infinity, taxa: 0.075 } ],
+    jovemTotal: 330539,
+    jovemParcial: 660982,
+    selo: 0.008,
+    seloCredito: 0.006
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt2 = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" });
+  var fmt0 = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+  var fmtN = new Intl.NumberFormat("pt-PT", { maximumFractionDigits: 0 });
+  function eur(x) { return fmt2.format(x); }
+  function eur0(x) { return fmt0.format(Math.round(x)); }
+  function mil(x) { return x >= 1000000 ? (fmtN.format(x / 1000000) + " M€") : (fmtN.format(Math.round(x / 1000)) + " mil €"); }
+  function r2(x) { return Math.round(x * 100) / 100; }
+  function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
+  function parseEuro(s) { var d = String(s).split(",")[0].replace(/\D/g, ""); return d ? parseInt(d, 10) : 0; }
+  function spaced(n) { return n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") : ""; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var reduceMotion = false;
+  try { reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+
+  function imtNormal(v, k) {
+    if (v <= T.isencao * k) return 0;
+    for (var i = 0; i < T.escaloes.length; i++) { var e = T.escaloes[i]; if (v <= e.ate * k) return v * e.taxa - e.abater * k; }
+    for (var j = 0; j < T.unica.length; j++) if (v <= T.unica[j].ate * k) return v * T.unica[j].taxa;
+    return 0;
+  }
+  function imtJovem(v, k) {
+    var L = T.jovemTotal * k, P = T.jovemParcial * k;
+    if (v <= L) return { imt: 0, is: 0, zona: "total" };
+    if (v <= P) { var ex = v - L; return { imt: ex * 0.08, is: ex * T.selo, zona: "parcial" }; }
+    return { imt: imtNormal(v, k), is: v * T.selo, zona: "nenhuma" };
+  }
+  function taxesFor(v, k, share) {
+    var n = { imt: imtNormal(v, k), is: v * T.selo };
+    var j = imtJovem(v, k);
+    var c = { imt: share * j.imt + (1 - share) * n.imt, is: share * j.is + (1 - share) * n.is };
+    n.imt = r2(n.imt); n.is = r2(n.is); c.imt = r2(c.imt); c.is = r2(c.is);
+    n.total = r2(n.imt + n.is); c.total = r2(c.imt + c.is);
+    return { normal: n, com: c, zona: j.zona, poupanca: r2(n.total - c.total) };
+  }
+
+  function read() {
+    var two = root.querySelector("input[name=vsN]:checked").value === "2";
+    var ra = root.querySelector("input[name=vsLocal]:checked").value === "ra";
+    return {
+      v: parseEuro($("vsValor").value), k: ra ? 1.25 : 1, ra: ra, n: two ? 2 : 1,
+      a1: parseInt($("vsIdade1").value, 10) || 0, a2: parseInt($("vsIdade2").value, 10) || 0,
+      q1: clamp(parseInt($("vsQuota1").value, 10) || 50, 5, 95) / 100,
+      hpp: $("vsHpp").checked, r3: $("vsR3").checked, irs: $("vsIrs").checked
+    };
+  }
+  function compute(f) {
+    var buyers = f.n === 1 ? [{ idade: f.a1, q: 1 }] : [{ idade: f.a1, q: f.q1 }, { idade: f.a2, q: 1 - f.q1 }];
+    var young = buyers.filter(function (b) { return b.idade >= 18 && b.idade <= 35; });
+    var req = f.r3 && f.irs;
+    var share = req ? r2(young.reduce(function (s, b) { return s + b.q; }, 0)) : 0;
+    var t = taxesFor(f.v, f.k, share);
+    return { f: f, young: young.length, req: req, share: share, normal: t.normal, com: t.com, zona: t.zona, poupanca: t.poupanca, L: T.jovemTotal * f.k, P: T.jovemParcial * f.k };
+  }
+
+  var ICON = {
+    good: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>',
+    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>',
+    off: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 9 6 6M15 9l-6 6"/></svg>'
+  };
+  function statusOf(c) {
+    var f = c.f, pct = Math.round(c.share * 100);
+    if (!f.hpp) return { tone: "off", txt: "Sem isenção: não é habitação própria", sub: "" };
+    if (!f.v) return { tone: "off", txt: "Escreva o valor do imóvel", sub: "" };
+    if (!c.young) return { tone: "off", txt: "Sem isenção: ninguém tem até 35 anos", sub: "O IMT Jovem é só para compradores com 35 anos ou menos à data da escritura." };
+    if (!c.req) return { tone: "off", txt: "Sem isenção: requisitos por cumprir", sub: "Sem os requisitos, o cliente paga o IMT e o Imposto do Selo normais." };
+    if (c.zona === "nenhuma") return { tone: "off", txt: "Sem isenção: valor acima de " + eur0(c.P), sub: "Acima deste valor perde toda a isenção e paga IMT a taxa única." };
+    var shareTxt = c.share < 1 ? " A isenção aplica-se só à parte de quem tem até 35 anos (" + pct + "% do imóvel)." : "";
+    if (c.zona === "total") return { tone: c.share < 1 ? "warn" : "good", txt: c.share < 1 ? "Isenção sobre " + pct + "% do imóvel" : "Isenção total", sub: (c.share < 1 ? "" : "Não paga IMT nem Imposto do Selo sobre a compra.") + shareTxt };
+    return { tone: "warn", txt: c.share < 1 ? "Isenção parcial sobre " + pct + "% do imóvel" : "Isenção parcial", sub: "Paga só sobre os " + eur0(c.f.v - c.L) + " acima de " + eur0(c.L) + "." + shareTxt };
+  }
+
+  var anim = {};
+  function animateMoney(el, to, digits) {
+    var from = parseFloat(el.getAttribute("data-v") || "0");
+    el.setAttribute("data-v", String(to));
+    var fmt = digits ? eur : eur0;
+    if (reduceMotion || Math.abs(to - from) < 1) { el.textContent = fmt(to); return; }
+    var id = el.id, start = null, dur = 650;
+    if (anim[id]) cancelAnimationFrame(anim[id]);
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(from + (to - from) * e);
+      if (p < 1) anim[id] = requestAnimationFrame(step);
+    }
+    anim[id] = requestAnimationFrame(step);
+  }
+
+  var last = null;
+  function render() {
+    var f = read(), c = compute(f), st = statusOf(c);
+    last = c;
+    var s = $("vsStatus");
+    s.className = "vs-status " + st.tone;
+    s.innerHTML = ICON[st.tone] + "<span></span>";
+    s.lastChild.textContent = st.txt;
+    $("vsNumbers").hidden = !f.hpp;
+    $("vsNotHpp").hidden = f.hpp;
+
+    var p = $("vsPoupanca");
+    animateMoney(p, c.poupanca, true);
+    p.classList.toggle("zero", c.poupanca <= 0);
+    $("vsSaveSub").textContent = st.sub || (c.poupanca <= 0 ? "Pagaria o mesmo com ou sem IMT Jovem." : "");
+
+    animateMoney($("vsSemTotal"), c.normal.total, true);
+    animateMoney($("vsComTotal"), c.com.total, true);
+    var max = Math.max(c.normal.total, 1);
+    $("vsBarSem").style.width = (c.normal.total / max * 100) + "%";
+    $("vsBarCom").style.width = (c.com.total / max * 100) + "%";
+    $("vsSemNote").textContent = "IMT " + eur(c.normal.imt) + " + Imposto do Selo " + eur(c.normal.is);
+    $("vsComNote").textContent = "IMT " + eur(c.com.imt) + " + Imposto do Selo " + eur(c.com.is);
+
+    var sMax = c.P * 1.3;
+    $("vsZ1").style.flex = String(c.L / sMax);
+    $("vsZ2").style.flex = String((c.P - c.L) / sMax);
+    $("vsZ3").style.flex = String((sMax - c.P) / sMax);
+    $("vsMarker").style.left = clamp(f.v / sMax * 100, 0, 100) + "%";
+    $("vsScaleLabels").innerHTML =
+      '<span style="left:0">0 €</span>' +
+      '<span style="left:' + (c.L / sMax * 100) + '%">' + mil(c.L) + '<br>fim da isenção total</span>' +
+      '<span style="left:' + Math.min(c.P / sMax * 100, 88) + '%">' + mil(c.P) + '<br>fim da isenção</span>';
+
+    renderBadges(f);
+    renderMortgage(c);
+    drawChart(c);
+    renderTable(c);
+    syncPresets(f.v);
+    refreshMessage();
+  }
+
+  function renderBadges(f) {
+    [["vsBadge1", f.a1], ["vsBadge2", f.a2]].forEach(function (b) {
+      var el = $(b[0]), ok = b[1] >= 18 && b[1] <= 35;
+      el.className = "vs-age " + (ok ? "ok" : "no");
+      el.textContent = ok ? "Pode ter IMT Jovem" : (b[1] > 35 ? "Acima de 35 anos" : "Idade mínima: 18 anos");
+    });
+    $("vsLbl1").textContent = f.n === 2 ? "do comprador 1" : "do comprador";
+    $("vsB2").hidden = f.n !== 2;
+    $("vsQWrap").hidden = f.n !== 2;
+    var q = Math.round(f.q1 * 100);
+    $("vsQ1lbl").textContent = "Comprador 1: " + q + "%";
+    $("vsQ2lbl").textContent = "Comprador 2: " + (100 - q) + "%";
+  }
+
+  function pmt(cap, tanPct, anos) {
+    var n = anos * 12, i = tanPct / 100 / 12;
+    if (cap <= 0 || n <= 0) return 0;
+    if (i === 0) return cap / n;
+    return cap * i / (1 - Math.pow(1 + i, -n));
+  }
+  function renderMortgage(c) {
+    var fin = clamp(parseInt($("vsFin").value, 10) || 0, 0, 100);
+    var tan = clamp(parseFloat(String($("vsTan").value).replace(",", ".")) || 0, 0, 15);
+    var prazo = clamp(parseInt($("vsPrazo").value, 10) || 40, 5, 40);
+    $("vsFinLbl").textContent = fin + "%";
+    var cred = Math.round(c.f.v * fin / 100), prest = pmt(cred, tan, prazo);
+    animateMoney($("vsKpiPrest"), prest, true);
+    animateMoney($("vsKpiCred"), cred, false);
+    animateMoney($("vsKpiEntrada"), c.f.v - cred, false);
+    animateMoney($("vsKpiIsCred"), r2(cred * T.seloCredito), true);
+    var meses = prest > 0 ? Math.floor(c.poupanca / prest) : 0;
+    $("vsKpiMeses").textContent = prest > 0 ? (meses === 1 ? "1 prestação" : fmtN.format(meses) + " prestações") : "—";
+    c.mort = { fin: fin, tan: tan, prazo: prazo, cred: cred, prest: r2(prest), meses: meses, isCred: r2(cred * T.seloCredito) };
+  }
+
+  /* Gráfico */
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function el(name, attrs, parent) {
+    var e = document.createElementNS(SVGNS, name);
+    for (var a in attrs) e.setAttribute(a, attrs[a]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function drawChart(c) {
+    var wrap = $("vsChartWrap"), svg = $("vsChart");
+    var W = Math.max(300, Math.round(wrap.clientWidth || 640)), narrow = W < 520;
+    var H = narrow ? 230 : 280, m = { l: narrow ? 44 : 56, r: 14, t: 30, b: 34 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var k = c.f.k, L = c.L, P = c.P, share = c.req && c.young ? c.share : 1;
+    var xMax = Math.ceil(P * 1.3 / 100000) * 100000, xs = [];
+    for (var i = 0; i <= 220; i++) xs.push(xMax * i / 220);
+    xs.push(L, P, P + 1);
+    xs.sort(function (a, b) { return a - b; });
+    var pts = xs.map(function (x) { return [x, taxesFor(x, k, share).poupanca]; });
+    var yMax = Math.max(5000, Math.ceil(Math.max.apply(null, pts.map(function (p) { return p[1]; })) * 1.08 / 5000) * 5000);
+    function X(v) { return m.l + v / xMax * iw; }
+    function Y(v) { return m.t + ih - v / yMax * ih; }
+    [[0, L, "var(--verde-soft)", "Isenção total", "var(--verde)"],
+     [L, P, "var(--ambar-soft)", narrow ? "Parcial" : "Isenção parcial", "var(--ambar)"],
+     [P, xMax, "var(--cinza-soft)", narrow ? "Sem" : "Sem isenção", "var(--texto-suave)"]].forEach(function (z) {
+      el("rect", { x: X(z[0]), y: m.t, width: Math.max(0, X(z[1]) - X(z[0])), height: ih, fill: z[2] }, svg);
+      el("text", { x: (X(z[0]) + X(z[1])) / 2, y: m.t - 10, "text-anchor": "middle", "class": "vs-zone-label", style: "fill:" + z[4] }, svg).textContent = z[3];
+    });
+    var g = el("g", { "class": "vs-grid" }, svg);
+    for (var yi = 0; yi <= 4; yi++) {
+      var yv = yMax * yi / 4;
+      el("line", { x1: m.l, x2: m.l + iw, y1: Y(yv), y2: Y(yv), "stroke-dasharray": yi === 0 ? "" : "2 4" }, g);
+      el("text", { x: m.l - 8, y: Y(yv) + 4, "text-anchor": "end" }, svg).textContent = yv === 0 ? "0" : fmtN.format(yv / 1000) + " mil";
+    }
+    for (var xv = 0; xv <= xMax; xv += narrow ? 200000 : 100000) {
+      el("text", { x: X(xv), y: H - 10, "text-anchor": xv === 0 ? "start" : (xv === xMax ? "end" : "middle") }, svg).textContent = xv === 0 ? "0 €" : mil(xv);
+    }
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1); }).join(" ");
+    el("path", { d: d + " L" + X(xMax) + " " + Y(0) + " L" + X(0) + " " + Y(0) + " Z", fill: "var(--mark-com)", "fill-opacity": "0.12", stroke: "none" }, svg);
+    el("path", { d: d, fill: "none", stroke: "var(--mark-com)", "stroke-width": 2.5, "stroke-linejoin": "round" }, svg);
+    var cv = clamp(c.f.v, 0, xMax), cs = taxesFor(cv, k, share).poupanca;
+    el("line", { x1: X(cv), x2: X(cv), y1: m.t, y2: m.t + ih, stroke: "var(--tinta)", "stroke-width": 1, "stroke-dasharray": "3 3", opacity: 0.45 }, svg);
+    el("rect", { x: X(cv) - 7, y: Y(cs) - 7, width: 14, height: 14, fill: "var(--laranja)", stroke: "var(--branco)", "stroke-width": 2.5, transform: "rotate(45 " + X(cv) + " " + Y(cs) + ")" }, svg);
+    el("text", { x: clamp(X(cv), m.l + 40, m.l + iw - 40), y: Math.max(m.t + 14, Y(cs) - 16), "text-anchor": "middle", style: "fill:var(--tinta);font-weight:600;font-size:12px" }, svg).textContent = "Esta casa";
+    var hl = el("line", { x1: 0, x2: 0, y1: m.t, y2: m.t + ih, stroke: "var(--tinta)", "stroke-width": 1, opacity: 0 }, svg);
+    var hd = el("circle", { cx: 0, cy: 0, r: 6, fill: "var(--branco)", stroke: "var(--mark-com)", "stroke-width": 2.5, opacity: 0 }, svg);
+    var hit = el("rect", { x: m.l, y: m.t, width: iw, height: ih, fill: "transparent", style: "cursor:crosshair" }, svg);
+    function at(evt) {
+      var r = svg.getBoundingClientRect();
+      return Math.round(clamp(((evt.clientX - r.left) * (W / r.width) - m.l) / iw * xMax, 0, xMax) / 5000) * 5000;
+    }
+    function show(evt) {
+      var v = at(evt), t = taxesFor(v, k, share);
+      hl.setAttribute("x1", X(v)); hl.setAttribute("x2", X(v)); hl.setAttribute("opacity", 0.3);
+      hd.setAttribute("cx", X(v)); hd.setAttribute("cy", Y(t.poupanca)); hd.setAttribute("opacity", 1);
+      var tip = $("vsTip"), r = svg.getBoundingClientRect(), sc = r.width / W;
+      tip.hidden = false;
+      tip.innerHTML = "Casa de <b></b><br>Poupança: <b></b>";
+      tip.children[0].textContent = eur0(v);
+      tip.children[2].textContent = eur0(t.poupanca);
+      tip.style.left = clamp(X(v) * sc, 80, r.width - 80) + "px";
+      tip.style.top = (Y(t.poupanca) * sc) + "px";
+    }
+    function hide() { $("vsTip").hidden = true; hl.setAttribute("opacity", 0); hd.setAttribute("opacity", 0); }
+    hit.addEventListener("pointermove", show);
+    hit.addEventListener("pointerdown", show);
+    hit.addEventListener("pointerleave", hide);
+    hit.addEventListener("click", function (evt) { setValor(at(evt)); hide(); });
+    $("vsCliff").textContent = "Atenção: a partir de " + eur0(P) + " perde toda a isenção." + (c.req && c.young ? "" : " O gráfico mostra a poupança de quem cumpre os requisitos.");
+  }
+
+  function renderTable(c) {
+    var k = c.f.k, share = c.req && c.young ? c.share : 1;
+    var vals = [150000, 200000, 250000, 300000, 400000, 500000, 600000, 750000].map(function (v) { return Math.round(v * k); }).concat([Math.round(c.L), Math.round(c.P)]);
+    vals = vals.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+    $("vsTblBody").innerHTML = vals.map(function (v) {
+      var t = taxesFor(v, k, share);
+      return "<tr><td>" + eur0(v) + "</td><td>" + eur(t.normal.total) + "</td><td>" + eur(t.com.total) + "</td><td class=\"good\">" + eur(t.poupanca) + "</td></tr>";
+    }).join("");
+  }
+
+  /* Enviar ao cliente */
+  var KEY = "vtsim-consultor";
+  function loadConsultor() {
+    try { var d = JSON.parse(localStorage.getItem(KEY) || "{}"); $("vsCNome").value = d.nome || ""; $("vsCAg").value = d.ag || ""; $("vsCTel").value = d.tel || ""; } catch (e) {}
+  }
+  function saveConsultor() {
+    try { localStorage.setItem(KEY, JSON.stringify({ nome: $("vsCNome").value.trim(), ag: $("vsCAg").value.trim(), tel: $("vsCTel").value.trim() })); } catch (e) {}
+  }
+  function buyersTxt(c) {
+    if (c.f.n === 1) return "1 comprador, " + c.f.a1 + " anos";
+    var q = Math.round(c.f.q1 * 100);
+    return "2 compradores: " + c.f.a1 + " anos (" + q + "%) e " + c.f.a2 + " anos (" + (100 - q) + "%)";
+  }
+  function assinatura() {
+    var n = $("vsCNome").value.trim(), a = $("vsCAg").value.trim(), t = $("vsCTel").value.trim();
+    return [n, a, t].filter(Boolean).join(" · ");
+  }
+  function buildMessage(c) {
+    var cli = $("vsCliNome").value.trim();
+    var st = statusOf(c), m = c.mort || {};
+    var linhas = [];
+    linhas.push("Olá" + (cli ? " " + cli : "") + "! Fiz a simulação do IMT Jovem para a casa de " + eur0(c.f.v) + (c.f.ra ? " (Açores/Madeira)" : "") + ":");
+    linhas.push("");
+    linhas.push("• Sem IMT Jovem: " + eur(c.normal.total) + " (IMT + Imposto do Selo)");
+    linhas.push("• Com IMT Jovem: " + eur(c.com.total));
+    linhas.push("• Poupança: " + eur(c.poupanca));
+    if (c.poupanca <= 0) linhas.push("(" + st.txt + ")");
+    if (m.cred) linhas.push("• Prestação estimada: " + eur(m.prest) + " por mês (crédito de " + eur0(m.cred) + " a " + m.prazo + " anos, TAN " + m.tan.toFixed(1).replace(".", ",") + "%, sem seguros)");
+    linhas.push("");
+    linhas.push("É uma simulação indicativa com as tabelas do IMT de 2026. Qualquer dúvida, diga-me.");
+    var sig = assinatura();
+    if (sig) { linhas.push(""); linhas.push(sig); }
+    return linhas.join("\n");
+  }
+  var dirty = false;
+  function refreshMessage() {
+    if (!last) return;
+    if (!dirty) $("vsMsgTxt").value = buildMessage(last);
+    updateWa();
+  }
+  function updateWa() {
+    var num = $("vsCliTel").value.replace(/\D/g, "");
+    if (num.length === 9) num = "351" + num;
+    $("vsWa").href = "https://wa.me/" + (num.length >= 11 ? num : "") + "?text=" + encodeURIComponent($("vsMsgTxt").value);
+  }
+  $("vsMsgTxt").addEventListener("input", function () { dirty = true; $("vsReset").hidden = false; updateWa(); });
+  $("vsReset").addEventListener("click", function () { dirty = false; this.hidden = true; refreshMessage(); });
+  ["vsCNome", "vsCAg", "vsCTel"].forEach(function (id) { $(id).addEventListener("input", function () { saveConsultor(); refreshMessage(); }); });
+  ["vsCliNome", "vsCliTel"].forEach(function (id) { $(id).addEventListener("input", refreshMessage); });
+  $("vsCopy").addEventListener("click", function () {
+    var ta = $("vsMsgTxt"), msg = $("vsMsg");
+    function fallback() { ta.focus(); ta.select(); msg.textContent = "Mensagem selecionada. Copie com Ctrl+C ou com o menu do telemóvel."; }
+    try { navigator.clipboard.writeText(ta.value).then(function () { msg.textContent = "Mensagem copiada."; }, fallback); } catch (e) { fallback(); }
+  });
+
+  function buildReport(c) {
+    var st = statusOf(c), m = c.mort || {};
+    var cli = $("vsCliNome").value.trim();
+    var hoje = new Date().toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" });
+    var cn = $("vsCNome").value.trim(), ca = $("vsCAg").value.trim(), ct = $("vsCTel").value.trim();
+    return '' +
+      '<div class="vs-rep-head"><div><p class="vs-eyebrow">Simulação IMT Jovem · ' + esc(hoje) + '</p><h2 style="margin-top:6px">' + (cli ? "Preparada para " + esc(cli) : "Simulação de compra de casa") + '</h2></div>' +
+      (cn ? '<div class="vs-rep-cons"><b>' + esc(cn) + '</b>' + (ca ? '<br>' + esc(ca) : '') + (ct ? '<br>' + esc(ct) : '') + '</div>' : '') + '</div>' +
+      '<dl class="vs-rep-grid">' +
+        '<div><dt>Valor do imóvel</dt><dd>' + eur0(c.f.v) + '</dd></div>' +
+        '<div><dt>Localização</dt><dd>' + (c.f.ra ? "Açores ou Madeira" : "Continente") + '</dd></div>' +
+        '<div><dt>Compradores</dt><dd>' + esc(buyersTxt(c)) + '</dd></div>' +
+        '<div><dt>Resultado</dt><dd>' + esc(st.txt) + '</dd></div>' +
+      '</dl>' +
+      '<div class="vs-table-scroll"><table><thead><tr><th></th><th>Sem IMT Jovem</th><th>Com IMT Jovem</th></tr></thead><tbody>' +
+        '<tr><td>IMT</td><td>' + eur(c.normal.imt) + '</td><td>' + eur(c.com.imt) + '</td></tr>' +
+        '<tr><td>Imposto do Selo (0,8%)</td><td>' + eur(c.normal.is) + '</td><td>' + eur(c.com.is) + '</td></tr>' +
+        '<tr><td>Total</td><td>' + eur(c.normal.total) + '</td><td>' + eur(c.com.total) + '</td></tr>' +
+      '</tbody><tfoot><tr><td>Poupança</td><td></td><td class="good">' + eur(c.poupanca) + '</td></tr></tfoot></table></div>' +
+      (m.cred ? '<p>Crédito de ' + eur0(m.cred) + ' a ' + m.prazo + ' anos com TAN de ' + m.tan.toFixed(1).replace(".", ",") + '%: prestação estimada de <b>' + eur(m.prest) + '</b> por mês, sem seguros. Imposto do Selo do crédito: ' + eur(m.isCred) + ' (não está coberto pelo IMT Jovem).</p>' : '') +
+      '<div><h3>Requisitos a confirmar</h3><ul>' +
+        '<li>Ter 35 anos ou menos na data da escritura.</li>' +
+        '<li>Ser a primeira compra de habitação própria e permanente.</li>' +
+        '<li>Não ser, nem ter sido nos últimos 3 anos, dono de uma habitação.</li>' +
+        '<li>Não ser dependente de outra pessoa para efeitos de IRS.</li>' +
+      '</ul></div>' +
+      '<div><h3>Para não perder a isenção</h3><ul>' +
+        '<li>Passar a viver na casa nos 6 meses seguintes à compra.</li>' +
+        '<li>Não dar outro uso à casa nos 6 anos seguintes, por exemplo arrendá-la.</li>' +
+      '</ul></div>' +
+      '<p class="vs-rep-foot">Simulação indicativa com as tabelas do IMT de 2026. Não substitui a liquidação da Autoridade Tributária. Confirme no Portal das Finanças antes da escritura.</p>';
+  }
+  function guardarPdf() {
+    var rep = $("vsReport");
+    rep.innerHTML = buildReport(last);
+    if (PREVIEW) {
+      rep.classList.add("vs-preview");
+      $("vsMsg").textContent = "Pré-visualização do PDF abaixo. Na página publicada, este botão abre a janela para guardar em PDF.";
+      rep.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      return;
+    }
+    window.print();
+  }
+  $("vsPdf").addEventListener("click", guardarPdf);
+  $("vsPdfTop").addEventListener("click", guardarPdf);
+  $("vsGoSend").addEventListener("click", function (e) {
+    e.preventDefault();
+    $("vsEnviar").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  });
+
+  /* Entradas */
+  function setValor(v) {
+    v = clamp(Math.round(v), 0, 99999999);
+    $("vsValor").value = spaced(v);
+    $("vsValorRange").value = String(clamp(v, 50000, 1000000));
+    render();
+  }
+  function syncPresets(v) {
+    Array.prototype.forEach.call(root.querySelectorAll("#vsPresets .vs-chip"), function (b) {
+      b.setAttribute("aria-pressed", String(parseInt(b.getAttribute("data-v"), 10) === v));
+    });
+  }
+  $("vsValor").addEventListener("input", function () { $("vsValorRange").value = String(clamp(parseEuro(this.value), 50000, 1000000)); render(); });
+  $("vsValor").addEventListener("blur", function () { this.value = spaced(parseEuro(this.value)); });
+  $("vsValorRange").addEventListener("input", function () { setValor(parseInt(this.value, 10)); });
+  $("vsPresets").addEventListener("click", function (e) { var b = e.target.closest(".vs-chip"); if (b) setValor(parseInt(b.getAttribute("data-v"), 10)); });
+  Array.prototype.forEach.call(root.querySelectorAll("[data-step]"), function (b) {
+    b.addEventListener("click", function () {
+      var inp = $(b.getAttribute("data-step"));
+      inp.value = String(clamp((parseInt(inp.value, 10) || 30) + parseInt(b.getAttribute("data-d"), 10), 18, 99));
+      render();
+    });
+  });
+  $("vsSim").addEventListener("input", function (e) { if (e.target.id !== "vsValor" && e.target.id !== "vsValorRange") render(); });
+  $("vsSim").addEventListener("change", render);
+  $("vsSim").addEventListener("submit", function (e) { e.preventDefault(); });
+  ["vsFin", "vsTan", "vsPrazo"].forEach(function (id) { $(id).addEventListener("input", function () { renderMortgage(last); refreshMessage(); }); });
+  $("vsTblToggle").addEventListener("click", function () {
+    var open = $("vsTblWrap").hidden;
+    $("vsTblWrap").hidden = !open;
+    this.setAttribute("aria-expanded", String(open));
+    this.textContent = open ? "Esconder tabela" : "Ver em tabela";
+  });
+  try { new ResizeObserver(function () { if (last) drawChart(last); }).observe($("vsChartWrap")); }
+  catch (e) { window.addEventListener("resize", function () { if (last) drawChart(last); }); }
+
+  /* Luz que segue o rato (só em computador) */
+  var hero = $("vsHero"), desenho = root.querySelector(".vs-plano svg");
+  try {
+    if (!reduceMotion && window.matchMedia("(pointer: fine)").matches) {
+      hero.addEventListener("pointermove", function (e) {
+        var r = hero.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        hero.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+        hero.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+        if (desenho) { desenho.style.setProperty("--px", ((x - 0.5) * -24).toFixed(1) + "px"); desenho.style.setProperty("--py", ((y - 0.5) * -16).toFixed(1) + "px"); }
+      }, { passive: true });
+    }
+  } catch (e) {}
+
+  loadConsultor();
+  render();
+})();
+</script>

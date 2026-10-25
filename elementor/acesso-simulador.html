@@ -1,0 +1,368 @@
+<!--
+  VT Gestores de Tráfego | Página pública: pedido de acesso ao Simulador IMT Jovem
+  COMO USAR NO ELEMENTOR:
+  1. Páginas > Adicionar nova. Título: "Simulador IMT Jovem para consultores". Endereço sugerido: /acesso-simulador
+  2. Editar com Elementor > Definições da página (roda dentada) > Esquema: "Elementor Canvas".
+  3. Adiciona um contentor com largura "Largura total", preenchimento 0 e espaço entre elementos 0.
+  4. Arrasta um widget "HTML" para dentro e cola TODO este ficheiro.
+  5. O formulário envia para o mesmo Formspree da landing page. Para mudar, procura FORM_ENDPOINT no fim do código.
+  6. No Joinchat, exclui esta página para o botão de WhatsApp não tapar o botão fixo no telemóvel.
+  Esta página é pública. O simulador fica noutra página, protegida por senha.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Jost:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+#vtac{width:100vw!important;max-width:100vw!important;margin-left:calc(50% - 50vw)!important;margin-right:calc(50% - 50vw)!important}
+html,body{overflow-x:clip}
+#vtac{--tinta:#1A1A1A;--tinta-2:#232323;--pedra:#F5F5F5;--branco:#FFFFFF;--laranja:#FF7A00;--laranja-claro:#FF9A40;--laranja-esc:#B95800;--amarelo:#FFC83D;--texto:#1A1A1A;--texto-suave:#4D4D4D;--claro:#FAFAFA;--claro-suave:#BDBDBD;--linha:#DCDCDE;--titulo:'Jost',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.7,.1,1);position:relative;font-family:var(--sans);font-size:17px;line-height:1.6;font-weight:400;color:var(--texto);background:var(--branco);text-align:left;overflow-x:clip;-webkit-font-smoothing:antialiased;color-scheme:light}
+#vtac *,#vtac *::before,#vtac *::after{box-sizing:border-box;margin:0;padding:0}
+#vtac [hidden]{display:none!important}
+#vtac h1,#vtac h2,#vtac h3,#vtac p,#vtac li,#vtac label,#vtac summary{font-family:inherit;letter-spacing:normal;text-transform:none;color:inherit;font-style:normal;border:0;background:none}
+#vtac h1,#vtac h2,#vtac h3{font-family:var(--titulo);font-weight:600;line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
+#vtac ul,#vtac ol{list-style:none}
+#vtac a{color:inherit;text-decoration:none;box-shadow:none}
+#vtac svg{display:block;max-width:100%}
+#vtac :focus-visible{outline:2px solid var(--laranja);outline-offset:3px}
+#vtac mark{color:inherit;background:linear-gradient(var(--amarelo),var(--amarelo)) 0 92%/100% .16em no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0}
+#vtac .va-wrap{max-width:1120px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
+
+#vtac .va-topo{background:var(--tinta);color:var(--claro);padding-top:env(safe-area-inset-top,0px)}
+#vtac .va-topo .va-wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:22px;padding-bottom:22px}
+#vtac .va-marca{font-family:var(--titulo);font-weight:600;font-size:22px;line-height:1;letter-spacing:-.01em;color:var(--claro)}
+#vtac .va-topo-link{font-size:15px;font-weight:500;color:var(--laranja-claro);white-space:nowrap;padding-bottom:3px;background:linear-gradient(currentColor,currentColor) right bottom/100% 1px no-repeat;transition:background-size .4s var(--ease)}
+#vtac .va-topo-link:hover{background-size:0 1px}
+
+#vtac .va-hero{background:var(--tinta);color:var(--claro);position:relative;overflow:hidden;padding:clamp(44px,7vw,96px) 0 clamp(72px,10vw,128px)}
+#vtac .va-luz{position:absolute;inset:0;pointer-events:none;background:radial-gradient(560px circle at var(--mx,72%) var(--my,45%),rgba(255,122,0,.17),transparent 62%)}
+#vtac .va-hero .va-wrap{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,6vw,80px);align-items:center}
+@media (max-width:880px){#vtac .va-hero .va-wrap{grid-template-columns:minmax(0,1fr)}}
+#vtac .va-eyebrow{font-family:var(--titulo);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta);background:var(--amarelo);padding:4px 9px;border-radius:3px;justify-self:start;display:inline-block;margin-bottom:22px}
+#vtac .va-hero h1{font-size:clamp(38px,5.4vw,64px);line-height:1.06;letter-spacing:-.02em;margin-bottom:24px;color:var(--claro)}
+#vtac .va-lead{font-size:clamp(17px,1.6vw,19px);color:var(--claro-suave);max-width:48ch;margin-bottom:32px}
+#vtac .va-nota{margin-top:16px;font-size:15px;color:var(--claro-suave)}
+
+#vtac .va-btn{display:inline-block;position:relative;overflow:hidden;isolation:isolate;font-family:var(--titulo);font-size:17px;font-weight:500;line-height:1.2;letter-spacing:.005em;text-transform:none;text-decoration:none;text-align:center;background:var(--laranja);color:var(--tinta);border:0;border-radius:7px;padding:18px 30px;cursor:pointer;box-shadow:none;transition:transform .25s var(--ease),box-shadow .3s ease,background-color .2s ease}
+#vtac .va-btn::after{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .8s var(--ease)}
+#vtac .va-btn:hover{background-color:var(--laranja-claro);color:var(--tinta);transform:translateY(-2px);box-shadow:0 16px 32px -14px rgba(255,122,0,.75)}
+#vtac .va-btn:hover::after{left:130%}
+#vtac .va-btn:disabled{opacity:.65;cursor:wait;transform:none}
+
+/* Cartão de demonstração */
+#vtac .va-demo{background:#111;border:1px solid #2E2E2E;border-radius:10px;padding:24px;box-shadow:0 30px 60px -30px rgba(0,0,0,.7);position:relative;overflow:hidden}
+#vtac .va-demo::before{content:"";position:absolute;width:420px;height:420px;right:-200px;top:-200px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,.22),transparent 65%)}
+#vtac .va-demo>*{position:relative}
+#vtac .va-demo-top{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--claro-suave)}
+#vtac .va-chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--titulo);font-weight:600;font-size:13px;color:#74D6A9;background:rgba(63,181,127,.16);padding:5px 10px;border-radius:5px}
+#vtac .va-chip::before{content:"";width:7px;height:7px;background:currentColor;transform:rotate(45deg)}
+#vtac .va-demo-lbl{margin-top:20px;font-size:14px;color:var(--claro-suave)}
+#vtac .va-demo-num{font-family:var(--titulo);font-weight:600;font-size:clamp(40px,5vw,54px);line-height:1.05;letter-spacing:-.03em;color:var(--claro);display:inline;background:linear-gradient(var(--amarelo),var(--amarelo)) 0 94%/100% .1em no-repeat;font-variant-numeric:tabular-nums}
+#vtac .va-demo-bars{display:grid;gap:12px;margin-top:22px}
+#vtac .va-demo-row{display:grid;gap:5px;font-size:14px;color:var(--claro)}
+#vtac .va-demo-row div{display:flex;justify-content:space-between;gap:10px}
+#vtac .va-demo-row b{font-family:var(--titulo);font-weight:600;font-variant-numeric:tabular-nums}
+#vtac .va-track{height:12px;background:#2A2A2A;border-radius:3px;overflow:hidden}
+#vtac .va-fill{height:100%;border-radius:0 4px 4px 0;width:var(--w);transition:width 1.4s var(--ease) .6s}
+#vtac.va-js:not(.va-loaded) .va-fill{width:2px}
+#vtac .va-fill.sem{background:#8C8C8C}
+#vtac .va-fill.com{background:var(--laranja)}
+#vtac .va-demo-foot{margin-top:18px;font-size:13px;color:var(--claro-suave)}
+
+#vtac .va-faixa{background:var(--tinta-2);color:var(--laranja-claro);overflow:hidden;white-space:nowrap;border-top:1px solid #2E2E2E;padding:18px 0}
+#vtac .va-trilho{display:inline-flex;animation:va-faixa 40s linear infinite}
+#vtac .va-faixa:hover .va-trilho{animation-play-state:paused}
+#vtac .va-faixa span{display:inline-flex;align-items:center;font-family:var(--titulo);font-weight:500;font-size:clamp(18px,2.1vw,24px);line-height:1;letter-spacing:-.01em}
+#vtac .va-faixa span::after{content:"";width:7px;height:7px;background:var(--laranja);transform:rotate(45deg);margin:0 clamp(26px,4vw,50px)}
+@keyframes va-faixa{to{transform:translateX(-50%)}}
+
+#vtac .va-sec{padding:clamp(72px,9vw,120px) 0}
+#vtac .va-sec h2{font-size:clamp(30px,3.8vw,46px);line-height:1.12;letter-spacing:-.015em;max-width:22ch;margin-bottom:clamp(30px,4vw,48px)}
+#vtac .va-lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px clamp(28px,5vw,72px);max-width:980px}
+#vtac .va-lista li{position:relative;padding-left:24px;max-width:44ch}
+#vtac .va-lista li::before{content:"";position:absolute;left:0;top:.6em;width:9px;height:9px;background:var(--laranja)}
+#vtac .va-lista strong{display:block;font-weight:600;margin-bottom:4px}
+#vtac .va-lista span{color:var(--texto-suave)}
+@media (max-width:720px){#vtac .va-lista{grid-template-columns:1fr}}
+#vtac .va-cinza{background:var(--pedra)}
+#vtac .va-passos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,36px);counter-reset:vap}
+#vtac .va-passos li{counter-increment:vap;border-top:2px solid var(--laranja);padding-top:20px}
+#vtac .va-passos li::before{content:counter(vap,decimal-leading-zero);display:block;font-family:var(--titulo);font-weight:600;font-size:16px;color:var(--laranja-esc);margin-bottom:10px}
+#vtac .va-passos h3{font-size:23px;margin-bottom:8px}
+#vtac .va-passos p{color:var(--texto-suave)}
+@media (max-width:760px){#vtac .va-passos{grid-template-columns:1fr}}
+
+#vtac .va-rv{transition:opacity .8s ease var(--d,0s),translate .95s var(--ease) var(--d,0s)}
+#vtac.va-js .va-rv:not(.va-on){opacity:0;translate:0 24px}
+
+/* Formulário */
+#vtac .va-form-sec{background:var(--tinta);color:var(--claro);position:relative;overflow:hidden}
+#vtac .va-form-sec::before{content:"";position:absolute;width:720px;height:720px;right:-260px;top:-220px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,.18),transparent 65%);pointer-events:none}
+#vtac .va-form-grid{position:relative;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(36px,6vw,88px);align-items:start}
+@media (max-width:880px){#vtac .va-form-grid{grid-template-columns:1fr}}
+#vtac .va-form-sec h2{color:var(--claro)}
+#vtac .va-sub{color:var(--claro-suave);max-width:42ch;margin:-20px 0 30px}
+#vtac .va-form-sec ul{border-top:1px solid #333}
+#vtac .va-form-sec ul li{padding:16px 0;border-bottom:1px solid #333;color:var(--claro)}
+#vtac .va-form-sec ul li::before{content:"";display:inline-block;width:7px;height:7px;background:var(--laranja);margin-right:14px;vertical-align:middle;transform:rotate(45deg)}
+#vtac .va-caixa{background:var(--branco);color:var(--texto);border-radius:7px;padding:clamp(24px,4vw,40px);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+#vtac .va-campo{margin-bottom:18px}
+#vtac .va-campo label{display:block;font-size:15px;font-weight:600;line-height:1.3;margin-bottom:7px;color:var(--texto);transition:color .2s ease}
+#vtac .va-campo:focus-within label{color:var(--laranja-esc)}
+#vtac .va-campo input,#vtac .va-campo select{display:block;width:100%;height:auto;min-height:0;font-family:var(--sans);font-size:16px;font-weight:400;line-height:1.3;color:var(--texto);background-color:#fff;border:1px solid #B5B0A6;border-radius:3px;padding:13px 14px;margin:0;box-shadow:none;outline:none;appearance:none;-webkit-appearance:none;transition:border-color .2s ease,box-shadow .2s ease}
+#vtac .va-campo select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231A1A1A' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+#vtac .va-campo input:focus,#vtac .va-campo select:focus{border-color:var(--laranja);box-shadow:0 0 0 3px rgba(255,122,0,.22)}
+#vtac .va-campo input:user-invalid,#vtac .va-campo select:user-invalid{border-color:#A23B2A}
+#vtac .va-duplo{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media (max-width:520px){#vtac .va-duplo{grid-template-columns:1fr}}
+#vtac .va-consent{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.5;font-weight:400;color:var(--texto-suave);margin:6px 0 22px}
+#vtac .va-consent input{width:20px;height:20px;flex:none;margin:2px 0 0;accent-color:var(--tinta)}
+#vtac .va-consent a{text-decoration:underline;color:var(--texto)}
+#vtac .va-caixa .va-btn{display:block;width:100%;padding:19px}
+#vtac .va-estado{margin-top:14px;font-size:15px;min-height:1.4em}
+#vtac .va-estado[data-state="erro"]{color:#A23B2A}
+#vtac .va-check{width:56px;height:56px;margin-bottom:20px;color:var(--laranja)}
+#vtac .va-check circle,#vtac .va-check path{stroke-dasharray:1;stroke-dashoffset:1}
+#vtac .va-obrigado:not([hidden]) .va-check circle{animation:va-desenhar .8s var(--ease) forwards}
+#vtac .va-obrigado:not([hidden]) .va-check path{animation:va-desenhar .6s var(--ease) .5s forwards}
+@keyframes va-desenhar{to{stroke-dashoffset:0}}
+#vtac .va-obrigado h3{font-size:32px;line-height:1.1;margin-bottom:12px}
+#vtac .va-obrigado p{color:var(--texto-suave)}
+#vtac .va-hp{position:absolute;left:-9999px}
+
+#vtac .va-faq{max-width:820px;border-top:1px solid var(--linha)}
+#vtac .va-faq details{border-bottom:1px solid var(--linha)}
+#vtac .va-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;font-weight:600;font-size:18px;line-height:1.4;transition:color .2s ease}
+#vtac .va-faq summary:hover{color:var(--laranja-esc)}
+#vtac .va-faq summary::-webkit-details-marker{display:none}
+#vtac .va-faq summary::after{content:"+";flex:none;font-family:var(--titulo);font-weight:400;color:var(--laranja-esc);font-size:24px;line-height:1;transition:transform .35s var(--ease)}
+#vtac .va-faq details[open] summary::after{transform:rotate(45deg)}
+#vtac .va-faq details p{padding:0 0 24px;color:var(--texto-suave);max-width:62ch}
+
+#vtac .va-rodape{background:var(--tinta);color:var(--claro-suave);font-size:15px;padding:36px 0 calc(36px + env(safe-area-inset-bottom,0px))}
+#vtac .va-rodape .va-wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+#vtac .va-rodape .va-marca{font-size:20px}
+#vtac .va-rodape a{text-decoration:underline}
+#vtac .va-cta-fixo{display:none}
+@media (max-width:720px){
+  #vtac .va-cta-fixo{display:block;position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:rgba(26,26,26,.96);transform:translateY(110%);transition:transform .35s var(--ease)}
+  #vtac .va-cta-fixo.va-visivel{transform:none}
+  #vtac .va-cta-fixo .va-btn{display:block}
+}
+@media (max-width:420px){#vtac .va-marca{font-size:20px}#vtac .va-topo-link{font-size:14px}}
+@media (prefers-reduced-motion:reduce){
+  #vtac *,#vtac *::before,#vtac *::after{animation:none!important;transition:none!important}
+  #vtac .va-check circle,#vtac .va-check path{stroke-dashoffset:0}
+}
+</style>
+
+<div id="vtac">
+
+<div class="va-topo">
+  <div class="va-wrap">
+    <span class="va-marca">VT Gestores de Tráfego</span>
+    <a class="va-topo-link" href="#pedir-acesso">Pedir acesso</a>
+  </div>
+</div>
+
+<section class="va-hero" id="vaHero" aria-labelledby="vaTitulo">
+  <div class="va-luz" aria-hidden="true"></div>
+  <div class="va-wrap">
+    <div>
+      <span class="va-eyebrow">Para consultores imobiliários</span>
+      <h1 id="vaTitulo">Um simulador de <mark>IMT Jovem</mark> para usar com os seus clientes.</h1>
+      <p class="va-lead">Mostre em segundos quanto o seu cliente poupa em IMT e Imposto do Selo, e envie-lhe o resultado por WhatsApp ou em PDF. Atualizado com as tabelas de 2026.</p>
+      <a class="va-btn" href="#pedir-acesso">Pedir acesso gratuito</a>
+      <p class="va-nota">Gratuito e exclusivo para consultores. Enviamos-lhe o acesso por WhatsApp.</p>
+    </div>
+    <div class="va-demo" aria-label="Exemplo de resultado do simulador">
+      <div class="va-demo-top"><span>Casa de 280 000 € · 29 anos</span><span class="va-chip">Isenção total</span></div>
+      <p class="va-demo-lbl">Poupança com o IMT Jovem</p>
+      <p><span class="va-demo-num">11 382 €</span></p>
+      <div class="va-demo-bars">
+        <div class="va-demo-row"><div><span>Sem IMT Jovem</span><b>11 382 €</b></div><div class="va-track"><div class="va-fill sem" style="--w:100%"></div></div></div>
+        <div class="va-demo-row"><div><span>Com IMT Jovem</span><b>0 €</b></div><div class="va-track"><div class="va-fill com" style="--w:2px"></div></div></div>
+      </div>
+      <p class="va-demo-foot">Exemplo com as tabelas de 2026, Continente.</p>
+    </div>
+  </div>
+</section>
+<div class="va-faixa" aria-hidden="true"><div class="va-trilho"><span>IMT Jovem 2026</span><span>Imposto do Selo</span><span>Compra a dois</span><span>Prestação do crédito</span><span>Envio por WhatsApp</span><span>Relatório em PDF</span><span>IMT Jovem 2026</span><span>Imposto do Selo</span><span>Compra a dois</span><span>Prestação do crédito</span><span>Envio por WhatsApp</span><span>Relatório em PDF</span></div></div>
+
+<section class="va-sec" aria-labelledby="vaT1">
+  <div class="va-wrap">
+    <h2 id="vaT1" class="va-rv">O que pode fazer com o simulador</h2>
+    <ul class="va-lista">
+      <li class="va-rv"><strong>Calcular o IMT e o Imposto do Selo</strong><span>Com e sem IMT Jovem, para qualquer valor de casa, no Continente ou nas Regiões Autónomas.</span></li>
+      <li class="va-rv"><strong>Simular compras a dois</strong><span>Quando só um dos compradores tem até 35 anos, a isenção aplica-se só à parte dele. O simulador faz essa conta.</span></li>
+      <li class="va-rv"><strong>Mostrar a prestação</strong><span>Estimativa do crédito habitação e quantas prestações o cliente paga com o que poupa no IMT.</span></li>
+      <li class="va-rv"><strong>Enviar o resultado ao cliente</strong><span>Mensagem pronta para o WhatsApp e relatório em PDF com o seu nome e contacto.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="va-sec va-cinza" aria-labelledby="vaT2">
+  <div class="va-wrap">
+    <h2 id="vaT2" class="va-rv">Como funciona</h2>
+    <ol class="va-passos">
+      <li class="va-rv"><h3>Peça acesso</h3><p>Preencha o formulário com os seus dados. Demora menos de um minuto.</p></li>
+      <li class="va-rv"><h3>Receba o link e a senha</h3><p>Enviamos-lhe o acesso por WhatsApp. O simulador é só para consultores.</p></li>
+      <li class="va-rv"><h3>Use com os seus clientes</h3><p>Numa reunião ou numa visita, simule e envie o resultado ao cliente na hora.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="va-sec va-form-sec" id="pedir-acesso" aria-labelledby="vaT3">
+  <div class="va-wrap va-form-grid">
+    <div>
+      <h2 id="vaT3">Peça o seu acesso gratuito</h2>
+      <p class="va-sub">Preencha os dados e enviamos-lhe o link e a senha por WhatsApp. Com o acesso fica a poder:</p>
+      <ul>
+        <li>responder na hora a "quanto vou pagar de impostos?"</li>
+        <li>mostrar ao cliente o que poupa com o IMT Jovem</li>
+        <li>enviar-lhe um relatório com o seu nome e contacto</li>
+      </ul>
+    </div>
+    <div class="va-caixa">
+      <form id="vaForm" novalidate>
+        <input type="hidden" name="pagina" value="Simulador IMT Jovem: pedido de acesso">
+        <input type="hidden" name="utm_source"><input type="hidden" name="utm_medium"><input type="hidden" name="utm_campaign"><input type="hidden" name="utm_content"><input type="hidden" name="utm_term"><input type="hidden" name="fbclid">
+        <div class="va-hp" aria-hidden="true"><label>Não preencher <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
+        <div class="va-duplo">
+          <div class="va-campo"><label for="vaNome">Nome</label><input id="vaNome" name="nome" type="text" autocomplete="name" required></div>
+          <div class="va-campo"><label for="vaAg">Agência</label><input id="vaAg" name="agencia" type="text" autocomplete="organization" placeholder="Ex.: independente" required></div>
+        </div>
+        <div class="va-duplo">
+          <div class="va-campo"><label for="vaTel">Telemóvel (WhatsApp)</label><input id="vaTel" name="telemovel" type="tel" inputmode="tel" autocomplete="tel" placeholder="912 345 678" pattern="^(\+351\s?)?[29]\d{2}\s?\d{3}\s?\d{3}$" required></div>
+          <div class="va-campo"><label for="vaEmail">Email</label><input id="vaEmail" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div class="va-duplo">
+          <div class="va-campo"><label for="vaZona">Zona onde trabalha</label><input id="vaZona" name="zona" type="text" placeholder="Ex.: Almada" required></div>
+          <div class="va-campo"><label for="vaAds">Faz anúncios para captar compradores?</label>
+            <select id="vaAds" name="anuncios" required>
+              <option value="" selected disabled>Escolha</option>
+              <option>Ainda não</option><option>Sim, faço eu</option><option>Sim, com uma agência ou gestor</option>
+            </select></div>
+        </div>
+        <label class="va-consent"><input type="checkbox" name="consentimento" value="sim" required><span>Aceito que a VT Gestores de Tráfego use estes dados para me enviar o acesso ao simulador e para me contactar, de acordo com a <a href="/politica-de-privacidade">política de privacidade</a>.</span></label>
+        <button class="va-btn" type="submit">Pedir acesso gratuito</button>
+        <p class="va-estado" role="status" aria-live="polite"></p>
+      </form>
+      <div class="va-obrigado" id="vaObrigado" tabindex="-1" hidden>
+        <svg class="va-check" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle pathLength="1" cx="28" cy="28" r="26"/><path pathLength="1" d="M17 29l7 7 15-16"/></svg>
+        <h3>Pedido recebido.</h3>
+        <p>Vamos enviar-lhe o link e a senha do simulador por WhatsApp, para o número que indicou.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="va-sec" aria-labelledby="vaT4">
+  <div class="va-wrap">
+    <h2 id="vaT4" class="va-rv">Perguntas frequentes</h2>
+    <div class="va-faq">
+      <details class="va-rv"><summary>O acesso é mesmo gratuito?</summary><p>Sim. Não paga nada e não fica com qualquer obrigação.</p></details>
+      <details class="va-rv"><summary>Os meus clientes podem usar o simulador?</summary><p>O simulador é só para consultores. O seu cliente recebe o resultado, por WhatsApp ou em PDF, mas não o acesso à ferramenta.</p></details>
+      <details class="va-rv"><summary>Os valores estão atualizados?</summary><p>Sim, usa as tabelas do IMT de 2026, com os escalões atualizados pelo Orçamento do Estado. É uma simulação indicativa e não substitui a liquidação das Finanças.</p></details>
+      <details class="va-rv"><summary>Funciona no telemóvel?</summary><p>Sim. Foi pensado para usar numa visita ou numa reunião, diretamente no telemóvel ou no computador.</p></details>
+      <details class="va-rv"><summary>Quem é a VT Gestores de Tráfego?</summary><p>Gerimos campanhas de Meta Ads para consultores imobiliários chegarem a quem está a comprar casa. O simulador é uma ferramenta que oferecemos aos consultores.</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="va-rodape">
+  <div class="va-wrap">
+    <span class="va-marca">VT Gestores de Tráfego</span>
+    <span>© 2026 VT Gestores de Tráfego. <a href="/politica-de-privacidade">Política de privacidade</a></span>
+  </div>
+</div>
+
+<div class="va-cta-fixo"><a class="va-btn" href="#pedir-acesso">Pedir acesso gratuito</a></div>
+</div>
+
+<script>
+(function(){
+  /* ▼ ENDPOINT DO FORMULÁRIO: o mesmo Formspree da landing page. Pode criar um formulário próprio no Formspree e colar aqui. */
+  var FORM_ENDPOINT = "https://formspree.io/f/xgaopvpq";
+
+  var root = document.getElementById('vtac');
+  if (!root || root.getAttribute('data-va-init')) return;
+  root.setAttribute('data-va-init', '1');
+  var PREVIEW = !!window.VTAC_PREVIEW;
+  var reduz = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var animar = !reduz && ('IntersectionObserver' in window);
+  var $ = function(s, c){ return (c || root).querySelector(s); };
+  var $$ = function(s, c){ return Array.prototype.slice.call((c || root).querySelectorAll(s)); };
+
+  if (animar) {
+    root.classList.add('va-js');
+    setTimeout(function(){ root.classList.add('va-loaded'); }, 120);
+    var alvos = $$('.va-rv');
+    alvos.forEach(function(el){
+      var i = Array.prototype.indexOf.call(el.parentNode.children, el);
+      el.style.setProperty('--d', (Math.min(i, 6) * 0.09).toFixed(2) + 's');
+    });
+    var io = new IntersectionObserver(function(en){
+      en.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('va-on'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+    alvos.forEach(function(el){ io.observe(el); });
+  }
+
+  var hero = $('.va-hero');
+  if (animar && hero && window.matchMedia('(pointer: fine)').matches) {
+    hero.addEventListener('pointermove', function(e){
+      var r = hero.getBoundingClientRect();
+      hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      hero.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    }, { passive: true });
+  }
+
+  $$('a[href="#pedir-acesso"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var alvo = document.getElementById('pedir-acesso');
+      if (!alvo) return;
+      e.preventDefault();
+      alvo.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  var form = document.getElementById('vaForm');
+  if (form) {
+    var estado = $('.va-estado', form), botao = $('button[type="submit"]', form), textoBotao = botao.textContent;
+    var params = new URLSearchParams(location.search);
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(function(k){
+      var el = form.querySelector('[name="' + k + '"]');
+      if (el && params.get(k)) el.value = params.get(k);
+    });
+    function sucesso(){
+      form.hidden = true;
+      var ok = document.getElementById('vaObrigado'); ok.hidden = false; ok.focus();
+      if (typeof fbq === 'function') fbq('track', 'Lead', { content_name: 'Acesso simulador IMT Jovem' });
+      window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'lead_simulador', pagina: 'acesso-simulador' });
+    }
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      estado.textContent = ''; estado.removeAttribute('data-state');
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      if (PREVIEW) { sucesso(); return; }
+      if (!FORM_ENDPOINT) { estado.textContent = 'O formulário ainda não está ligado. Define o FORM_ENDPOINT no código da página.'; estado.setAttribute('data-state', 'erro'); return; }
+      botao.disabled = true; botao.textContent = 'A enviar…';
+      fetch(FORM_ENDPOINT, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+        .then(function(r){ if (!r.ok) throw new Error(r.status); })
+        .then(sucesso)
+        .catch(function(){
+          estado.textContent = 'Não foi possível enviar o pedido. Verifique a ligação à internet e tente novamente.';
+          estado.setAttribute('data-state', 'erro');
+          botao.disabled = false; botao.textContent = textoBotao;
+        });
+    });
+  }
+
+  var barra = $('.va-cta-fixo'), seccaoForm = document.getElementById('pedir-acesso');
+  if (barra && hero && seccaoForm && 'IntersectionObserver' in window) {
+    var heroVisivel = true, formVisivel = false;
+    var atualizar = function(){ barra.classList.toggle('va-visivel', !heroVisivel && !formVisivel); };
+    new IntersectionObserver(function(en){ heroVisivel = en[0].isIntersecting; atualizar(); }).observe(hero);
+    new IntersectionObserver(function(en){ formVisivel = en[0].isIntersecting; atualizar(); }).observe(seccaoForm);
+  }
+})();
+</script>
