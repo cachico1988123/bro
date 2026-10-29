@@ -1,5 +1,5 @@
-// Gera a checklist bónus (1 página A4, pensada para imprimir): node checklist.cjs
-// Saída: Checklist-Antes-de-Investir-em-Anuncios.pdf
+// Gera a checklist bónus (1 página A4) em duas versões: node checklist.cjs
+// Saída: Checklist-Antes-de-Investir-em-Anuncios.pdf (ecrã, escura) e ...-Impressao.pdf (clara)
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
@@ -16,7 +16,7 @@ const sections = [
 let q = 0;
 const sec = sections.map(([t, items], i) => `<div class="sec"><h2><b>${i + 1}</b>${t}</h2><ul>${items.map(x => { q++; return `<li><i></i><span>${x}</span></li>`; }).join('')}</ul></div>`).join('');
 
-const css = `
+const baseCss = `
 @font-face{font-family:Prata;src:url(fonts/Prata-Regular.ttf)}
 @font-face{font-family:Raleway;font-weight:400;src:url(fonts/Raleway-400.ttf)}
 @font-face{font-family:Raleway;font-weight:600;src:url(fonts/Raleway-600.ttf)}
@@ -48,7 +48,21 @@ h1{font-family:Prata,serif;font-weight:400;font-size:22pt;line-height:1.16;color
 .foot{display:flex;justify-content:space-between;font-size:8pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);border-top:.3mm solid var(--line);padding-top:3.4mm}
 .foot b{color:var(--gold-l);font-weight:600}
 `;
-const html = `<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><title>Checklist: o que confirmar antes de investir o primeiro euro em anúncios</title><style>${css}</style></head><body><section class="pg">
+const printCss = `
+:root{--bg:#fff;--bg2:#fff;--line:#d9d3c2;--text:#2b2b2b;--mut:#6a665b;--gold:#b8902f;--gold-l:#1b1c1d}
+html,body{background:#fff}
+.pg{background:#fff}
+.pg::before{border:.35mm solid #b8902f}
+.pill{background:transparent;border:.35mm solid var(--gold);color:var(--ink)}
+.sec h2 b{background:var(--ink);color:#f2e782}
+.sec i{border-color:var(--ink)}
+.score{border-color:var(--gold)}
+.result{background:#fff;color:var(--ink);border:.5mm solid var(--gold)}
+.btn{background:transparent;color:var(--ink);border:.4mm solid var(--ink)}
+.foot b{color:var(--ink)}
+`;
+const themes = [['', baseCss], ['-Impressao', baseCss + printCss]];
+const makeHtml = (css) => `<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><title>Checklist: o que confirmar antes de investir o primeiro euro em anúncios</title><style>${css}</style></head><body><section class="pg">
 <span class="pill">Bónus do ebook · Checklist</span>
 <h1>O que confirmar antes de investir o primeiro euro em anúncios</h1>
 <p class="lead">Responda a cada ponto com sinceridade. Se houver mais de dois “não”, resolva-os antes de pôr dinheiro em anúncios.</p>
@@ -59,13 +73,17 @@ const html = `<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><tit
 </section></body></html>`;
 
 (async () => {
-  fs.writeFileSync(path.join(__dirname, 'checklist.html'), html);
   const b = await chromium.launch();
-  const p = await b.newPage();
-  await p.goto('file://' + path.join(__dirname, 'checklist.html'));
-  await p.evaluate(() => document.fonts.ready);
-  const over = await p.evaluate(() => { const el = document.querySelector('.pg'); return { scroll: el.scrollHeight - el.clientHeight, gapAcimaDoResultado: Math.round((document.querySelector('.result').getBoundingClientRect().top - document.querySelector('.score').getBoundingClientRect().bottom) / 3.78) }; });
-  console.log(JSON.stringify(over), q + ' itens');
-  await p.pdf({ path: path.join(__dirname, 'Checklist-Antes-de-Investir-em-Anuncios.pdf'), width: '210mm', height: '297mm', printBackground: true, preferCSSPageSize: true });
+  for (const [suffix, css] of themes) {
+    const file = path.join(__dirname, 'checklist' + suffix.toLowerCase() + '.html');
+    fs.writeFileSync(file, makeHtml(css));
+    const p = await b.newPage();
+    await p.goto('file://' + file);
+    await p.evaluate(() => document.fonts.ready);
+    const over = await p.evaluate(() => { const el = document.querySelector('.pg'); return el.scrollHeight - el.clientHeight; });
+    console.log((suffix || '-Ecra') + ': transbordo ' + over + 'px, ' + q + ' itens');
+    await p.pdf({ path: path.join(__dirname, 'Checklist-Antes-de-Investir-em-Anuncios' + suffix + '.pdf'), width: '210mm', height: '297mm', printBackground: true, preferCSSPageSize: true });
+    await p.close();
+  }
   await b.close();
 })();
