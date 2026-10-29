@@ -2,7 +2,9 @@
 
 - `index.html`: bloco único (HTML + CSS + JS) para colar num widget **HTML** do Elementor.
   Use uma página em largura total ou o modelo "Elementor Canvas" (sem cabeçalho e rodapé do tema).
-- `img/ebook-preview-*.jpg`: 3 pré-visualizações do ebook. Carregue-as em **Média** do WordPress e atualize `previews` no bloco `CONFIG`. Se não carregarem, a secção esconde-se sozinha.
+- `ebook/`: ebook v2 de 19 páginas. `Os-5-Maiores-Erros-v2.pdf` é o PDF final; `build.cjs` gera-o (`NODE_PATH=$(npm root -g) node build.cjs`) depois de editar o bloco `CFG` no topo (link da agenda, e-mail, WhatsApp). Os tipos de letra (Prata e Raleway, licença OFL) estão em `ebook/fonts/`.
+- `ebook-ultima-pagina.md`: texto original da última página (já incluído no PDF).
+- `img/ebook-preview-*.jpg`: 3 páginas do ebook v2 (erros 1, 2 e 3). Carregue-as em **Média** do WordPress e atualize `previews` no bloco `CONFIG`. Se não carregarem, a secção esconde-se sozinha.
 - `bonus-checklist.md`: texto do bónus 1, para passar a PDF de 1 página.
 
 ## Antes de publicar (bloco `CONFIG` no fim do `index.html`)
