@@ -5,14 +5,7 @@ const path = require('path');
 const { chromium } = require('playwright');
 
 /* ===================== CONFIG: edite aqui e volte a correr ===================== */
-const CFG = {
-  callUrl: 'https://COLOQUE-AQUI-O-LINK-DA-AGENDA',     // Calendly, Cal.com, etc.
-  callLabel: 'COLOQUE-AQUI-O-LINK-DA-AGENDA',          // texto visível do link
-  email: 'geral@vtgestoresdetrafego.pt',               // confirme
-  whatsapp: '+351 000 000 000',                        // confirme
-  site: 'vtgestoresdetrafego.pt',
-  year: '2026',
-};
+const CFG = require('./config.cjs');
 /* =============================================================================== */
 
 const TOTAL = 19;

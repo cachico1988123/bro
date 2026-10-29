@@ -5,7 +5,7 @@
 - `ebook/`: ebook v2 de 19 páginas. `Os-5-Maiores-Erros-v2.pdf` é o PDF final; `build.cjs` gera-o (`NODE_PATH=$(npm root -g) node build.cjs`) depois de editar o bloco `CFG` no topo (link da agenda, e-mail, WhatsApp). Os tipos de letra (Prata e Raleway, licença OFL) estão em `ebook/fonts/`.
 - `ebook-ultima-pagina.md`: texto original da última página (já incluído no PDF).
 - `img/ebook-preview-*.jpg`: 3 páginas do ebook v2 (erros 1, 2 e 3). Carregue-as em **Média** do WordPress e atualize `previews` no bloco `CONFIG`. Se não carregarem, a secção esconde-se sozinha.
-- `bonus-checklist.md`: texto do bónus 1, para passar a PDF de 1 página.
+- `bonus-checklist.md`: texto do bónus 1. O PDF final é `ebook/Checklist-Antes-de-Investir-em-Anuncios.pdf` (1 página, mesmo estilo do ebook), gerado por `ebook/checklist.cjs`. O link da agenda, o e-mail e o site vêm de `ebook/config.cjs`.
 
 ## Antes de publicar (bloco `CONFIG` no fim do `index.html`)
 1. `checkoutUrl`: link de checkout da Hotmart.
