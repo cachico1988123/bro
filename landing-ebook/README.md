@@ -20,3 +20,12 @@ Em `html/`: `ebook.html`, `checklist.html` (escura) e `checklist-impressao.html`
 
 ## Checklist interativa para o site
 `checklist-interativa.html`: bloco para colar num widget **HTML** do Elementor (página própria, por exemplo `/checklist/`). 14 perguntas sim/não, dica quando a resposta é "não", resultado com a lista do que resolver primeiro, botão para marcar a chamada, imprimir e recomeçar. Guarda as respostas só no dispositivo (localStorage). No bloco `CONFIG` do fim do ficheiro: `callUrl` (agenda) e `pdfUrl` (URL do PDF da checklist em Média; vazio esconde o botão). Dispara os eventos `ChecklistConcluida` e `ChecklistChamadaClick` do Meta Pixel, se existir.
+
+## Texto para o SEO da página (Yoast, Rank Math ou o separador SEO do Elementor)
+- Título (até 60 caracteres): `Guia: os 5 erros de quem não usa tráfego pago | VT`
+- Descrição (até 155): `Ebook de 19 páginas para donos de negócios locais: os 5 erros que travam as vendas, um teste rápido por erro e um plano para esta semana. 10 €, com garantia de 7 dias.`
+- Imagem para partilha (1200x630): use a capa do ebook.
+- Marque a página como "indexável" e confirme que o Pixel da Meta está instalado no site (o `index.html` só dispara eventos, não instala o Pixel).
+
+## Revisão da página (feita em 375, 768 e 1440 px)
+Sem scroll horizontal, sem texto abaixo de 4.5:1 de contraste, títulos por ordem (H1, H2, H3), botões e ligações com pelo menos 44 px de altura, foco visível com o teclado. Corrigido na revisão: ligações do rodapé pequenas no telemóvel e falta do elemento `<main>`.
