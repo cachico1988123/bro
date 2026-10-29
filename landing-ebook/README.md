@@ -14,3 +14,6 @@
 4. Texto "Quem escreveu": acrescentar a história do Tiago e uma foto.
 5. Testemunhos: a secção está escondida (`hidden`); só ativar com testemunhos reais.
 6. Meta Pixel: o clique nos botões dispara `InitiateCheckout` e o diagnóstico dispara `DiagnosticoIniciado` e `DiagnosticoConcluido`, só se o Pixel existir.
+
+## Versões em HTML (autónomas, sem ficheiros externos)
+Em `html/`: `ebook.html`, `checklist.html` (escura) e `checklist-impressao.html` (clara). Têm os tipos de letra embebidos, abrem em qualquer browser e imprimem em A4 (Ctrl+P, sem margens, com "gráficos de fundo" ativos). Voltam a ser geradas por `ebook/build.cjs` e `ebook/checklist.cjs`.

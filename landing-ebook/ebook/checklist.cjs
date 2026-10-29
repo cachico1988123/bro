@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
 const CFG = require('./config.cjs');
+const standalone = require('./standalone.cjs');
 
 const sections = [
   ['Objetivo', ['Sei o que quero que o anúncio faça (chamadas, pedidos de orçamento, reservas, vendas)?', 'Sei quantos clientes novos por mês preciso para valer a pena?']],
@@ -75,8 +76,9 @@ const makeHtml = (css) => `<!doctype html><html lang="pt-PT"><head><meta charset
 (async () => {
   const b = await chromium.launch();
   for (const [suffix, css] of themes) {
-    const file = path.join(__dirname, 'checklist' + suffix.toLowerCase() + '.html');
-    fs.writeFileSync(file, makeHtml(css));
+    fs.mkdirSync(path.join(__dirname, '..', 'html'), { recursive: true });
+    const file = path.join(__dirname, '..', 'html', 'checklist' + suffix.toLowerCase() + '.html');
+    fs.writeFileSync(file, standalone(makeHtml(css)));
     const p = await b.newPage();
     await p.goto('file://' + file);
     await p.evaluate(() => document.fonts.ready);

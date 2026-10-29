@@ -1,8 +1,9 @@
 // Gera o PDF do ebook (2.ª versão): node build.cjs
-// Requer: playwright (já instalado). Saída: Os-5-Maiores-Erros-v2.pdf e ebook.html
+// Requer: playwright (já instalado). Saída: Os-5-Maiores-Erros-v2.pdf e ../html/ebook.html (autónomo)
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
+const standalone = require('./standalone.cjs');
 
 /* ===================== CONFIG: edite aqui e volte a correr ===================== */
 const CFG = require('./config.cjs');
@@ -387,12 +388,15 @@ p+p{margin-top:2.4mm}
 `;
 const html = `<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><title>Os 5 Maiores Erros que os Donos de Negócios Cometem por Não Usar a Gestão de Tráfego Pago</title><style>${css}</style></head><body>${pages.join('\n')}</body></html>`;
 const out = __dirname;
-fs.writeFileSync(path.join(out, 'ebook.html'), html);
+const htmlDir = path.join(__dirname, '..', 'html');
+fs.mkdirSync(htmlDir, { recursive: true });
+const htmlFile = path.join(htmlDir, 'ebook.html');
+fs.writeFileSync(htmlFile, standalone(html));
 
 (async () => {
   const b = await chromium.launch();
   const p = await b.newPage();
-  await p.goto('file://' + path.join(out, 'ebook.html'));
+  await p.goto('file://' + htmlFile);
   await p.evaluate(() => document.fonts.ready);
   // aviso de páginas com conteúdo a transbordar
   const over = await p.evaluate(() => [...document.querySelectorAll('.pg')].map((el, i) => {
