@@ -17,3 +17,6 @@
 
 ## Versões em HTML (autónomas, sem ficheiros externos)
 Em `html/`: `ebook.html`, `checklist.html` (escura) e `checklist-impressao.html` (clara). Têm os tipos de letra embebidos, abrem em qualquer browser e imprimem em A4 (Ctrl+P, sem margens, com "gráficos de fundo" ativos). Voltam a ser geradas por `ebook/build.cjs` e `ebook/checklist.cjs`.
+
+## Checklist interativa para o site
+`checklist-interativa.html`: bloco para colar num widget **HTML** do Elementor (página própria, por exemplo `/checklist/`). 14 perguntas sim/não, dica quando a resposta é "não", resultado com a lista do que resolver primeiro, botão para marcar a chamada, imprimir e recomeçar. Guarda as respostas só no dispositivo (localStorage). No bloco `CONFIG` do fim do ficheiro: `callUrl` (agenda) e `pdfUrl` (URL do PDF da checklist em Média; vazio esconde o botão). Dispara os eventos `ChecklistConcluida` e `ChecklistChamadaClick` do Meta Pixel, se existir.

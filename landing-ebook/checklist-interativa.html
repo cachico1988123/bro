@@ -1,0 +1,262 @@
+<!--
+  CHECKLIST INTERATIVA · "O que confirmar antes de investir o primeiro euro em anúncios"
+  Para colar num widget "HTML" do Elementor (página em largura total / modelo "Elementor Canvas").
+  Tudo está com o prefixo .vt-ck para não colidir com o tema.
+  Antes de publicar, edite o bloco CONFIG no fim do ficheiro (link da agenda, link do PDF para imprimir).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="vt-ck" id="vt-ck">
+<style>
+.vt-ck{
+  --bg:#1b1c1d; --bg2:#232426; --bg3:#2b2c2f; --text:#cfcbbf; --muted:#a9a69d; --line:#3a3b3e;
+  --gold:#d2ac47; --gold-l:#f2e782; --gold-d:#4b3f02; --ink:#1b1c1d; --ok:#8fcf9b; --bad:#e8907f;
+  font-family:'Raleway',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:17px; line-height:1.6; color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; text-align:left;
+  padding:56px 0 90px;
+  background:radial-gradient(900px 420px at 90% 0%,rgba(210,172,71,.14),transparent 60%),var(--bg);
+}
+.vt-ck *,.vt-ck *::before,.vt-ck *::after{box-sizing:border-box}
+.vt-ck h1,.vt-ck h2,.vt-ck h3,.vt-ck p,.vt-ck ul,.vt-ck ol{margin:0;padding:0}
+.vt-ck ul,.vt-ck ol{list-style:none}
+.vt-ck h1,.vt-ck h2,.vt-ck h3{font-family:'Prata',Georgia,serif;font-weight:400;color:var(--gold-l);line-height:1.2;letter-spacing:0}
+.vt-ck a{color:var(--gold-l)}
+.vt-ck button{font:inherit;color:inherit;background:none;border:0;border-radius:0;box-shadow:none;text-transform:none;text-shadow:none;cursor:pointer;padding:0;margin:0;-webkit-appearance:none;appearance:none}
+.vt-ck :focus-visible{outline:3px solid var(--gold-l);outline-offset:3px}
+.vt-ck .vt-wrap{max-width:860px;margin:0 auto;padding:0 20px}
+.vt-ck .vt-pill{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);background:var(--gold-d);padding:7px 12px;border-radius:4px;margin-bottom:18px}
+.vt-ck h1{font-size:clamp(30px,5.4vw,46px);margin-bottom:14px}
+.vt-ck .vt-lead{font-size:18px;max-width:60ch;margin-bottom:8px}
+.vt-ck .vt-by{font-size:14px;color:var(--muted)}
+
+/* barra de progresso fixa */
+.vt-ck .vt-bar{position:sticky;top:0;z-index:20;margin:26px -20px 26px;padding:12px 20px;background:rgba(27,28,29,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.vt-ck .vt-bar-row{display:flex;justify-content:space-between;gap:14px;font-size:14px;color:var(--muted);margin-bottom:8px}
+.vt-ck .vt-bar-row b{color:var(--gold-l);font-weight:700}
+.vt-ck .vt-track{height:6px;border-radius:99px;background:var(--bg3);overflow:hidden}
+.vt-ck .vt-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-l));transition:width .3s ease}
+
+/* secções e perguntas */
+.vt-ck .vt-sec{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin-bottom:16px}
+.vt-ck .vt-sec h2{font-size:22px;display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.vt-ck .vt-sec h2 b{flex:none;width:32px;height:32px;border-radius:50%;background:var(--gold-d);color:var(--gold-l);font-family:'Prata',serif;font-weight:400;font-size:16px;display:flex;align-items:center;justify-content:center}
+.vt-ck .vt-q{padding:16px 0;border-top:1px solid var(--line)}
+.vt-ck .vt-sec h2+.vt-q{margin-top:10px}
+.vt-ck .vt-qt{font-size:17px;color:#e6e2d6;margin-bottom:12px}
+.vt-ck .vt-ans{display:flex;gap:10px}
+.vt-ck .vt-ans button{flex:1;max-width:150px;min-height:48px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-weight:700;color:var(--text);transition:border-color .15s,background .15s,color .15s}
+.vt-ck .vt-ans button:hover{border-color:var(--gold)}
+.vt-ck .vt-ans button[aria-pressed="true"].vt-y{border-color:var(--ok);background:#20362a;color:var(--ok)}
+.vt-ck .vt-ans button[aria-pressed="true"].vt-n{border-color:var(--bad);background:#3a2420;color:var(--bad)}
+.vt-ck .vt-tip{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.vt-ck .vt-q.vt-no .vt-tip{grid-template-rows:1fr}
+.vt-ck .vt-tip>div{overflow:hidden}
+.vt-ck .vt-tip p{margin-top:12px;padding:12px 14px;border-radius:10px;background:#2d2519;border:1px solid rgba(210,172,71,.35);font-size:15px;color:var(--text)}
+.vt-ck .vt-tip p b{color:var(--gold-l)}
+
+/* resultado */
+.vt-ck .vt-res{margin-top:26px;border:1px solid rgba(210,172,71,.55);border-radius:20px;background:linear-gradient(180deg,#26241a,#1b1c1d 50%);padding:28px 22px}
+.vt-ck .vt-res h2{font-size:clamp(24px,4vw,32px);margin-bottom:18px}
+.vt-ck .vt-score{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.vt-ck .vt-score b{font-family:'Prata',serif;font-weight:400;font-size:52px;line-height:1;color:var(--gold-l)}
+.vt-ck .vt-score span{color:var(--muted)}
+.vt-ck .vt-todo{margin:16px 0 4px;display:grid;gap:8px}
+.vt-ck .vt-todo li{display:flex;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:15px}
+.vt-ck .vt-todo li::before{content:"!";flex:none;width:20px;height:20px;border-radius:50%;background:var(--gold-d);color:var(--gold-l);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.vt-ck .vt-cta{margin-top:22px;background:var(--gold);color:var(--ink);border-radius:14px;padding:22px}
+.vt-ck .vt-cta h3{color:var(--ink);font-size:22px;margin-bottom:8px}
+.vt-ck .vt-cta p{color:var(--ink);font-size:16px}
+.vt-ck .vt-btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:13px 28px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;border:2px solid var(--ink);background:var(--ink);color:var(--gold-l);margin-top:16px;transition:transform .15s}
+.vt-ck .vt-btn:hover{transform:translateY(-2px);text-decoration:none}
+.vt-ck .vt-btn--ghost{background:transparent;color:var(--gold-l);border-color:var(--line);margin-top:0}
+.vt-ck .vt-btn--ghost:hover{border-color:var(--gold)}
+.vt-ck .vt-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.vt-ck .vt-note{font-size:13.5px;color:var(--muted);margin-top:18px}
+.vt-ck [hidden]{display:none!important}
+.vt-ck .vt-pending{text-align:center;color:var(--muted);padding:6px 0}
+
+@media (max-width:560px){
+  .vt-ck{font-size:16px;padding:40px 0 70px}
+  .vt-ck .vt-ans button{max-width:none}
+  .vt-ck .vt-btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){.vt-ck *{transition:none!important}}
+
+/* impressão: só a checklist, em claro e sem gastar tinta */
+@media print{
+  body *{visibility:hidden!important}
+  .vt-ck,.vt-ck *{visibility:visible!important}
+  .vt-ck{position:absolute;left:0;top:0;width:100%;background:#fff!important;color:#222!important;padding:0!important}
+  .vt-ck h1,.vt-ck h2,.vt-ck h3,.vt-ck .vt-qt,.vt-ck .vt-score b{color:#111!important}
+  .vt-ck .vt-sec,.vt-ck .vt-res,.vt-ck .vt-cta{background:#fff!important;border:1px solid #bbb!important}
+  .vt-ck .vt-bar,.vt-ck .vt-acts,.vt-ck .vt-ans button:not([aria-pressed="true"]){display:none!important}
+  .vt-ck .vt-ans button{border:1px solid #333!important;background:#fff!important;color:#111!important}
+  .vt-ck .vt-tip p{background:#fff!important;border:1px solid #bbb!important;color:#222!important}
+  .vt-ck .vt-cta p,.vt-ck .vt-cta h3{color:#111!important}
+  .vt-ck .vt-sec{break-inside:avoid}
+}
+</style>
+
+<div class="vt-wrap">
+  <header>
+    <span class="vt-pill">Bónus do ebook · Checklist</span>
+    <h1>O que confirmar antes de investir o primeiro euro em anúncios</h1>
+    <p class="vt-lead">Responda “sim” ou “não” a cada pergunta. Quando responde “não”, aparece uma dica do que fazer. No fim, fica com a lista do que resolver primeiro.</p>
+    <p class="vt-by">Por Tiago Violante · VT Gestores de Tráfego</p>
+  </header>
+
+  <div class="vt-bar" aria-live="polite">
+    <div class="vt-bar-row"><span><b id="vt-done">0</b> de <span id="vt-total">14</span> respondidas</span><span>“Não”: <b id="vt-nos">0</b></span></div>
+    <div class="vt-track"><i id="vt-fill"></i></div>
+  </div>
+
+  <div id="vt-list"><!-- preenchido por JavaScript --></div>
+
+  <section class="vt-res" id="vt-res" aria-live="polite">
+    <p class="vt-pending" id="vt-pending">Responda a todas as perguntas para ver o seu resultado.</p>
+    <div id="vt-result" hidden>
+      <h2 id="vt-rt" tabindex="-1"></h2>
+      <div class="vt-score"><b id="vt-rn">0</b><span>respostas “não” em <span id="vt-rtot">14</span></span></div>
+      <p id="vt-rtext"></p>
+      <ul class="vt-todo" id="vt-todo"></ul>
+      <div class="vt-cta">
+        <h3>Quer uma segunda opinião sobre o seu caso?</h3>
+        <p>Tem direito a uma chamada de diagnóstico de 20 minutos, sem custo e sem compromisso. Olhamos para as suas respostas e dizemos-lhe por onde começar, mesmo que seja sem a VT.</p>
+        <a class="vt-btn" id="vt-call" href="#" data-vt-call>Marcar a minha chamada</a>
+      </div>
+    </div>
+    <div class="vt-acts">
+      <button type="button" class="vt-btn vt-btn--ghost" id="vt-print">Imprimir as minhas respostas</button>
+      <a class="vt-btn vt-btn--ghost" id="vt-pdf" href="#" hidden download>Descarregar versão em PDF</a>
+      <button type="button" class="vt-btn vt-btn--ghost" id="vt-redo">Recomeçar</button>
+    </div>
+    <p class="vt-note">As suas respostas ficam apenas neste dispositivo. Não as enviamos a ninguém. Esta checklist é um guia geral e não garante resultados.</p>
+  </section>
+</div>
+
+<script>
+(function () {
+  /* ===================== CONFIG: edite aqui ===================== */
+  var CONFIG = {
+    callUrl: 'https://COLOQUE-AQUI-O-LINK-DA-AGENDA',   // Calendly, Cal.com, etc.
+    pdfUrl: '',                                        // URL do PDF da checklist em Média (deixe vazio para esconder o botão)
+    storageKey: 'vt-checklist-v1'
+  };
+  /* ============================================================== */
+
+  var root = document.getElementById('vt-ck');
+  if (!root) return;
+  var $ = function (id) { return document.getElementById(id); };
+
+  var DATA = [
+    ['Objetivo', [
+      ['Sei o que quero que o anúncio faça (chamadas, pedidos de orçamento, reservas, vendas)?', 'Escreva numa frase o resultado que quer, com um número. Por exemplo: “20 pedidos de orçamento por mês”.', 'Defina o objetivo'],
+      ['Sei quantos clientes novos por mês preciso para valer a pena?', 'Parta do que precisa para pagar os custos e crescer, e escreva um número por mês.', 'Defina quantos clientes novos precisa']
+    ]],
+    ['Margem e orçamento', [
+      ['Sei quanto lucro me deixa, em média, um cliente novo?', 'Faça a conta da página 15 do ebook: preço médio menos custos diretos, a multiplicar pelas vezes que o cliente compra.', 'Calcule o lucro por cliente'],
+      ['Sei quanto posso pagar para conseguir um cliente e continuar a ter lucro?', 'O teto é o lucro por cliente. Um ponto de partida prudente é o lucro da primeira venda (ebook, página 15).', 'Defina o máximo a pagar por cliente'],
+      ['O orçamento que reservei é dinheiro que posso gastar sem pôr o negócio em causa?', 'Reserve só dinheiro que possa perder durante as primeiras semanas de teste, que servem para aprender.', 'Defina um orçamento seguro']
+    ]],
+    ['Público e oferta', [
+      ['Sei descrever em duas frases quem é o meu cliente ideal e onde vive?', 'Escreva quem é, onde vive e que problema tem. Se não consegue em duas frases, ainda está vago.', 'Descreva o cliente ideal'],
+      ['A minha oferta diz de forma clara o que vendo, a quem e porque me devem escolher?', 'Reescreva a oferta com três partes: o que vende, para quem e o que o distingue dos concorrentes.', 'Clarifique a oferta']
+    ]],
+    ['Destino do clique', [
+      ['O anúncio leva a uma página que explica a oferta e tem um único próximo passo claro?', 'Uma página, uma oferta, um botão. Evite enviar o clique para a página inicial do site.', 'Crie uma página de destino com um só passo'],
+      ['A página abre depressa e funciona bem no telemóvel?', 'Abra-a no telemóvel, com dados móveis, e veja se carrega depressa e se o botão se vê sem esforço.', 'Melhore a velocidade e o telemóvel'],
+      ['Respondo depressa a quem me contacta (idealmente no próprio dia)?', 'Defina quem responde e em quanto tempo. Um contacto que espera dias arrefece.', 'Defina quem responde e em quanto tempo']
+    ]],
+    ['Medição', [
+      ['Sei de onde veio cada contacto ou venda (Pixel, formulário, pergunta “como nos conheceu?”)?', 'Peça a quem fez o site para instalar o Pixel e o Google Analytics e pergunte “como nos conheceu?” em cada contacto.', 'Instale o rastreio e registe a origem dos contactos'],
+      ['Sei o que vou ver todas as semanas: custo por cliente novo (CPA), retorno (ROAS) e taxa de cliques (CTR)?', 'Escolha estes três números e marque um dia fixo da semana para os ver (explicados na página 14 do ebook).', 'Escolha os números a seguir todas as semanas']
+    ]],
+    ['Responsabilidade', [
+      ['Alguém vai acompanhar e ajustar as campanhas todas as semanas, com conhecimento para isso?', 'Defina quem faz. Se for você, reserve horas fixas. Se for delegar, veja as 7 perguntas da página 18 do ebook.', 'Defina quem acompanha as campanhas'],
+      ['Tenho em conta o valor do meu tempo, se for eu a fazê-lo?', 'Calcule o valor da sua hora e quantas horas por semana gasta nos anúncios. Esse tempo também custa dinheiro.', 'Calcule o valor do seu tempo']
+    ]]
+  ];
+
+  var state = {}; // id -> 'y' | 'n'
+  var total = 0;
+  DATA.forEach(function (s) { total += s[1].length; });
+  $('vt-total').textContent = total; $('vt-rtot').textContent = total;
+
+  try { var saved = JSON.parse(localStorage.getItem(CONFIG.storageKey) || '{}'); if (saved && typeof saved === 'object') state = saved; } catch (e) {}
+  function save() { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); } catch (e) {} }
+  function track(name, data) { try { if (typeof window.fbq === 'function') window.fbq('trackCustom', name, data || {}); } catch (e) {} }
+
+  /* ---- render ---- */
+  var html = '', n = 0;
+  DATA.forEach(function (s, si) {
+    html += '<section class="vt-sec"><h2><b>' + (si + 1) + '</b>' + s[0] + '</h2>';
+    s[1].forEach(function (q) {
+      var id = 'q' + (++n);
+      html += '<div class="vt-q" data-id="' + id + '"><p class="vt-qt" id="' + id + '-t">' + q[0] + '</p>' +
+        '<div class="vt-ans" role="group" aria-labelledby="' + id + '-t"><button type="button" class="vt-y" data-a="y" aria-pressed="false">Sim</button><button type="button" class="vt-n" data-a="n" aria-pressed="false">Não</button></div>' +
+        '<div class="vt-tip"><div><p><b>Como resolver:</b> ' + q[1] + '</p></div></div></div>';
+    });
+    html += '</section>';
+  });
+  $('vt-list').innerHTML = html;
+
+  var items = {}; var n2 = 0;
+  DATA.forEach(function (s) { s[1].forEach(function (q) { items['q' + (++n2)] = q; }); });
+
+  function paint() {
+    var done = 0, nos = 0;
+    Object.keys(items).forEach(function (id) {
+      var el = root.querySelector('.vt-q[data-id="' + id + '"]'), v = state[id];
+      el.classList.toggle('vt-no', v === 'n');
+      [].forEach.call(el.querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-a') === v ? 'true' : 'false'); });
+      if (v) done++; if (v === 'n') nos++;
+    });
+    $('vt-done').textContent = done; $('vt-nos').textContent = nos;
+    $('vt-fill').style.width = (done / total * 100) + '%';
+    var complete = done === total;
+    $('vt-pending').hidden = complete;
+    $('vt-pending').textContent = 'Faltam ' + (total - done) + ' perguntas para ver o seu resultado.';
+    $('vt-result').hidden = !complete;
+    if (complete) {
+      $('vt-rn').textContent = nos;
+      var title, text;
+      if (nos === 0) { title = 'Está bem preparado para começar'; text = 'Respondeu “sim” a tudo. Antes de investir, confirme que os números de cada resposta estão mesmo escritos e não só na cabeça.'; }
+      else if (nos <= 2) { title = 'Está perto, falta pouco'; text = 'Só tem ' + (nos === 1 ? 'um ponto' : 'dois pontos') + ' por resolver. Trate ' + (nos === 1 ? 'dele' : 'deles') + ' antes de pôr dinheiro em anúncios.'; }
+      else { title = 'Resolva primeiro estes pontos'; text = 'Com mais de dois “não”, o mais provável é gastar dinheiro sem saber se está a funcionar. Comece pela lista abaixo, por ordem.'; }
+      $('vt-rt').textContent = title; $('vt-rtext').textContent = text;
+      var list = '';
+      Object.keys(items).forEach(function (id) { if (state[id] === 'n') list += '<li>' + items[id][2] + '</li>'; });
+      $('vt-todo').innerHTML = list; $('vt-todo').hidden = !list;
+    }
+    return complete;
+  }
+
+  var wasComplete = false;
+  root.addEventListener('click', function (e) {
+    var b = e.target.closest('.vt-ans button');
+    if (b) {
+      var id = b.closest('.vt-q').getAttribute('data-id'), a = b.getAttribute('data-a');
+      state[id] = state[id] === a ? undefined : a; if (!state[id]) delete state[id];
+      save();
+      var c = paint();
+      if (c && !wasComplete) { track('ChecklistConcluida', { nao: Object.keys(state).filter(function (k) { return state[k] === 'n'; }).length }); }
+      wasComplete = c;
+      return;
+    }
+    if (e.target.closest('[data-vt-call]')) { track('ChecklistChamadaClick'); }
+  });
+  $('vt-call').href = CONFIG.callUrl;
+  if (CONFIG.pdfUrl) { $('vt-pdf').href = CONFIG.pdfUrl; $('vt-pdf').hidden = false; }
+  $('vt-print').addEventListener('click', function () { window.print(); });
+  $('vt-redo').addEventListener('click', function () {
+    state = {}; save(); wasComplete = false; paint();
+    var top = root.getBoundingClientRect().top + window.pageYOffset;
+    window.scrollTo({ top: top, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  wasComplete = paint();
+})();
+</script>
+</div>
