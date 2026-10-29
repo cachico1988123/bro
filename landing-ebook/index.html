@@ -1,0 +1,675 @@
+<!--
+  LANDING PAGE · EBOOK "Os 5 Maiores Erros que os Donos de Negócios Cometem por Não Usar a Gestão de Tráfego Pago"
+  Para colar num widget "HTML" do Elementor (página em largura total / modelo "Elementor Canvas").
+  Tudo está com o prefixo .vt-lp para não colidir com o tema.
+  Antes de publicar, edite o bloco CONFIG no fim do ficheiro (link da Hotmart, link da chamada, e-mail, etc.).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="vt-lp" id="vt-lp">
+<style>
+.vt-lp{
+  --bg:#1b1c1d; --bg2:#232426; --bg3:#2b2c2f;
+  --text:#cfcbbf; --muted:#a9a69d; --line:#3a3b3e;
+  --gold:#d2ac47; --gold-l:#f2e782; --gold-d:#4b3f02; --on-gold:#1b1c1d;
+  --ok:#8fcf9b; --bad:#e8907f;
+  --r:14px; --max:1120px;
+  font-family:'Raleway',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:17px; line-height:1.65; color:var(--text); background:var(--bg);
+  -webkit-font-smoothing:antialiased; text-align:left;
+}
+.vt-lp *,.vt-lp *::before,.vt-lp *::after{box-sizing:border-box}
+.vt-lp h1,.vt-lp h2,.vt-lp h3,.vt-lp p,.vt-lp ul,.vt-lp ol,.vt-lp figure,.vt-lp blockquote{margin:0;padding:0}
+.vt-lp ul,.vt-lp ol{list-style:none}
+.vt-lp img{max-width:100%;height:auto;display:block}
+.vt-lp a{color:var(--gold-l);text-decoration:none}
+.vt-lp a:hover{text-decoration:underline}
+.vt-lp h1,.vt-lp h2,.vt-lp h3{font-family:'Prata',Georgia,serif;font-weight:400;color:var(--gold-l);line-height:1.2;letter-spacing:0}
+.vt-lp button{font:inherit;color:inherit;background:none;border:0;border-radius:0;box-shadow:none;text-transform:none;text-shadow:none;cursor:pointer;padding:0;margin:0;-webkit-appearance:none;appearance:none}
+.vt-lp :focus-visible{outline:3px solid var(--gold-l);outline-offset:3px}
+.vt-lp .vt-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.vt-lp .vt-wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+.vt-lp .vt-sec{padding:72px 0}
+.vt-lp .vt-sec--alt{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.vt-lp .vt-eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.vt-lp .vt-h2{font-size:clamp(28px,4.4vw,42px);margin-bottom:14px}
+.vt-lp .vt-lead{font-size:18px;max-width:62ch;color:var(--text)}
+.vt-lp .vt-center{text-align:center}
+.vt-lp .vt-center .vt-lead{margin-left:auto;margin-right:auto}
+
+/* botões */
+.vt-lp .vt-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:14px 30px;border-radius:999px;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:16px;letter-spacing:.02em;text-decoration:none;border:2px solid var(--gold);transition:transform .18s ease,background .18s ease,box-shadow .18s ease}
+.vt-lp .vt-btn:hover{background:var(--gold-l);border-color:var(--gold-l);color:var(--on-gold);text-decoration:none;transform:translateY(-2px);box-shadow:0 10px 28px rgba(210,172,71,.28)}
+.vt-lp .vt-btn:active{transform:translateY(0)}
+.vt-lp .vt-btn--ghost{background:transparent;color:var(--gold-l);border-color:var(--line)}
+.vt-lp .vt-btn--ghost:hover{background:transparent;color:var(--gold-l);border-color:var(--gold)}
+.vt-lp .vt-btn--lg{min-height:60px;font-size:17px;padding:16px 36px}
+.vt-lp .vt-note{font-size:14px;color:var(--muted)}
+
+/* revelar ao scroll (só se o JS arrancou) */
+.vt-lp.vt-js .vt-rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.vt-lp.vt-js .vt-rv.vt-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .vt-lp *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  .vt-lp.vt-js .vt-rv{opacity:1;transform:none}
+}
+
+/* topo */
+.vt-lp .vt-hero{padding:56px 0 64px;background:radial-gradient(900px 480px at 85% 0%,rgba(210,172,71,.14),transparent 60%),var(--bg)}
+.vt-lp .vt-hero-grid{display:grid;gap:44px;align-items:center}
+.vt-lp .vt-h1{font-size:clamp(34px,6vw,58px);margin-bottom:20px}
+.vt-lp .vt-hero p.vt-lead{margin-bottom:26px}
+.vt-lp .vt-price-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-bottom:16px}
+.vt-lp .vt-price{font-family:'Prata',Georgia,serif;font-size:44px;line-height:1;color:var(--gold-l)}
+.vt-lp .vt-price small{font-family:'Raleway',sans-serif;font-size:14px;color:var(--muted);margin-left:8px}
+.vt-lp .vt-cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.vt-lp .vt-facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:24px;font-size:14px;color:var(--muted)}
+.vt-lp .vt-facts li::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:8px;vertical-align:middle}
+
+/* capa em CSS */
+.vt-lp .vt-cover-wrap{perspective:1100px;display:flex;justify-content:center}
+.vt-lp .vt-cover{position:relative;width:min(320px,78vw);aspect-ratio:3/4.2;border-radius:6px 12px 12px 6px;padding:30px 26px;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(160deg,#2a2b2e 0%,#1b1c1d 55%,#242015 100%);border:1px solid rgba(210,172,71,.45);
+  box-shadow:-14px 18px 44px rgba(0,0,0,.55),inset 6px 0 0 rgba(210,172,71,.18);transform:rotateY(-14deg) rotateX(3deg);transition:transform .25s ease;will-change:transform}
+.vt-lp .vt-cover::before{content:"";position:absolute;inset:10px;border:1px solid rgba(210,172,71,.22);border-radius:3px;pointer-events:none}
+.vt-lp .vt-cover-top{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.vt-lp .vt-cover-title{font-family:'Prata',Georgia,serif;font-size:clamp(17px,2.2vw,20px);line-height:1.25;color:var(--gold-l);margin:18px 0}
+.vt-lp .vt-cover-title b{display:block;font-weight:400;font-size:1.75em;color:#fff;margin-bottom:10px;line-height:1.05}
+.vt-lp .vt-cover-by{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text);border-top:1px solid rgba(210,172,71,.35);padding-top:12px}
+
+/* reconhece-se */
+.vt-lp .vt-sym{display:grid;gap:16px;margin-top:34px}
+.vt-lp .vt-sym li{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:22px 22px 22px 58px;position:relative}
+.vt-lp .vt-sym li::before{content:"?";position:absolute;left:20px;top:20px;width:28px;height:28px;border-radius:50%;background:var(--gold-d);color:var(--gold-l);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px}
+
+/* diagnóstico */
+.vt-lp .vt-quiz{text-align:left;max-width:760px;margin:34px auto 0;background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:28px 22px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.vt-lp .vt-progress{height:6px;border-radius:99px;background:var(--bg3);overflow:hidden;margin-bottom:10px}
+.vt-lp .vt-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-l));transition:width .35s ease}
+.vt-lp .vt-qmeta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:22px}
+.vt-lp .vt-q{font-family:'Prata',Georgia,serif;font-size:clamp(21px,3.2vw,27px);line-height:1.3;color:var(--gold-l);margin-bottom:8px}
+.vt-lp .vt-qhint{font-size:15px;color:var(--muted);margin-bottom:24px;min-height:1.6em}
+.vt-lp .vt-ans{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vt-lp .vt-ans button{min-height:58px;border-radius:12px;border:2px solid var(--line);background:var(--bg2);font-weight:700;font-size:17px;color:var(--text);transition:border-color .15s,background .15s,transform .15s}
+.vt-lp .vt-ans button:hover{border-color:var(--gold);background:var(--bg3);color:#fff;transform:translateY(-1px)}
+.vt-lp .vt-back{margin-top:18px;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.vt-lp .vt-back:hover{color:var(--gold-l)}
+.vt-lp .vt-back[hidden]{display:none}
+.vt-lp .vt-result{animation:vtFade .45s ease}
+.vt-lp .vt-result .vt-progress{margin-bottom:22px}
+@keyframes vtFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.vt-lp .vt-score{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+.vt-lp .vt-score-n{font-family:'Prata',Georgia,serif;font-size:56px;line-height:1;color:var(--gold-l);white-space:nowrap}
+.vt-lp .vt-score-n small{font-size:22px;color:var(--muted)}
+.vt-lp .vt-score-t{font-family:'Prata',Georgia,serif;font-size:22px;line-height:1.25;color:var(--gold-l)}
+.vt-lp .vt-flags{margin:18px 0 22px;display:grid;gap:8px}
+.vt-lp .vt-flags li{display:flex;gap:12px;align-items:baseline;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:15px}
+.vt-lp .vt-flags li span{color:var(--muted);font-size:13px;margin-left:auto;white-space:nowrap}
+.vt-lp .vt-flags li::before{content:"!";flex:none;width:20px;height:20px;border-radius:50%;background:var(--gold-d);color:var(--gold-l);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translateY(2px)}
+.vt-lp .vt-flags li.vt-ok::before{content:"✓";background:#20362a;color:var(--ok)}
+.vt-lp .vt-redo{margin-left:14px;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+
+/* conteúdo: acordeão dos 5 erros */
+.vt-lp .vt-errs{margin-top:34px;display:grid;gap:12px}
+.vt-lp .vt-err{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:border-color .2s}
+.vt-lp .vt-err.vt-open{border-color:rgba(210,172,71,.55)}
+.vt-lp .vt-err-h{width:100%;display:flex;align-items:center;gap:16px;text-align:left;padding:20px 20px}
+.vt-lp .vt-err-n{flex:none;width:42px;height:42px;border-radius:50%;background:var(--gold-d);color:var(--gold-l);font-family:'Prata',serif;font-size:19px;display:flex;align-items:center;justify-content:center}
+.vt-lp .vt-err-t{flex:1;font-family:'Prata',Georgia,serif;font-size:clamp(18px,2.6vw,22px);line-height:1.3;color:var(--gold-l)}
+.vt-lp .vt-err-p{flex:none;font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.vt-lp .vt-chev{flex:none;width:20px;height:20px;position:relative}
+.vt-lp .vt-chev::before,.vt-lp .vt-chev::after{content:"";position:absolute;left:3px;top:9px;width:14px;height:2px;background:var(--gold);transition:transform .25s}
+.vt-lp .vt-chev::after{transform:rotate(90deg)}
+.vt-lp .vt-open .vt-chev::after{transform:rotate(0)}
+.vt-lp .vt-err-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.vt-lp .vt-open .vt-err-b{grid-template-rows:1fr}
+.vt-lp .vt-err-bi{overflow:hidden}
+.vt-lp .vt-err-c{padding:0 20px 22px 78px;color:var(--text)}
+.vt-lp .vt-err-c ul{margin-top:12px;display:grid;gap:6px}
+.vt-lp .vt-err-c li{padding-left:18px;position:relative;font-size:15.5px}
+.vt-lp .vt-err-c li::before{content:"";position:absolute;left:0;top:.7em;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+
+/* pré-visualização */
+.vt-lp .vt-prev{margin-top:44px}
+.vt-lp .vt-prev h3{font-size:22px;margin-bottom:16px}
+.vt-lp .vt-prev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.vt-lp .vt-prev-grid button{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg);transition:transform .2s,border-color .2s}
+.vt-lp .vt-prev-grid button:hover{transform:translateY(-3px);border-color:var(--gold)}
+.vt-lp .vt-prev-grid img{width:100%}
+.vt-lp .vt-prev[hidden]{display:none}
+.vt-lp .vt-lb{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:20px}
+.vt-lp .vt-lb.vt-on{display:flex}
+.vt-lp .vt-lb img{max-height:90vh;max-width:min(720px,94vw);width:auto;border-radius:8px}
+.vt-lp .vt-lb button{position:absolute;top:14px;right:18px;font-size:34px;line-height:1;color:#fff;padding:8px 12px}
+
+/* para quem é */
+.vt-lp .vt-fit{display:grid;gap:18px;margin-top:34px}
+.vt-lp .vt-fit>div{border-radius:var(--r);padding:26px 24px;border:1px solid var(--line);background:var(--bg2)}
+.vt-lp .vt-fit h3{font-size:22px;margin-bottom:14px}
+.vt-lp .vt-fit li{position:relative;padding-left:30px;margin-bottom:10px;font-size:16px}
+.vt-lp .vt-fit .vt-yes li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:700}
+.vt-lp .vt-fit .vt-no li::before{content:"✕";position:absolute;left:0;color:var(--bad);font-weight:700}
+
+/* oferta */
+.vt-lp .vt-offer{max-width:820px;margin:34px auto 0;border:1px solid rgba(210,172,71,.55);border-radius:22px;background:linear-gradient(180deg,#26241a,#1b1c1d 40%);padding:34px 24px;box-shadow:0 24px 70px rgba(0,0,0,.4)}
+.vt-lp .vt-stack{display:grid;gap:14px;margin-bottom:26px}
+.vt-lp .vt-stack li{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--line)}
+.vt-lp .vt-stack li:last-child{border-bottom:0}
+.vt-lp .vt-stack b{display:block;color:#fff;font-size:17px;margin-bottom:2px}
+.vt-lp .vt-tag{flex:none;margin-top:3px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:99px;background:var(--gold-d);color:var(--gold-l)}
+.vt-lp .vt-tag--bonus{background:var(--gold);color:var(--on-gold)}
+.vt-lp .vt-offer-foot{text-align:center}
+.vt-lp .vt-offer-price{font-family:'Prata',Georgia,serif;font-size:60px;color:var(--gold-l);line-height:1;margin-bottom:6px}
+.vt-lp .vt-offer-foot .vt-btn{margin:18px 0 12px;width:100%;max-width:440px}
+.vt-lp .vt-guar{display:flex;gap:14px;align-items:flex-start;margin:26px auto 0;max-width:560px;text-align:left;font-size:15px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.vt-lp .vt-guar svg{flex:none;width:28px;height:28px;color:var(--gold)}
+
+/* sobre */
+.vt-lp .vt-about{display:grid;gap:28px;align-items:center;max-width:860px;margin:0 auto}
+.vt-lp .vt-avatar{width:112px;height:112px;border-radius:50%;background:var(--gold-d);border:2px solid var(--gold);color:var(--gold-l);font-family:'Prata',serif;font-size:40px;display:flex;align-items:center;justify-content:center}
+.vt-lp .vt-about p+p{margin-top:12px}
+
+/* testemunhos (escondido até haver reais) */
+.vt-lp .vt-testi[hidden]{display:none}
+
+/* faq */
+.vt-lp .vt-faq{max-width:820px;margin:34px auto 0;display:grid;gap:10px}
+.vt-lp .vt-faq .vt-err-c{padding:0 20px 20px}
+.vt-lp .vt-faq .vt-err-h{padding:18px 20px}
+.vt-lp .vt-faq .vt-err-t{font-family:'Raleway',sans-serif;font-weight:600;font-size:17px;color:var(--text)}
+
+/* rodapé */
+.vt-lp .vt-foot{padding:44px 0 110px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.vt-lp .vt-foot-grid{display:grid;gap:18px}
+.vt-lp .vt-foot a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.vt-lp .vt-foot ul{display:flex;flex-wrap:wrap;gap:8px 22px}
+
+/* barra fixa móvel */
+.vt-lp .vt-bar{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:flex;align-items:center;gap:14px;justify-content:space-between;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(27,28,29,.96);backdrop-filter:blur(8px);border-top:1px solid rgba(210,172,71,.5);transform:translateY(110%);transition:transform .3s ease}
+.vt-lp .vt-bar.vt-show{transform:none}
+.vt-lp .vt-bar-p{font-family:'Prata',serif;font-size:26px;color:var(--gold-l);line-height:1}
+.vt-lp .vt-bar-p small{display:block;font-family:'Raleway',sans-serif;font-size:12px;color:var(--muted);margin-top:3px}
+.vt-lp .vt-bar .vt-btn{min-height:48px;padding:10px 22px;font-size:15px}
+
+@media (min-width:760px){
+  .vt-lp .vt-hero-grid{grid-template-columns:1.15fr .85fr}
+  .vt-lp .vt-sym{grid-template-columns:repeat(3,1fr)}
+  .vt-lp .vt-fit{grid-template-columns:1fr 1fr}
+  .vt-lp .vt-about{grid-template-columns:auto 1fr}
+  .vt-lp .vt-quiz{padding:38px 40px}
+  .vt-lp .vt-offer{padding:44px 48px}
+  .vt-lp .vt-foot-grid{grid-template-columns:1.4fr 1fr;align-items:start}
+  .vt-lp .vt-bar{display:none}
+  .vt-lp .vt-foot{padding-bottom:44px}
+}
+@media (max-width:560px){
+  .vt-lp{font-size:16px}
+  .vt-lp .vt-sec{padding:56px 0}
+  .vt-lp .vt-err-c{padding-left:20px}
+  .vt-lp .vt-err-p{display:none}
+  .vt-lp .vt-btn{width:100%}
+  .vt-lp .vt-bar .vt-btn{width:auto}
+  .vt-lp .vt-score{flex-direction:column;align-items:flex-start;gap:8px}
+}
+</style>
+
+<!-- ============ TOPO ============ -->
+<header class="vt-hero">
+  <div class="vt-wrap vt-hero-grid">
+    <div>
+      <span class="vt-eyebrow">Para donos de negócios locais</span>
+      <h1 class="vt-h1">O seu negócio é bom, mas os clientes não aparecem?</h1>
+      <p class="vt-lead">Um guia de 10 páginas, com cerca de 20 minutos de leitura, sobre os 5 erros que mais travam as vendas de quem não usa o tráfego pago de forma estratégica. Ao fim, fica a saber em quais deles está a cair.</p>
+      <div class="vt-price-row">
+        <div class="vt-price">10&nbsp;€<small>pagamento único</small></div>
+      </div>
+      <div class="vt-cta-row">
+        <a class="vt-btn vt-btn--lg" href="#vt-oferta" data-vt-buy="hero">Quero o guia por 10&nbsp;€</a>
+        <a class="vt-btn vt-btn--ghost vt-btn--lg" href="#vt-diagnostico" data-vt-scroll>Primeiro, o diagnóstico grátis</a>
+      </div>
+      <ul class="vt-facts">
+        <li>Ebook em PDF</li>
+        <li>Acesso por e-mail após o pagamento</li>
+        <li>Garantia de 7 dias</li>
+        <li>Pagamento seguro pela Hotmart</li>
+      </ul>
+    </div>
+    <div class="vt-cover-wrap" aria-hidden="true">
+      <div class="vt-cover" id="vt-cover">
+        <div class="vt-cover-top">Ebook · 10 páginas</div>
+        <div class="vt-cover-title"><b>Os 5 Maiores Erros</b>que os Donos de Negócios Cometem por Não Usar a Gestão de Tráfego Pago</div>
+        <div class="vt-cover-by">Por Tiago Violante</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ RECONHECE-SE? ============ -->
+<section class="vt-sec">
+  <div class="vt-wrap vt-center">
+    <span class="vt-eyebrow">Reconhece-se?</span>
+    <h2 class="vt-h2">Trabalha muito. As vendas ficam na mesma.</h2>
+    <p class="vt-lead">Se uma destas situações lhe soa familiar, o problema raramente é falta de esforço. Costuma ser falta de estratégia.</p>
+    <ul class="vt-sym vt-center" style="text-align:left">
+      <li class="vt-rv">Publica nas redes sociais todas as semanas, mas o telefone não toca mais por isso.</li>
+      <li class="vt-rv">Já "promoveu uma publicação" ou criou um anúncio e concluiu que o tráfego pago não funciona para o seu negócio.</li>
+      <li class="vt-rv">Não sabe dizer quanto lhe custa conseguir um cliente novo através do marketing.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ DIAGNÓSTICO ============ -->
+<section class="vt-sec vt-sec--alt" id="vt-diagnostico">
+  <div class="vt-wrap vt-center">
+    <span class="vt-eyebrow">Diagnóstico de 1 minuto</span>
+    <h2 class="vt-h2">Quantos destes 5 erros está a cometer?</h2>
+    <p class="vt-lead">Cinco perguntas de sim ou não. Sem registo e sem e-mail. Responda com sinceridade, porque o resultado só serve para si.</p>
+
+    <div class="vt-quiz" id="vt-quiz" aria-live="polite">
+      <!-- preenchido por JavaScript -->
+      <noscript><p>Ative o JavaScript para fazer o diagnóstico.</p></noscript>
+    </div>
+  </div>
+</section>
+
+<!-- ============ O QUE ESTÁ DENTRO ============ -->
+<section class="vt-sec" id="vt-dentro">
+  <div class="vt-wrap">
+    <div class="vt-center">
+      <span class="vt-eyebrow">O que está dentro</span>
+      <h2 class="vt-h2">Os 5 erros, explicados sem jargão</h2>
+      <p class="vt-lead">Cada erro tem uma página própria, com o que acontece na prática e o que muda quando o corrige. Abra qualquer um para espreitar.</p>
+    </div>
+
+    <div class="vt-errs" id="vt-errs">
+      <div class="vt-err vt-rv">
+        <button class="vt-err-h" type="button" aria-expanded="false">
+          <span class="vt-err-n">1</span>
+          <span class="vt-err-t">Depender apenas do boca-a-boca e das redes sociais orgânicas</span>
+          <span class="vt-err-p">pág. 3</span><span class="vt-chev" aria-hidden="true"></span>
+        </button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c">
+          <p>O boca-a-boca é ótimo até deixar de chegar. Publicar com regularidade e, mesmo assim, ver as vendas iguais não é falta de esforço.</p>
+          <ul><li>Crescimento lento e imprevisível</li><li>Dependência de algoritmos que mudam</li><li>Dificuldade em escalar o negócio</li></ul>
+        </div></div></div>
+      </div>
+      <div class="vt-err vt-rv">
+        <button class="vt-err-h" type="button" aria-expanded="false">
+          <span class="vt-err-n">2</span>
+          <span class="vt-err-t">Investir em anúncios sem estratégia definida</span>
+          <span class="vt-err-p">pág. 4</span><span class="vt-chev" aria-hidden="true"></span>
+        </button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c">
+          <p>Há algo mais perigoso do que não anunciar: anunciar sem estratégia. É assim que muita gente conclui que "o tráfego pago não funciona".</p>
+          <ul><li>Dinheiro desperdiçado em cliques de quem nunca vai comprar</li><li>Decisões às cegas, sem acompanhar métricas</li><li>Uma campanha mal feita pode prejudicar a perceção da sua marca</li></ul>
+        </div></div></div>
+      </div>
+      <div class="vt-err vt-rv">
+        <button class="vt-err-h" type="button" aria-expanded="false">
+          <span class="vt-err-n">3</span>
+          <span class="vt-err-t">Deixar os concorrentes ocuparem o seu espaço digital</span>
+          <span class="vt-err-p">pág. 5</span><span class="vt-chev" aria-hidden="true"></span>
+        </button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c">
+          <p>Enquanto não anuncia, o cliente que o poderia ter descoberto encontra primeiro o seu concorrente.</p>
+          <ul><li>O que o seu concorrente pode estar a fazer neste momento</li><li>O que é o remarketing e porque o cliente "volta a ver" quem o visitou</li><li>O custo de recuperar terreno depois de o perder</li></ul>
+        </div></div></div>
+      </div>
+      <div class="vt-err vt-rv">
+        <button class="vt-err-h" type="button" aria-expanded="false">
+          <span class="vt-err-n">4</span>
+          <span class="vt-err-t">Não medir o retorno (ROI) das ações de marketing</span>
+          <span class="vt-err-p">pág. 6</span><span class="vt-chev" aria-hidden="true"></span>
+        </button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c">
+          <p>Gasta dinheiro em panfletos, feiras, patrocínios e redes sociais, mas sabe exatamente quantos clientes veio cada ação?</p>
+          <ul><li>O ciclo lançar, medir e otimizar</li><li>As 4 métricas que convém conhecer: CPA, ROAS, CTR e LTV, explicadas em português simples</li></ul>
+        </div></div></div>
+      </div>
+      <div class="vt-err vt-rv">
+        <button class="vt-err-h" type="button" aria-expanded="false">
+          <span class="vt-err-n">5</span>
+          <span class="vt-err-t">Tentar fazer tudo sozinho, sem conhecimento especializado</span>
+          <span class="vt-err-p">pág. 7</span><span class="vt-chev" aria-hidden="true"></span>
+        </button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c">
+          <p>Aceitar que pode, e deve, errar nos seus anúncios sobre as dezenas de outras responsabilidades que tem.</p>
+          <ul><li>O valor do seu tempo</li><li>O que pode custar um erro de segmentação ou uma página de destino mal montada</li><li>Quando faz sentido pedir ajuda</li></ul>
+        </div></div></div>
+      </div>
+    </div>
+
+    <div class="vt-prev" id="vt-prev">
+      <h3>Espreite algumas páginas</h3>
+      <div class="vt-prev-grid">
+        <!-- Carregue as 3 imagens em Média do WordPress e atualize os URLs na CONFIG (PREVIEWS) -->
+        <button type="button" data-i="0" aria-label="Ampliar pré-visualização do erro 1"><img alt="Página do ebook sobre o erro 1: depender do boca-a-boca" loading="lazy"></button>
+        <button type="button" data-i="1" aria-label="Ampliar pré-visualização do erro 2"><img alt="Página do ebook sobre o erro 2: anúncios sem estratégia" loading="lazy"></button>
+        <button type="button" data-i="2" aria-label="Ampliar pré-visualização do erro 3"><img alt="Página do ebook sobre o erro 3: concorrentes no seu espaço digital" loading="lazy"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARA QUEM É ============ -->
+<section class="vt-sec vt-sec--alt">
+  <div class="vt-wrap">
+    <div class="vt-center">
+      <span class="vt-eyebrow">Antes de comprar</span>
+      <h2 class="vt-h2">Este guia é para si? Dizemos-lhe com franqueza.</h2>
+    </div>
+    <div class="vt-fit">
+      <div class="vt-yes vt-rv">
+        <h3>É para si se…</h3>
+        <ul>
+          <li>Tem um negócio local ou uma pequena empresa e quer mais clientes novos.</li>
+          <li>Ainda não usa tráfego pago, ou já tentou e não percebeu o que correu mal.</li>
+          <li>Quer perceber o essencial em 20 minutos, antes de decidir se investe em anúncios.</li>
+          <li>Está a pensar contratar um gestor de tráfego e quer saber o que perguntar.</li>
+        </ul>
+      </div>
+      <div class="vt-no vt-rv">
+        <h3>Não é para si se…</h3>
+        <ul>
+          <li>Procura um manual técnico passo a passo para configurar campanhas. Este guia explica os erros e o raciocínio, não o menu de cada plataforma.</li>
+          <li>Procura uma fórmula mágica ou resultados garantidos. Ninguém os pode prometer.</li>
+          <li>Já gere campanhas com métricas e objetivos claros. Provavelmente já conhece quase tudo.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OFERTA ============ -->
+<section class="vt-sec" id="vt-oferta">
+  <div class="vt-wrap">
+    <div class="vt-center">
+      <span class="vt-eyebrow">A oferta</span>
+      <h2 class="vt-h2">O que recebe ao comprar</h2>
+    </div>
+    <div class="vt-offer vt-rv">
+      <ul class="vt-stack">
+        <li><span class="vt-tag">Guia</span><div><b>Ebook "Os 5 Maiores Erros que os Donos de Negócios Cometem por Não Usar a Gestão de Tráfego Pago"</b>10 páginas em PDF, para ler em cerca de 20 minutos, no telemóvel ou no computador.</div></li>
+        <li><span class="vt-tag vt-tag--bonus">Bónus 1</span><div><b>Checklist de 1 página: o que confirmar antes de investir o primeiro euro em anúncios</b>Para ter à mão quando for decidir orçamento, objetivo e medição.</div></li>
+        <li><span class="vt-tag vt-tag--bonus">Bónus 2</span><div><b>Chamada de diagnóstico de 20 minutos, sem custo</b>Olhamos para o seu caso e dizemos-lhe o que faria sentido. No fim, pode dizer-lhe também se vale a pena trabalharmos juntos. Sem compromisso e sem pressão.</div></li>
+      </ul>
+      <div class="vt-offer-foot">
+        <div class="vt-offer-price">10&nbsp;€</div>
+        <p class="vt-note">Pagamento único. Sem subscrição.</p>
+        <a class="vt-btn vt-btn--lg" href="#vt-oferta" data-vt-buy="offer">Quero o guia por 10&nbsp;€</a>
+        <p class="vt-note">Pagamento seguro na Hotmart</p>
+        <div class="vt-guar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/><path d="M8.5 12.2l2.5 2.5 4.5-5"/></svg>
+          <span><b style="color:#fff">Garantia de 7 dias.</b> Se o guia não for o que esperava, pode pedir o reembolso nos 7 dias a seguir à compra, diretamente na Hotmart.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOBRE ============ -->
+<section class="vt-sec vt-sec--alt">
+  <div class="vt-wrap">
+    <div class="vt-about vt-rv">
+      <div class="vt-avatar" aria-hidden="true">TV</div>
+      <div>
+        <span class="vt-eyebrow">Quem escreveu</span>
+        <h2 class="vt-h2" style="font-size:clamp(26px,3.6vw,34px)">Tiago Violante</h2>
+        <!-- AJUSTAR: acrescente a sua história, anos de experiência, tipos de negócio que acompanha, foto (substitua o círculo "TV" por uma <img>) -->
+        <p>Gestor de tráfego pago na VT Gestores de Tráfego, trabalha com donos de negócios que querem crescer com anúncios sem queimar dinheiro.</p>
+        <p>Escreveu este guia para dizer, sem rodeios, o que costuma correr mal e o que se pode fazer a respeito.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTEMUNHOS ============
+     Escondida até haver testemunhos reais. Para a ativar: retire o atributo "hidden" da <section>
+     e preencha os cartões com palavras reais, com autorização de quem as disse. -->
+<section class="vt-sec vt-testi" hidden>
+  <div class="vt-wrap vt-center">
+    <span class="vt-eyebrow">Quem já leu</span>
+    <h2 class="vt-h2">O que dizem os leitores</h2>
+    <div class="vt-fit">
+      <div><p>"Testemunho real aqui."</p><p class="vt-note">Nome, negócio</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="vt-sec">
+  <div class="vt-wrap">
+    <div class="vt-center">
+      <span class="vt-eyebrow">Perguntas frequentes</span>
+      <h2 class="vt-h2">Ainda com dúvidas?</h2>
+    </div>
+    <div class="vt-faq" id="vt-faq">
+      <div class="vt-err">
+        <button class="vt-err-h" type="button" aria-expanded="false"><span class="vt-err-t">Em que formato recebo o ebook?</span><span class="vt-chev" aria-hidden="true"></span></button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c"><p>Em PDF, com 10 páginas, que pode ler no telemóvel, no tablet ou no computador.</p></div></div></div>
+      </div>
+      <div class="vt-err">
+        <button class="vt-err-h" type="button" aria-expanded="false"><span class="vt-err-t">Como e quando recebo o acesso?</span><span class="vt-chev" aria-hidden="true"></span></button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c"><p>Depois do pagamento, a Hotmart envia o acesso para o e-mail que usou na compra. Se não o vir, verifique a pasta de spam.</p></div></div></div>
+      </div>
+      <div class="vt-err">
+        <button class="vt-err-h" type="button" aria-expanded="false"><span class="vt-err-t">Que formas de pagamento posso usar?</span><span class="vt-chev" aria-hidden="true"></span></button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c"><p>As disponíveis no checkout da Hotmart, que aparecem quando clicar no botão de compra.</p></div></div></div>
+      </div>
+      <div class="vt-err">
+        <button class="vt-err-h" type="button" aria-expanded="false"><span class="vt-err-t">Como funciona a chamada de diagnóstico de 20 minutos?</span><span class="vt-chev" aria-hidden="true"></span></button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c"><p>É um bónus para quem compra o guia. Na última página do ebook encontra o link para marcar o horário que lhe der mais jeito. Não tem custo e não o obriga a contratar nada.</p></div></div></div>
+      </div>
+      <div class="vt-err">
+        <button class="vt-err-h" type="button" aria-expanded="false"><span class="vt-err-t">Este guia ensina-me a configurar os anúncios?</span><span class="vt-chev" aria-hidden="true"></span></button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c"><p>Não. É um guia para perceber os erros mais comuns e o raciocínio por trás de uma boa estratégia, antes de gastar dinheiro. Não é um manual técnico de uma plataforma.</p></div></div></div>
+      </div>
+      <div class="vt-err">
+        <button class="vt-err-h" type="button" aria-expanded="false"><span class="vt-err-t">E se não gostar? Posso pedir o dinheiro de volta?</span><span class="vt-chev" aria-hidden="true"></span></button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c"><p>Sim. Tem 7 dias a partir da compra para pedir o reembolso na Hotmart, sem justificações complicadas.</p></div></div></div>
+      </div>
+      <div class="vt-err">
+        <button class="vt-err-h" type="button" aria-expanded="false"><span class="vt-err-t">Tenho um orçamento muito pequeno. Faz sentido para mim?</span><span class="vt-chev" aria-hidden="true"></span></button>
+        <div class="vt-err-b"><div class="vt-err-bi"><div class="vt-err-c"><p>Faz, e é justamente nessa situação que errar custa mais. Perceber os erros antes de investir ajuda a não gastar o pouco que tem no sítio errado.</p></div></div></div>
+      </div>
+    </div>
+    <div class="vt-center" style="margin-top:44px">
+      <a class="vt-btn vt-btn--lg" href="#vt-oferta" data-vt-buy="faq">Quero o guia por 10&nbsp;€</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RODAPÉ ============ -->
+<footer class="vt-foot">
+  <div class="vt-wrap vt-foot-grid">
+    <div>
+      <p style="color:var(--text);font-weight:600;margin-bottom:6px">VT Gestores de Tráfego</p>
+      <!-- AJUSTAR: designação social e NIF, se quiser mostrá-los -->
+      <p>Contacto: <a data-vt-mail href="#">e-mail</a></p>
+      <p style="margin-top:10px">Este guia partilha informação geral e não garante resultados. Os resultados de cada negócio dependem de vários fatores.</p>
+    </div>
+    <ul>
+      <li><a data-vt-privacy href="#">Política de Privacidade</a></li>
+      <li><a data-vt-terms href="#">Termos e Condições</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- barra fixa (telemóvel) -->
+<div class="vt-bar" id="vt-bar" aria-hidden="true">
+  <div class="vt-bar-p">10&nbsp;€<small>Guia + 2 bónus</small></div>
+  <a class="vt-btn" href="#vt-oferta" data-vt-buy="sticky" tabindex="-1">Quero o guia</a>
+</div>
+
+<!-- ampliação das páginas -->
+<div class="vt-lb" id="vt-lb" role="dialog" aria-modal="true" aria-label="Pré-visualização"><button type="button" aria-label="Fechar">×</button><img alt=""></div>
+
+<script>
+(function () {
+  /* ===================== CONFIG: edite aqui ===================== */
+  var CONFIG = {
+    checkoutUrl: 'https://pay.hotmart.com/COLE-AQUI-O-SEU-LINK',   // link de checkout da Hotmart
+    price: 10, currency: 'EUR',
+    email: 'geral@vtgestoresdetrafego.pt',                         // confirme o e-mail de contacto
+    privacyUrl: '/politica-de-privacidade/',                       // crie estas duas páginas no WordPress
+    termsUrl: '/termos-e-condicoes/',
+    previews: [                                                    // URLs das imagens carregadas em Média
+      '/wp-content/uploads/2026/10/ebook-preview-1.jpg',
+      '/wp-content/uploads/2026/10/ebook-preview-2.jpg',
+      '/wp-content/uploads/2026/10/ebook-preview-3.jpg'
+    ]
+  };
+  /* ============================================================== */
+
+  var root = document.getElementById('vt-lp');
+  if (!root) return;
+  root.classList.add('vt-js');
+  var $ = function (s, c) { return (c || root).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || root).querySelectorAll(s)); };
+
+  /* ---- ligações configuráveis ---- */
+  $$('[data-vt-buy]').forEach(function (a) { a.href = CONFIG.checkoutUrl; });
+  $$('[data-vt-mail]').forEach(function (a) { a.href = 'mailto:' + CONFIG.email; a.textContent = CONFIG.email; });
+  $$('[data-vt-privacy]').forEach(function (a) { a.href = CONFIG.privacyUrl; });
+  $$('[data-vt-terms]').forEach(function (a) { a.href = CONFIG.termsUrl; });
+
+  /* ---- Meta Pixel (só dispara se o Pixel existir) ---- */
+  function track(type, name, data) {
+    try { if (typeof window.fbq === 'function') window.fbq(type, name, data || {}); } catch (e) {}
+  }
+  root.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('[data-vt-buy]');
+    if (!a) return;
+    track('track', 'InitiateCheckout', { value: CONFIG.price, currency: CONFIG.currency, content_name: 'Ebook 5 Erros', content_category: a.getAttribute('data-vt-buy') });
+  });
+
+  /* ---- scroll suave para âncoras internas ---- */
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $$('[data-vt-scroll]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var t = document.querySelector(a.getAttribute('href'));
+      if (!t) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  /* ---- revelar ao scroll ---- */
+  var rv = $$('.vt-rv');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('vt-in'); io.unobserve(en.target); } });
+    }, { threshold: 0.12 });
+    rv.forEach(function (el) { io.observe(el); });
+  } else { rv.forEach(function (el) { el.classList.add('vt-in'); }); }
+
+  /* ---- capa 3D que reage ao rato ---- */
+  var cover = $('#vt-cover');
+  if (cover && !reduce && window.matchMedia('(hover:hover)').matches) {
+    var wrap = cover.parentNode;
+    wrap.addEventListener('mousemove', function (e) {
+      var r = wrap.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      cover.style.transform = 'rotateY(' + (-14 + x * 16) + 'deg) rotateX(' + (3 - y * 12) + 'deg)';
+    });
+    wrap.addEventListener('mouseleave', function () { cover.style.transform = ''; });
+  }
+
+  /* ---- acordeões (erros e FAQ) ---- */
+  function accordion(box, single) {
+    if (!box) return;
+    box.addEventListener('click', function (e) {
+      var h = e.target.closest('.vt-err-h');
+      if (!h || !box.contains(h)) return;
+      var item = h.parentNode, open = !item.classList.contains('vt-open');
+      if (single) $$('.vt-err.vt-open', box).forEach(function (o) { o.classList.remove('vt-open'); $('.vt-err-h', o).setAttribute('aria-expanded', 'false'); });
+      item.classList.toggle('vt-open', open);
+      h.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  accordion($('#vt-errs'), false);
+  accordion($('#vt-faq'), true);
+  var firstErr = $('#vt-errs .vt-err'); if (firstErr) { firstErr.classList.add('vt-open'); $('.vt-err-h', firstErr).setAttribute('aria-expanded', 'true'); }
+
+  /* ---- pré-visualizações (escondidas se as imagens não carregarem) ---- */
+  var prev = $('#vt-prev'), lb = $('#vt-lb'), lbImg = $('img', lb), okCount = 0, tried = 0;
+  $$('button[data-i]', prev).forEach(function (b) {
+    var img = $('img', b), i = +b.getAttribute('data-i');
+    img.onload = function () { okCount++; prev.hidden = false; };
+    img.onerror = function () { b.hidden = true; if (++tried === 3 && !okCount) prev.hidden = true; };
+    img.src = CONFIG.previews[i];
+    b.addEventListener('click', function () { lbImg.src = CONFIG.previews[i]; lb.classList.add('vt-on'); $('button', lb).focus(); });
+  });
+  prev.hidden = true;
+  function closeLb() { lb.classList.remove('vt-on'); }
+  lb.addEventListener('click', closeLb);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLb(); });
+
+  /* ---- diagnóstico interativo ---- */
+  var Q = [
+    { t: 'Os seus clientes chegam sobretudo por recomendação e pelas publicações nas redes sociais, sem anúncios?', h: 'Boca-a-boca e conteúdo orgânico, sem investimento em publicidade.', e: 'Depender só do boca-a-boca e do orgânico', p: 3 },
+    { t: 'Já investiu em anúncios (ou "promoveu publicações") sem ter definido antes um objetivo e um público?', h: 'Por exemplo, carregar no botão "Promover" e esperar.', e: 'Anúncios sem estratégia definida', p: 4 },
+    { t: 'Quando alguém pesquisa o seu serviço no Google, aparecem primeiro anúncios de concorrentes e não os seus?', h: 'Experimente pesquisar o seu serviço na sua zona.', e: 'Concorrentes no seu espaço digital', p: 5 },
+    { t: 'Não sabe dizer quanto lhe custa, em média, conseguir um cliente novo através do marketing?', h: 'Se tem o número, responda "Não".', e: 'Não medir o retorno do investimento', p: 6 },
+    { t: 'É você, sem formação específica, quem cria e gere os anúncios?', h: 'Ou alguém da equipa que o faz a par de outras tarefas.', e: 'Fazer tudo sozinho, sem especialização', p: 7 }
+  ];
+  var quiz = $('#vt-quiz'), step = 0, ans = [];
+
+  function buyBtn(label) {
+    return '<a class="vt-btn vt-btn--lg" href="' + CONFIG.checkoutUrl + '" data-vt-buy="quiz">' + label + '</a>';
+  }
+  function render() {
+    if (step >= Q.length) return result();
+    var q = Q[step], pct = (step / Q.length) * 100;
+    quiz.innerHTML =
+      '<div class="vt-progress"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="vt-qmeta"><span>Pergunta ' + (step + 1) + ' de ' + Q.length + '</span><span>Erro ' + (step + 1) + '</span></div>' +
+      '<p class="vt-q" id="vt-qt" tabindex="-1">' + q.t + '</p>' +
+      '<p class="vt-qhint">' + q.h + '</p>' +
+      '<div class="vt-ans" role="group" aria-labelledby="vt-qt"><button type="button" data-a="1">Sim</button><button type="button" data-a="0">Não</button></div>' +
+      '<button type="button" class="vt-back" ' + (step ? '' : 'hidden') + '>← Voltar</button>';
+    var prog = $('.vt-progress i', quiz); if (prog) requestAnimationFrame(function () { prog.style.width = ((step + 0.0) / Q.length * 100) + '%'; });
+    if (step > 0) $('#vt-qt', quiz).focus({ preventScroll: true });
+  }
+  quiz.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-a]');
+    if (a) { ans[step] = +a.getAttribute('data-a'); step++; if (step === 1) track('trackCustom', 'DiagnosticoIniciado'); render(); return; }
+    if (e.target.closest('.vt-back')) { step = Math.max(0, step - 1); render(); return; }
+    if (e.target.closest('.vt-redo')) { step = 0; ans = []; render(); return; }
+  });
+  function result() {
+    var n = ans.reduce(function (s, v) { return s + v; }, 0);
+    track('trackCustom', 'DiagnosticoConcluido', { erros: n });
+    var title, text;
+    if (n === 0) { title = 'Nenhum dos 5 erros. Bom sinal.'; text = 'Parece ter já boas bases. O guia pode servir para confirmar que nada lhe escapa, mas pode não trazer muito de novo. Se quiser uma segunda opinião, veja a secção "Para quem é".'; }
+    else if (n <= 2) { title = 'Está a cometer ' + n + (n === 1 ? ' dos 5 erros.' : ' dos 5 erros.'); text = 'Não é dramático, mas é exatamente aqui que costuma estar dinheiro e clientes a escapar. O guia explica cada um destes pontos e o que muda quando se corrigem.'; }
+    else { title = 'Está a cometer ' + n + ' dos 5 erros.'; text = 'É mais comum do que pensa em negócios locais, e é corrigível. Quanto mais cedo o perceber, menos dinheiro gasta no sítio errado. O guia explica cada um destes erros em linguagem simples.'; }
+    var flags = Q.map(function (q, i) {
+      return ans[i] ? '<li><strong>' + q.e + '</strong><span>pág. ' + q.p + '</span></li>' : '<li class="vt-ok"><strong style="font-weight:500;color:var(--muted)">' + q.e + '</strong><span>ok</span></li>';
+    }).join('');
+    quiz.innerHTML =
+      '<div class="vt-result">' +
+      '<div class="vt-progress"><i style="width:100%"></i></div>' +
+      '<div class="vt-score"><div class="vt-score-n">' + n + '<small>/5</small></div><div class="vt-score-t" id="vt-rt" tabindex="-1">' + title + '</div></div>' +
+      '<p>' + text + '</p>' +
+      '<ul class="vt-flags">' + flags + '</ul>' +
+      buyBtn('Quero o guia por 10&nbsp;€') +
+      '<button type="button" class="vt-redo">Refazer o diagnóstico</button>' +
+      '</div>';
+    $('#vt-rt', quiz).focus({ preventScroll: true });
+  }
+  render();
+
+  /* ---- barra fixa no telemóvel ---- */
+  var bar = $('#vt-bar'), hero = $('.vt-hero'), offer = $('#vt-oferta'), heroOut = false, offerIn = false;
+  function upd() { var on = heroOut && !offerIn; bar.classList.toggle('vt-show', on); bar.setAttribute('aria-hidden', on ? 'false' : 'true'); $('a', bar).tabIndex = on ? 0 : -1; }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { heroOut = !es[0].isIntersecting && es[0].boundingClientRect.top < 0; upd(); }).observe(hero);
+    new IntersectionObserver(function (es) { offerIn = es[0].isIntersecting; upd(); }, { threshold: 0.1 }).observe(offer);
+  }
+})();
+</script>
+</div>
